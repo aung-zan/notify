@@ -7,5 +7,18 @@ use Illuminate\Http\Request;
 
 class EmailController extends Controller
 {
-    //
+    public function __construct()
+    {
+        //
+    }
+
+    public function list()
+    {
+        //
+    }
+
+    public function send(Request $request)
+    {
+        //
+    }
 }
