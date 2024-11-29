@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class PushController extends Controller
+class NotificationController extends Controller
 {
     public function __construct()
     {
@@ -14,11 +14,15 @@ class PushController extends Controller
 
     public function list()
     {
-        //
+        return response()->json([
+            'message' => 'list'
+        ], 200);
     }
 
     public function send(Request $request)
     {
-        //
+        return response()->json([
+            'message' => 'sent successfully.'
+        ], 200);
     }
 }
