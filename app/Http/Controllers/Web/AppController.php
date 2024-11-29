@@ -17,7 +17,7 @@ class AppController extends Controller
      */
     public function index()
     {
-        //
+        return 'index';
     }
 
     /**
@@ -25,7 +25,7 @@ class AppController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return 'show';
     }
 
     /**
@@ -33,7 +33,7 @@ class AppController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return 'edit';
     }
 
     /**
@@ -41,7 +41,7 @@ class AppController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        return 'update';
     }
 
     /**
@@ -49,6 +49,6 @@ class AppController extends Controller
      */
     public function delete(string $id)
     {
-        //
+        return 'delete';
     }
 }

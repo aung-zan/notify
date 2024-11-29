@@ -20,8 +20,8 @@ Route::prefix('app')->group(function () {
         Route::prefix('{id}')->group(function () {
             Route::get('', 'show')->name('app.show');
             Route::get('edit', 'edit')->name('app.edit');
-            Route::match(['put', 'patch'], 'update')->name('app.update');
-            Route::delete('', 'delete')->name('app.delete');
+            Route::match(['put', 'patch'], 'update', 'update')->name('app.update');
+            Route::delete('delete', 'delete')->name('app.delete');
         });
     });
 });
@@ -35,7 +35,7 @@ Route::prefix('email')->group(function () {
         Route::prefix('{id}')->group(function () {
             Route::get('', 'show')->name('email.show');
             Route::get('edit', 'edit')->name('email.edit');
-            Route::match(['put', 'patch'], 'update')->name('email.update');
+            Route::match(['put', 'patch'], 'update', 'update')->name('email.update');
         });
     });
 });
@@ -49,7 +49,7 @@ Route::prefix('push')->group(function () {
         Route::prefix('{id}')->group(function () {
             Route::get('', 'show')->name('push.show');
             Route::get('edit', 'edit')->name('push.edit');
-            Route::match(['put', 'patch'], 'update')->name('push.update');
+            Route::match(['put', 'patch'], 'update', 'update')->name('push.update');
         });
     });
 });
