@@ -7,12 +7,17 @@ use Illuminate\Http\Request;
 
 class EmailController extends Controller
 {
+    public function __construct()
+    {
+        //
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return 'index';
     }
 
     /**
@@ -20,7 +25,7 @@ class EmailController extends Controller
      */
     public function create()
     {
-        //
+        return 'create';
     }
 
     /**
@@ -28,7 +33,7 @@ class EmailController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return 'store';
     }
 
     /**
@@ -36,7 +41,7 @@ class EmailController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return 'show';
     }
 
     /**
@@ -44,7 +49,7 @@ class EmailController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return 'edit';
     }
 
     /**
@@ -52,14 +57,6 @@ class EmailController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return 'update';
     }
 }
