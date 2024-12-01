@@ -2,17 +2,23 @@
 
 return [
     'sidebar' => [
-        'App' => [
+        [
             'route' => 'app.index',
-            'icon' => '',
+            'icon' => 'bi bi-grid',
+            'display_name' => 'App',
+            'group' => 'app',
         ],
-        'Email Notification' => [
+        [
             'route' => 'email.index',
-            'icon' => '',
+            'icon' => 'bi bi-envelope',
+            'display_name' => 'Email Notification',
+            'group' => 'email',
         ],
-        'Push Notification' => [
+        [
             'route' => 'push.index',
-            'icon' => '',
+            'icon' => 'bi bi-app-indicator',
+            'display_name' => 'Push Notification',
+            'group' => 'push',
         ],
     ]
 ];
