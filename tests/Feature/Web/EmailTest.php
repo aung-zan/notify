@@ -16,7 +16,7 @@ class EmailTest extends TestCase
         $response = $this->get('/email');
 
         $response->assertStatus(200);
-        $response->assertSee('index');
+        $response->assertSee('Email Index');
     }
 
     /**

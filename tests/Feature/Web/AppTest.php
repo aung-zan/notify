@@ -16,7 +16,7 @@ class AppTest extends TestCase
         $response = $this->get('/app');
 
         $response->assertStatus(200);
-        $response->assertSee('index');
+        $response->assertSee('App Index');
     }
 
     /**
