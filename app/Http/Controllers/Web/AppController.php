@@ -17,7 +17,7 @@ class AppController extends Controller
      */
     public function index()
     {
-        return 'index';
+        return view('app.index');
     }
 
     /**

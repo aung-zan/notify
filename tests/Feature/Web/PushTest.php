@@ -16,7 +16,7 @@ class PushTest extends TestCase
         $response = $this->get('/push');
 
         $response->assertStatus(200);
-        $response->assertSee('index');
+        $response->assertSee('Push Index');
     }
 
     /**

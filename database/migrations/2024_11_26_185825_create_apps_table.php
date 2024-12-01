@@ -13,6 +13,17 @@ return new class extends Migration
     {
         Schema::create('apps', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade');
+            $table->foreignId('service_id')
+                ->constrained()
+                ->onDelete('restrict');
+            $table->string('name', '100');
+            $table->text('description');
+            $table->string('token');
+            $table->string('refresh_token');
+            $table->string('scopes');
             $table->timestamps();
         });
     }
