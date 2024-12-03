@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Enums\Push;
 use App\Http\Controllers\Controller;
+use App\Models\Channel;
 use Illuminate\Http\Request;
 
 class PushController extends Controller
@@ -39,9 +40,11 @@ class PushController extends Controller
     public function store(Request $request)
     {
         $credentails = preg_split('/\r\n|\r|\n/', $request->get('credentials'));
-        \Log::info($credentails);
 
-        die();
+        $records = Channel::all();
+
+        \Log::info($records);
+
         return 'store';
     }
 

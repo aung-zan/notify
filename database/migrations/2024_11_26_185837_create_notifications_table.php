@@ -20,7 +20,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained()
                 ->onDelete('restrict');
-            $table->foreignId('service_id')
+            $table->foreignId('channel_id')
                 ->constrained()
                 ->onDelete('restrict');
             $table->tinyInteger('status');

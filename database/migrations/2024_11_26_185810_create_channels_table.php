@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::create('channels', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
                 ->constrained()
                 ->onDelete('cascade');
-            $table->tinyInteger('service_type');
+            $table->tinyInteger('channel_type');
             $table->tinyInteger('provider');
             $table->text('credentials');
             $table->timestamps();
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('services');
+        Schema::dropIfExists('channels');
     }
 };

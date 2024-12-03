@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrained()
                 ->onDelete('cascade');
-            $table->foreignId('service_id')
+            $table->foreignId('channel_id')
                 ->constrained()
                 ->onDelete('restrict');
             $table->string('name', '100');

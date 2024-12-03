@@ -4,7 +4,7 @@
     <div class="app-container container-xxl">
         <div class="card">
             <div class="card-header">
-                <div class="card-title">Create New Provider</div>
+                <div class="card-title">Create New Channel</div>
 
                 <div class="card-toolbar">
                     <div class="d-flex justify-content-end">

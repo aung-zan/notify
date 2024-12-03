@@ -16,7 +16,8 @@ class PushTest extends TestCase
         $response = $this->get('/push');
 
         $response->assertStatus(200);
-        $response->assertSee('Push Index');
+        $response->assertSee('Push Notification');
+        $response->assertSee('Provider List');
     }
 
     /**
@@ -27,7 +28,8 @@ class PushTest extends TestCase
         $response = $this->get('/push/create');
 
         $response->assertStatus(200);
-        $response->assertSee('create');
+        $response->assertSee('Push Notification');
+        $response->assertSee('Create New Provider');
     }
 
     /**
