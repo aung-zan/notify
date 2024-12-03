@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Enums\Push;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,11 @@ class PushController extends Controller
      */
     public function create()
     {
-        return 'create';
+        $pushServiceProviders = Push::getAll();
+
+        return view('push.create', [
+            'providers' => $pushServiceProviders
+        ]);
     }
 
     /**
@@ -33,6 +38,10 @@ class PushController extends Controller
      */
     public function store(Request $request)
     {
+        $credentails = preg_split('/\r\n|\r|\n/', $request->get('credentials'));
+        \Log::info($credentails);
+
+        die();
         return 'store';
     }
 
