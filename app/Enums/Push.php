@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum Push: int
 {
-    case Pusher = 4;
-    case Firebase = 5;
-    case RabbitMQ = 6;
+    case Pusher = 11;
+    case Firebase = 12;
+    case RabbitMQ = 13;
 
     public static function getAll(): array
     {

@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('channels', function (Blueprint $table) {
+        Schema::create('pushes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
                 ->constrained()
                 ->onDelete('cascade');
-            $table->tinyInteger('channel_type');
             $table->tinyInteger('provider');
-            $table->text('credentials');
+            $table->json('credentials');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('channels');
+        Schema::dropIfExists('pushes');
     }
 };

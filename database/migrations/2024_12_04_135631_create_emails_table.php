@@ -11,18 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        Schema::create('emails', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
                 ->constrained()
                 ->onDelete('cascade');
-            $table->foreignId('app_id')
-                ->constrained()
-                ->onDelete('cascade');
-            $table->tinyInteger('status');
-            $table->tinyInteger('type');
-            $table->text('data');
-            $table->dateTime('deleted_at')->nullable();
+            $table->tinyInteger('provider');
+            $table->json('credentials');
             $table->timestamps();
         });
     }
@@ -32,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notifications');
+        Schema::dropIfExists('emails');
     }
 };
