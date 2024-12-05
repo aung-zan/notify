@@ -2,12 +2,16 @@
 
 namespace Tests\Feature\Web;
 
+use Database\Seeders\UserSeeder;
+use Illuminate\Database\Seeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PushTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * Test case for index function.
      */
@@ -17,7 +21,7 @@ class PushTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Push Notification');
-        $response->assertSee('Provider List');
+        $response->assertSee('Channel List');
     }
 
     /**
@@ -29,19 +33,74 @@ class PushTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Push Notification');
-        $response->assertSee('Create New Provider');
+        $response->assertSee('Create New Channel');
     }
 
     /**
      * Test case for store function.
      */
-    public function testForStoreFunction(): void
+    public function testForStoreFunctionWithEmptyData(): void
     {
         $request = [];
-        $response = $this->post('/push', $request);
+        $response = $this->from('/push/create')
+            ->post('/push', $request);
 
-        $response->assertStatus(200);
-        $response->assertSee('store');
+        $response->assertStatus(302);
+        $response->assertRedirect('/push/create');
+        $response->assertSessionHasErrors([
+            'provider' => 'The provider field is required.',
+            'name' => 'The name field is required.',
+            'credentials' => 'The credentials field is required.',
+        ]);
+    }
+
+    /**
+     * Test case for store function.
+     */
+    public function testForStoreFunctionWithWrongData(): void
+    {
+        $request = [
+            'provider' => 100,
+            'name' => 't',
+            'credentials' => 't',
+        ];
+        $response = $this->from('/push/create')
+            ->post('/push', $request);
+
+        $response->assertStatus(302);
+        $response->assertRedirect('/push/create');
+
+        $response->assertSessionHasErrors([
+            'provider' => 'The selected provider is invalid.',
+            'credentials' => 'The credentials field must be at least 10 characters.',
+        ]);
+    }
+
+    /**
+     * Test case for store function.
+     */
+    public function testForStoreFunctionWithRightData(): void
+    {
+        $request = [
+            'provider' => 11,
+            'name' => 'pusher testing',
+            'credentials' => 'app_id = "1885"
+            key = "26c0723"
+            secret = "80e7f5"
+            cluster = "ad1"',
+        ];
+
+        $response = $this->from('/push/create')
+            ->post('/push', $request);
+
+        $this->assertDatabaseHas('pushes', [
+            'user_id' => 1,
+            'provider' => 11,
+            'name' => 'pusher testing',
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect('/push');
     }
 
     /**
