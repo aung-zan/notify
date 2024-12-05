@@ -29,14 +29,38 @@
                     <div class="mb-10">
                         <div class="row">
                             <div class="col-2">
-                                <label for="" class="form-label">Enter credentials</label>
+                                <label class="form-label">Channel Name</label>
                             </div>
 
                             <div class="col-7">
-                                {{-- <input type="text" class="form-control" name="credentials"> --}}
-                                <textarea name="credentials" class="form-control" cols="30" rows="10"
-                                    placeholder="Enter credentials in json format."
+                                <input type="text"
+                                    name="name"
+                                    class="form-control @error('name') is-invalid @enderror"
+                                    placeholder="Eg. Testing Channel"
+                                >
+                                @error('name')
+                                    <div class="invalid-feedback">{{$message}}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-10">
+                        <div class="row">
+                            <div class="col-2">
+                                <label class="form-label">Enter credentials</label>
+                            </div>
+
+                            <div class="col-7">
+                                <textarea name="credentials"
+                                    cols="30"
+                                    rows="10"
+                                    class="form-control @error('credentials') is-invalid @enderror"
+                                    placeholder="Copy credentials and paste here."
                                 ></textarea>
+                                @error('credentials')
+                                    <div class="invalid-feedback">{{$message}}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>

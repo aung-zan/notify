@@ -38,6 +38,7 @@ Route::controller(EmailController::class)->prefix('email')->group(function () {
 
 Route::controller(PushController::class)->prefix('push')->group(function () {
     Route::get('', 'index')->name('push.index');
+    Route::post('data', 'getData')->name('push.getData');
     Route::get('create', 'create')->name('push.create');
     Route::post('', 'store')->name('push.store');
 

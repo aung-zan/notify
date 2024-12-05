@@ -10,7 +10,9 @@
 
         <div class="col-7">
             @foreach ($providers as $provider => $value)
-                <div class="form-check form-check-custom form-check-solid form-check-danger form-check-sm mb-3">
+                <div class="form-check form-check-custom form-check-solid form-check-danger form-check-sm mb-3
+                    @error('provider') is-invalid @enderror"
+                >
                     <input type="radio"
                         value="{{$value}}"
                         name="provider"
@@ -24,6 +26,10 @@
                     $count++;
                 @endphp
             @endforeach
+
+            @error('provider')
+                <div class="invalid-feedback">{{$message}}</div>
+            @enderror
         </div>
     </div>
 </div>

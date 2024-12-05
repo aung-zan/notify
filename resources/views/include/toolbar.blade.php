@@ -1,4 +1,4 @@
-<div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+<div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6 h-100px">
     <!--begin::Toolbar container-->
     <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
         <!--begin::Page title-->
@@ -28,45 +28,32 @@
         </div>
         <!--end::Page title-->
 
-        @session('statusInfo')
-            <!--begin::Toast-->
-            <div class="position-fixed end-0 me-6 p-3 z-index-3">
-                <div id="kt_docs_toast_toggle" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-show="true">
-                    <div class="toast-header">
-                        <label class="me-auto">Email Status</label>
-                    </div>
+        @session('flashMessage')
+            <!--begin::Alert-->
+            <div class="alert alert-dismissible bg-{{session('flashMessage')['color']}} d-flex flex-column flex-sm-row p-5 mb-0">
+                <!--begin::Wrapper-->
+                <div class="d-flex flex-column pe-0 pe-sm-10">
+                    <!--begin::Title-->
+                    <h4 class="fw-semibold alert-text-color">
+                        <i class="bi bi-bell fs-3 me-2 alert-text-color"></i>
+                        Notification
+                    </h4>
+                    <!--end::Title-->
 
-                    <div class="toast-body d-flex align-items-center">
-                        <i class="ki-outline {{session('statusInfo')['icon']}} text-{{session('statusInfo')['color']}} fs-2 me-3"></i>
-                        <label class="me-auto fs-5 text-{{session('statusInfo')['color']}}">
-                            {{session('statusInfo')['message']}}
-                        </label>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
+                    <!--begin::Content-->
+                    <span class="alert-text-color">{{session('flashMessage')['message']}}</span>
+                    <!--end::Content-->
                 </div>
+                <!--end::Wrapper-->
+
+                <!--begin::Close-->
+                <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
+                    <i class="bi bi-x fs-1 alert-text-color"></i>
+                </button>
+                <!--end::Close-->
             </div>
-            <!--end::Toast-->
+            <!--end::Alert-->
         @endsession
-
-        <!--begin::Notification Toast-->
-        <div class="position-fixed end-0 me-6 p-3 z-index-3">
-            <div id="noti-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-show="true">
-                <div class="toast-header">
-                    <label class="me-auto">Push Notification</label>
-                </div>
-
-                <div class="toast-body d-flex align-items-center">
-                    <i class="ki-outline ki-notification-status text-primary fs-2 me-3"></i>
-                    <label class="me-auto fs-5 text-primary" id="noti-message"></label>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            </div>
-        </div>
-        <!--end::Notification Toast-->
     </div>
     <!--end::Toolbar container-->
 </div>
-
-@push('js')
-    <script src="/assets/js/custom/include/toolbar.js"></script>
-@endpush

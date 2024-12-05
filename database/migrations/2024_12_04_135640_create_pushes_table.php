@@ -17,6 +17,7 @@ return new class extends Migration
                 ->constrained()
                 ->onDelete('cascade');
             $table->tinyInteger('provider');
+            $table->string('name', 100);
             $table->json('credentials');
             $table->timestamps();
         });
