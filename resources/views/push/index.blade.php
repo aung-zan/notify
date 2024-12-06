@@ -2,7 +2,6 @@
 
 @push('css')
     <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css"/>
-    {{-- <link href="/assets/css/custom/include/toolbar.css" rel="stylesheet" type="text/css"/> --}}
     <link href="/assets/css/custom/push/index.css" rel="stylesheet" type="text/css"/>
 @endpush
 

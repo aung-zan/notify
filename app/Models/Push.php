@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PushProvider;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,4 +21,21 @@ class Push extends Model
         'name',
         'credentials',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime:Y-m-d H:i',
+        ];
+    }
+
+    protected function getProviderAttribute(): string
+    {
+        return PushProvider::getNameByValue($this->attributes['provider']);
+    }
 }

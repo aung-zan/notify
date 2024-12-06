@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Web;
 
 use App\Enums\Push;
+use App\Enums\PushProvider;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DatatableRequest;
 use App\Http\Requests\PushRequest;
 use App\Models\Channel;
 use App\Services\ChannelService;
@@ -38,16 +40,9 @@ class PushController extends Controller
     /**
      * Return push notification channel's resource.
      */
-    public function getData(Request $request)
+    public function getData(DatatableRequest $request)
     {
-        $records = [
-            'draw' => $request->get('draw'),
-            'recordsTotal' => 0,
-            'recordsFiltered' => 0,
-            'data' => [],
-        ];
-
-        // \Log::info($records);
+        $records = $this->channelService->list($request->toArray());
 
         return response()->json($records, 200);
     }
@@ -57,10 +52,10 @@ class PushController extends Controller
      */
     public function create()
     {
-        $pushServiceProviders = Push::getAll();
+        $pushProvider = PushProvider::getAll();
 
         return view('push.create', [
-            'providers' => $pushServiceProviders
+            'providers' => $pushProvider
         ]);
     }
 

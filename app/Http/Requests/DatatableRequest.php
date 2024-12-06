@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\PushProvider;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
 
-class PushRequest extends FormRequest
+class DatatableRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +22,17 @@ class PushRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'provider' => ['required', new Enum(PushProvider::class)],
-            'name' => 'required|max:100',
-            'credentials' => 'required|min:10',
+            'draw' => 'required',
+            'columns' => 'required|array',
+            'order' => 'required|array',
+            'order.*.column' => 'required',
+            'order.*.dir' => 'required',
+            'order.*.name' => 'nullable',
+            'start' => 'required',
+            'length' => 'required',
+            'search' => 'required|array',
+            'search.value' => 'nullable',
+            'search.regex' => 'required',
         ];
     }
 }

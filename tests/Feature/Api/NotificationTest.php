@@ -13,7 +13,7 @@ class NotificationTest extends TestCase
      */
     public function testTestForListFunction(): void
     {
-        $response = $this->get('/api/notification/list');
+        $response = $this->get('/notify/api/notification/list');
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -26,7 +26,7 @@ class NotificationTest extends TestCase
      */
     public function testTestForSendFunction(): void
     {
-        $response = $this->get('/api/notification/send');
+        $response = $this->get('/notify/api/notification/send');
 
         $response->assertStatus(200);
         $response->assertJson([

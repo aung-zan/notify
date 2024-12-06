@@ -14,9 +14,31 @@ class ChannelService
         $this->pushRepository = $pushRepository;
     }
 
-    public function list()
+    public function list(array $request)
     {
-        //
+        $draw = $request['draw'];
+        $searchValue = [];
+
+        if (! is_null($request['search']['value'])) {
+            $searchValue = [
+                'name' => $request['search']['value'],
+                'provider' => $request['search']['value'],
+            ];
+        }
+
+        $totalRecords = $this->pushRepository->getAllCount();
+
+        $filteredRecords = $this->pushRepository->getAll($searchValue);
+
+        $records = $filteredRecords->slice($request['start'], $request['length'])
+            ->values();
+
+        return [
+            'draw' => $draw,
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $filteredRecords->count(),
+            'data' => $records,
+        ];
     }
 
     public function create(array $request): Push

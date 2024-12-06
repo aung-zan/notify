@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Web;
 
-use Database\Seeders\UserSeeder;
-use Illuminate\Database\Seeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -82,7 +80,7 @@ class PushTest extends TestCase
     public function testForStoreFunctionWithRightData(): void
     {
         $request = [
-            'provider' => 11,
+            'provider' => 1,
             'name' => 'pusher testing',
             'credentials' => 'app_id = "1885"
             key = "26c0723"
@@ -95,7 +93,7 @@ class PushTest extends TestCase
 
         $this->assertDatabaseHas('pushes', [
             'user_id' => 1,
-            'provider' => 11,
+            'provider' => 1,
             'name' => 'pusher testing',
         ]);
 

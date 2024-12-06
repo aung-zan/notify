@@ -4,7 +4,9 @@ namespace App\Interfaces;
 
 interface DBInterface
 {
-    public function getAll();
+    public function getAll(array $keywords);
+
+    public function getAllCount();
 
     public function create(array $data);
 

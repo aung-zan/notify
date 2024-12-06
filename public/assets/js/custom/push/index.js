@@ -1,4 +1,3 @@
-// const token = document.querySelector('meta[name="csrf-token"]');
 $.ajaxSetup({
   headers: {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -9,28 +8,28 @@ const columns = [
   {data: 'name'},
   {data: 'provider'},
   {data: 'created_at'},
-  {data: 'action'},
+  {
+    data: function (row, type, set) {
+      let action_buttons = '<button class="btn btn-icon btn-danger" id="send">' +
+          '<i class="bi bi-send fs-5"></i>' +
+      '</button>';
+
+      return action_buttons;
+    }
+  }
 ];
 
 const columnDef = [
   {
     targets: '_all',
     className: 'dt-left'
-  },
-  // {
-  //   targets: 1,
-  //   render: function (data, type, row) {
-  //     let provider = "<span class='badge badge-light-" + data.color + " fw-bold'>" +
-  //       data.provider + "</span>";
-
-  //     return provider;
-  //   }
-  // }
+  }
 ];
 
 let tableEle = document.getElementById('channel-list');
 let channelDT = new DataTable(tableEle, {
   responsive: true,
+  lengthMenu: [5, 10, 25, 100],
   dom:
     "<'#dTToolbar.row mb-2'" +
     "<'col-sm-6 d-flex align-items-center justify-content-end dt-toolbar'l>" +
@@ -81,4 +80,8 @@ let search = document.getElementById('dTSearch');
 let searchBtn = document.getElementById('dTSearchBtn');
 searchBtn.addEventListener('click', function () {
   channelDT.search(search.value).draw();
+});
+
+channelDT.on('click', '#send', function (event) {
+  event.stopPropagation();
 });

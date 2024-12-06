@@ -17,7 +17,7 @@
                         value="{{$value}}"
                         name="provider"
                         class="form-check-input"
-                        {{$count === 0 ? 'checked' : ''}}
+                        {{$value == old('provider', 1) ? 'checked' : ''}}
                     >
                     <label for="" class="form-check-label">{{$provider}}</label>
                 </div>

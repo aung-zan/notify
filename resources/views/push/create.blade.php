@@ -37,6 +37,7 @@
                                     name="name"
                                     class="form-control @error('name') is-invalid @enderror"
                                     placeholder="Eg. Testing Channel"
+                                    value="{{old('name', '')}}"
                                 >
                                 @error('name')
                                     <div class="invalid-feedback">{{$message}}</div>
@@ -57,7 +58,7 @@
                                     rows="10"
                                     class="form-control @error('credentials') is-invalid @enderror"
                                     placeholder="Copy credentials and paste here."
-                                ></textarea>
+                                >{{old('credentials', '')}}</textarea>
                                 @error('credentials')
                                     <div class="invalid-feedback">{{$message}}</div>
                                 @enderror
