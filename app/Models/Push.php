@@ -31,11 +31,24 @@ class Push extends Model
     {
         return [
             'created_at' => 'datetime:Y-m-d H:i',
+            'updated_at' => 'datetime:Y-m-d H:i',
         ];
     }
 
     protected function getProviderAttribute(): string
     {
         return PushProvider::getNameByValue($this->attributes['provider']);
+    }
+
+    protected function getCredentialsAttribute(): array
+    {
+        $credentials = [];
+        $decodedCredentials = json_decode($this->attributes['credentials']);
+
+        foreach ($decodedCredentials as $key => $value) {
+            $credentials[$key] = $value;
+        }
+
+        return $credentials;
     }
 }

@@ -13,7 +13,7 @@
                             Cancel
                         </a>
                         <button type="submit" form="store" class="btn btn-flex btn-primary">
-                            <i class="bi bi-cloud-plus fs-1"></i>
+                            <i class="bi bi-cloud-upload fs-2 mt-1"></i>
                             Submit
                         </button>
                     </div>

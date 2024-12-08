@@ -45,9 +45,10 @@ class PushRepository implements DBInterface
         return $this->push->create($data);
     }
 
-    public function getById(int $id)
+    public function getById(int $id): Push
     {
-        //
+        return $this->push->where('id', $id)
+            ->first();
     }
 
     public function update(array $data)

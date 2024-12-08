@@ -88,7 +88,11 @@ class PushController extends Controller
      */
     public function show(string $id)
     {
-        return 'show';
+        $channel = $this->channelService->getById($id);
+
+        return view('push.show', [
+            'channel' => $channel
+        ]);
     }
 
     /**

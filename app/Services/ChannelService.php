@@ -58,4 +58,9 @@ class ChannelService
 
         return $this->pushRepository->create($request);
     }
+
+    public function getById(int $id)
+    {
+        return $this->pushRepository->getById($id);
+    }
 }
