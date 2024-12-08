@@ -46,5 +46,8 @@ Route::controller(PushController::class)->prefix('push')->group(function () {
         Route::get('', 'show')->name('push.show');
         Route::get('edit', 'edit')->name('push.edit');
         Route::match(['put', 'patch'], 'update', 'update')->name('push.update');
+
+        Route::get('test', 'testPage')->name('push.testPage');
+        Route::post('test', 'test')->name('push.test');
     });
 });

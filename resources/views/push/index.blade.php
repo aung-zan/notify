@@ -53,6 +53,7 @@
     <script>
         let push_data_url = '{!! route('push.getData') !!}';
         let push_detail_url = '{!! route('push.show', 'id') !!}';
+        let push_test_url = '{!! route('push.testPage', 'id') !!}';
     </script>
     <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
     <script src="/assets/js/custom/push/index.js"></script>

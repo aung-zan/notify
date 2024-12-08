@@ -106,4 +106,14 @@ class PushController extends Controller
     {
         return 'update';
     }
+
+    public function testPage(string $id)
+    {
+        return 'test page';
+    }
+
+    public function test(Request $request, string $id)
+    {
+        return 'test';
+    }
 }

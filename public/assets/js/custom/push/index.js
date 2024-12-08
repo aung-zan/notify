@@ -10,14 +10,17 @@ const columns = [
   {data: 'created_at'},
   {
     data: function (row, type, set) {
-      let action_buttons = '<button id="send"' +
+      changed_push_test_url = push_test_url.replace('id', row.id);
+
+      let action_buttons = '<a href="' + changed_push_test_url + '"' +
+        'id="send"' +
         'class="btn btn-icon btn-danger hover-scale"' +
         'data-bs-toggle="tooltip"' +
         'data-bs-placement="top"' +
         'title="Test Push Notification"' +
       '>' +
         '<i class="bi bi-send fs-5"></i>' +
-      '</button>';
+      '</a>';
 
       return action_buttons;
     }
