@@ -10,8 +10,13 @@ const columns = [
   {data: 'created_at'},
   {
     data: function (row, type, set) {
-      let action_buttons = '<button class="btn btn-icon btn-danger" id="send">' +
-          '<i class="bi bi-send fs-5"></i>' +
+      let action_buttons = '<button id="send"' +
+        'class="btn btn-icon btn-danger hover-scale"' +
+        'data-bs-toggle="tooltip"' +
+        'data-bs-placement="top"' +
+        'title="Test Push Notification"' +
+      '>' +
+        '<i class="bi bi-send fs-5"></i>' +
       '</button>';
 
       return action_buttons;
@@ -84,4 +89,11 @@ searchBtn.addEventListener('click', function () {
 
 channelDT.on('click', '#send', function (event) {
   event.stopPropagation();
+});
+
+channelDT.on('draw', function () {
+  let tooltipElList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  tooltipElList.map(function (tooltipEl) {
+    return new bootstrap.Tooltip(tooltipEl)
+  })
 });
