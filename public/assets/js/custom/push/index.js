@@ -83,17 +83,26 @@ let pageLength = document.getElementById('dt-length-0');
 pageLength.classList.remove('form-select-solid');
 pageLength.classList.remove('form-select-sm');
 
-// search button onClick
+// search function
 let search = document.getElementById('dTSearch');
 let searchBtn = document.getElementById('dTSearchBtn');
+// search button onClick
 searchBtn.addEventListener('click', function () {
   channelDT.search(search.value).draw();
 });
+// search on hit enter
+search.addEventListener('keydown', function (event) {
+  if (event.key === 'Enter') {
+    channelDT.search(this.value).draw();
+  }
+});
 
+// test push notification button
 channelDT.on('click', '#send', function (event) {
   event.stopPropagation();
 });
 
+// test push notification button tooltip
 channelDT.on('draw', function () {
   let tooltipElList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
   tooltipElList.map(function (tooltipEl) {

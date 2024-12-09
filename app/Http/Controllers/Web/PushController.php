@@ -100,15 +100,35 @@ class PushController extends Controller
      */
     public function edit(string $id)
     {
-        return 'edit';
+        $channel = $this->channelService->getById($id, true);
+
+        return view('push.edit', [
+            'channel' => $channel
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PushRequest $request, string $id)
     {
-        return 'update';
+        try {
+            $data = $request->except(['_token', '_method']);
+            $this->channelService->update($id, $data);
+
+            $this->flashMessage['success']['message'] = 'Successfully updated.';
+            $message = $this->flashMessage['success'];
+        } catch (\Throwable $th) {
+            \Log::info($th->getMessage() . ' in ' . $th->getFile() . ' at ' . $th->getLine());
+
+            $this->flashMessage['failed']['message'] = 'Something went wrong.';
+
+            return redirect()->back()
+                ->with('flashMessage', $this->flashMessage['failed']);
+        }
+
+        return redirect()->route('push.index')
+            ->with('flashMessage', $message);
     }
 
     public function testPage(string $id)

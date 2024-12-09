@@ -12,7 +12,7 @@ interface DBInterface
 
     public function getById(int $id);
 
-    public function update(array $data);
+    public function update(int $id, array $data);
 
     public function softDelete();
 

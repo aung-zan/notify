@@ -51,9 +51,10 @@ class PushRepository implements DBInterface
             ->first();
     }
 
-    public function update(array $data)
+    public function update(int $id, array $data)
     {
-        //
+        return $this->push->where('id', $id)
+            ->update($data);
     }
 
     public function softDelete()

@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Push;
 use App\Repositories\PushRepository;
 
+use function PHPSTORM_META\map;
+
 class ChannelService
 {
     private $pushRepository;
@@ -43,24 +45,57 @@ class ChannelService
 
     public function create(array $request): Push
     {
-        $credentials = [];
-        $rawCredentials = preg_split('/\r\n|\r|\n/', $request['credentials']);
-
-        foreach ($rawCredentials as $value) {
-            list($key, $value) = explode('=', $value);
-            $key = trim(str_replace("'", "", $key));
-            $value = trim(str_replace('"', "", $value));
-            $credentials[$key] = $value;
-        }
-
-        $request['credentials'] = json_encode($credentials);
+        $request['credentials'] = $this->formatCredentials($request['credentials']);
         $request['user_id'] = 1;
 
         return $this->pushRepository->create($request);
     }
 
-    public function getById(int $id)
+    /**
+     * get the channel details by id.
+     *
+     * @param int $id
+     * @param bool $type (false for show and true for edit)
+     *
+     * @return array
+     */
+    public function getById(int $id, bool $type = false): array
     {
-        return $this->pushRepository->getById($id);
+        $channel = $this->pushRepository->getById($id)
+            ->toArray();
+
+        if ($type) {
+            $credentialString = '';
+            foreach ($channel['credentials'] as $key => $value) {
+                $credentialString .= $key . " = '" . $value . "'\n";
+            }
+
+            $channel['credentials'] = $credentialString;
+        }
+
+        return $channel;
+    }
+
+    public function update(int $id, array $request)
+    {
+        if (array_key_exists('credentials', $request)) {
+            $request['credentials'] = $this->formatCredentials($request['credentials']);
+        }
+
+        return $this->pushRepository->update($id, $request);
+    }
+
+    private function formatCredentials($credentials)
+    {
+        $credentialsArr = [];
+        $rawCredentials = preg_split('/\r\n|\r|\n/', $credentials);
+        $rawCredentials = str_replace(['"', "'"], '', $rawCredentials);
+
+        foreach ($rawCredentials as $string) {
+            list($key, $value) = explode('=', $string);
+            $credentialsArr[trim($key)] = trim($value);
+        }
+
+        return json_encode($credentialsArr);
     }
 }

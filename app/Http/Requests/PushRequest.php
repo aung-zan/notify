@@ -23,10 +23,17 @@ class PushRequest extends FormRequest
      */
     public function rules(): array
     {
+        if ($this->isMethod('post')) {
+            return [
+                'provider' => ['required', new Enum(PushProvider::class)],
+                'name' => 'required|max:100',
+                'credentials' => 'required|min:10',
+            ];
+        }
+
         return [
-            'provider' => ['required', new Enum(PushProvider::class)],
             'name' => 'required|max:100',
-            'credentials' => 'required|min:10',
+            'credentials' => 'sometimes|min:10',
         ];
     }
 }
