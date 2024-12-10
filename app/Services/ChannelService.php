@@ -16,10 +16,17 @@ class ChannelService
         $this->pushRepository = $pushRepository;
     }
 
-    public function list(array $request)
+    /**
+     * get the channel list by the datatable request.
+     *
+     * @param array $request
+     * @return array
+     */
+    public function list(array $request): array
     {
         $draw = $request['draw'];
         $searchValue = [];
+        $order = [];
 
         if (! is_null($request['search']['value'])) {
             $searchValue = [
@@ -28,10 +35,17 @@ class ChannelService
             ];
         }
 
+        if (array_key_exists('order', $request)) {
+            $column = $request['order'][0]['column'];
+            $order = [
+                'column' => $request['columns'][$column]['data'],
+                'dir' => $request['order'][0]['dir'],
+            ];
+        }
+
         $totalRecords = $this->pushRepository->getAllCount();
 
-        $filteredRecords = $this->pushRepository->getAll($searchValue);
-
+        $filteredRecords = $this->pushRepository->getAll($searchValue, $order);
         $records = $filteredRecords->slice($request['start'], $request['length'])
             ->values();
 
@@ -43,6 +57,12 @@ class ChannelService
         ];
     }
 
+    /**
+     * create a channel.
+     *
+     * @param array $request
+     * @return Push
+     */
     public function create(array $request): Push
     {
         $request['credentials'] = $this->formatCredentials($request['credentials']);
@@ -56,7 +76,6 @@ class ChannelService
      *
      * @param int $id
      * @param bool $type (false for show and true for edit)
-     *
      * @return array
      */
     public function getById(int $id, bool $type = false): array
@@ -76,6 +95,12 @@ class ChannelService
         return $channel;
     }
 
+    /**
+     * update a channel's information.
+     *
+     * @param int $id
+     * @param array $request
+     */
     public function update(int $id, array $request)
     {
         if (array_key_exists('credentials', $request)) {
@@ -85,7 +110,13 @@ class ChannelService
         return $this->pushRepository->update($id, $request);
     }
 
-    private function formatCredentials($credentials)
+    /**
+     * format the channel's credentails.
+     *
+     * @param string $credentails
+     * @return string
+     */
+    private function formatCredentials(string $credentials): string
     {
         $credentialsArr = [];
         $rawCredentials = preg_split('/\r\n|\r|\n/', $credentials);

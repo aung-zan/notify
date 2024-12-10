@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait QueryBuilder
 {
-    private function queryBuilder(Builder $query, int $id, array $keywords): Builder
+    private function queryBuilder(Builder $query, int $id, array $keywords = [], array $order = []): Builder
     {
         $query = $query->where('user_id', $id);
 
@@ -26,8 +26,10 @@ trait QueryBuilder
             });
         }
 
-        $query = $query->orderBy('id');
+        if (! empty($order)) {
+            return $query->orderBy($order['column'], $order['dir']);
+        }
 
-        return $query;
+        return $query->orderBy('id');
     }
 }

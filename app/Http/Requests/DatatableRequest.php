@@ -24,15 +24,29 @@ class DatatableRequest extends FormRequest
         return [
             'draw' => 'required',
             'columns' => 'required|array',
-            'order' => 'required|array',
-            'order.*.column' => 'required',
-            'order.*.dir' => 'required',
-            'order.*.name' => 'nullable',
+            'order' => 'sometimes|array|size:1',
+            'order.*.column' => 'present_with:order',
+            'order.*.dir' => 'present_with:order',
+            'order.*.name' => 'present_with:order|nullable',
             'start' => 'required',
             'length' => 'required',
             'search' => 'required|array',
             'search.value' => 'nullable',
             'search.regex' => 'required',
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'order.*.column' => "order's column",
+            'order.*.dir' => "order's dir",
+            'order.*.name' => "order's name",
         ];
     }
 }

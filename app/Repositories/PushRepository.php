@@ -18,13 +18,13 @@ class PushRepository implements DBInterface
         $this->push = $push;
     }
 
-    public function getAll(array $keywords): Collection
+    public function getAll(array $keywords, array $order): Collection
     {
         $userId = 1;
 
         $query = $this->push->query();
 
-        $query = $this->queryBuilder($query, $userId, $keywords);
+        $query = $this->queryBuilder($query, $userId, $keywords, $order);
 
         return $query->get();
     }
@@ -35,7 +35,7 @@ class PushRepository implements DBInterface
 
         $query = $this->push->query();
 
-        $query = $this->queryBuilder($query, $userId, []);
+        $query = $this->queryBuilder($query, $userId);
 
         return $query->count();
     }
