@@ -23,7 +23,8 @@ class DatatableRequest extends FormRequest
     {
         return [
             'draw' => 'required',
-            'columns' => 'required|array',
+            'columns' => 'required|array|size:4',
+            'columns.*.data' => 'required',
             'order' => 'sometimes|array|size:1',
             'order.*.column' => 'present_with:order',
             'order.*.dir' => 'present_with:order',
@@ -44,6 +45,7 @@ class DatatableRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'columns.*.data' => "columns's data",
             'order.*.column' => "order's column",
             'order.*.dir' => "order's dir",
             'order.*.name' => "order's name",

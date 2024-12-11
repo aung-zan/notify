@@ -65,7 +65,6 @@ class ChannelService
      */
     public function create(array $request): Push
     {
-        $request['credentials'] = $this->formatCredentials($request['credentials']);
         $request['user_id'] = 1;
 
         return $this->pushRepository->create($request);
@@ -73,6 +72,7 @@ class ChannelService
 
     /**
      * get the channel details by id.
+     * TODO: refactor $type not to based on the method.
      *
      * @param int $id
      * @param bool $type (false for show and true for edit)
@@ -100,33 +100,10 @@ class ChannelService
      *
      * @param int $id
      * @param array $request
+     * @return void
      */
-    public function update(int $id, array $request)
+    public function update(int $id, array $request): void
     {
-        if (array_key_exists('credentials', $request)) {
-            $request['credentials'] = $this->formatCredentials($request['credentials']);
-        }
-
-        return $this->pushRepository->update($id, $request);
-    }
-
-    /**
-     * format the channel's credentails.
-     *
-     * @param string $credentails
-     * @return string
-     */
-    private function formatCredentials(string $credentials): string
-    {
-        $credentialsArr = [];
-        $rawCredentials = preg_split('/\r\n|\r|\n/', $credentials);
-        $rawCredentials = str_replace(['"', "'"], '', $rawCredentials);
-
-        foreach ($rawCredentials as $string) {
-            list($key, $value) = explode('=', $string);
-            $credentialsArr[trim($key)] = trim($value);
-        }
-
-        return json_encode($credentialsArr);
+        $this->pushRepository->save($id, $request);
     }
 }

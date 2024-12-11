@@ -35,11 +35,21 @@ class Push extends Model
         ];
     }
 
+    /**
+     * Accessor for provider attribute.
+     *
+     * @return string
+     */
     protected function getProviderAttribute(): string
     {
         return PushProvider::getNameByValue($this->attributes['provider']);
     }
 
+    /**
+     * Accessor for credentials attribute.
+     *
+     * @return string
+     */
     protected function getCredentialsAttribute(): array
     {
         $credentials = [];
@@ -50,5 +60,36 @@ class Push extends Model
         }
 
         return $credentials;
+    }
+
+    /**
+     * Mutator for user_id attribute.
+     *
+     * @param int $value
+     * @return void
+     */
+    protected function setUserIdAttribute(int $value): void
+    {
+        $this->attributes['user_id'] = $value ?? 1;
+    }
+
+    /**
+     * Mutator for credentials attribute.
+     *
+     * @param string $value
+     * @return void
+     */
+    protected function setCredentialsAttribute(string $value): void
+    {
+        $credentialsArr = [];
+        $rawCredentials = preg_split('/\r\n|\r|\n/', $value);
+        $rawCredentials = str_replace(['"', "'"], '', $rawCredentials);
+
+        foreach ($rawCredentials as $string) {
+            list($key, $value) = explode('=', $string);
+            $credentialsArr[trim($key)] = trim($value);
+        }
+
+        $this->attributes['credentials'] = json_encode($credentialsArr);
     }
 }

@@ -113,7 +113,7 @@ class PushController extends Controller
     public function update(PushRequest $request, string $id)
     {
         try {
-            $data = $request->except(['_token', '_method']);
+            $data = $request->only(['name', 'credentials']);
             $this->channelService->update($id, $data);
 
             $this->flashMessage['success']['message'] = 'Successfully updated.';

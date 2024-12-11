@@ -31,6 +31,11 @@ const columnDef = [
   {
     targets: '_all',
     className: 'dt-left'
+  },
+  {
+    targets: 3,
+    orderable: false,
+    searchable: false,
   }
 ];
 
