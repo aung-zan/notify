@@ -23,12 +23,10 @@ class PushFactory extends Factory
             'user_id' => 1,
             'provider' => $provider,
             'name' => PushProvider::getNameByValue($provider) . ' Channel',
-            'credentials' => json_encode([
-                'app_id' => '1885',
-                'key' => '26c0723',
-                'secret' => '80e7f5',
-                'cluster' => 'ad1',
-            ]),
+            'credentials' => 'app_id = "1885"
+            key = "26c0723"
+            secret = "80e7f5"
+            cluster = "ad1"',
         ];
     }
 }

@@ -51,7 +51,7 @@
                             <lable class="form-label">Credentials</lable>
                         </div>
 
-                        <div class="col-2">
+                        <div class="col-5">
                             @foreach ($channel['credentials'] as $key => $value)
                                 <lable class="form-label text-muted">{{$key}} = </lable>
                                 <lable class="form-label text-muted">{{$value}}</lable>

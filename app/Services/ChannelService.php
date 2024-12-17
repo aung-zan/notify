@@ -2,108 +2,44 @@
 
 namespace App\Services;
 
-use App\Models\Push;
-use App\Repositories\PushRepository;
-
-use function PHPSTORM_META\map;
+use App\Events\PushNotification;
+use Illuminate\Support\Facades\Broadcast;
 
 class ChannelService
 {
-    private $pushRepository;
-
-    public function __construct(PushRepository $pushRepository)
+    public function sendPushNotification(array $request, array $channel)
     {
-        $this->pushRepository = $pushRepository;
+        $this->configChannel($channel);
+
+        PushNotification::dispatch($request);
     }
 
-    /**
-     * get the channel list by the datatable request.
-     *
-     * @param array $request
-     * @return array
-     */
-    public function list(array $request): array
+    private function configChannel(array $channel): void
     {
-        $draw = $request['draw'];
-        $searchValue = [];
-        $order = [];
-
-        if (! is_null($request['search']['value'])) {
-            $searchValue = [
-                'name' => $request['search']['value'],
-                'provider' => $request['search']['value'],
-            ];
-        }
-
-        if (array_key_exists('order', $request)) {
-            $column = $request['order'][0]['column'];
-            $order = [
-                'column' => $request['columns'][$column]['data'],
-                'dir' => $request['order'][0]['dir'],
-            ];
-        }
-
-        $totalRecords = $this->pushRepository->getAllCount();
-
-        $filteredRecords = $this->pushRepository->getAll($searchValue, $order);
-        $records = $filteredRecords->slice($request['start'], $request['length'])
-            ->values();
-
-        return [
-            'draw' => $draw,
-            'recordsTotal' => $totalRecords,
-            'recordsFiltered' => $filteredRecords->count(),
-            'data' => $records,
-        ];
+        // TODO: Implement switch case for different channels.
+        $this->setPusherChannel($channel['credentials']);
+        // $this->setLogChannel();
     }
 
-    /**
-     * create a channel.
-     *
-     * @param array $request
-     * @return Push
-     */
-    public function create(array $request): Push
+    private function setLogChannel(): void
     {
-        $request['user_id'] = 1;
-
-        return $this->pushRepository->create($request);
+        Broadcast::setDefaultDriver('log');
     }
 
-    /**
-     * get the channel details by id.
-     * TODO: refactor $type not to based on the method.
-     *
-     * @param int $id
-     * @param bool $type (false for show and true for edit)
-     * @return array
-     */
-    public function getById(int $id, bool $type = false): array
+    private function setPusherChannel(array $credentials): void
     {
-        $channel = $this->pushRepository->getById($id)
-            ->toArray();
+        // Broadcast::setDefaultDriver('pusher');
+        config(['broadcasting.default' => 'pusher']);
 
-        if ($type) {
-            $credentialString = '';
-            foreach ($channel['credentials'] as $key => $value) {
-                $credentialString .= $key . " = '" . $value . "'\n";
-            }
-
-            $channel['credentials'] = $credentialString;
-        }
-
-        return $channel;
-    }
-
-    /**
-     * update a channel's information.
-     *
-     * @param int $id
-     * @param array $request
-     * @return void
-     */
-    public function update(int $id, array $request): void
-    {
-        $this->pushRepository->save($id, $request);
+        config(['broadcasting.connections.pusher' => [
+            'driver' => 'pusher',
+            'key' => $credentials['key'],
+            'secret' => $credentials['secret'],
+            'app_id' => $credentials['app_id'],
+            'options' => [
+                'cluster' => $credentials['cluster'],
+                'useTLS' => true,
+            ],
+        ]]);
     }
 }
