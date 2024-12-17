@@ -28,32 +28,32 @@
         </div>
         <!--end::Page title-->
 
+        @php
+            $notificationColor = session('flashMessage')['color'] ?? 'bg-success';
+        @endphp
+
         @session('flashMessage')
-            <!--begin::Alert-->
-            <div class="alert alert-dismissible bg-{{session('flashMessage')['color']}} d-flex flex-column flex-sm-row p-5 mb-0">
-                <!--begin::Wrapper-->
-                <div class="d-flex flex-column pe-0 pe-sm-10">
-                    <!--begin::Title-->
-                    <h4 class="fw-semibold alert-text-color">
-                        <i class="bi bi-bell fs-3 me-2 alert-text-color"></i>
-                        Notification
-                    </h4>
-                    <!--end::Title-->
-
-                    <!--begin::Content-->
-                    <span class="alert-text-color">{{session('flashMessage')['message']}}</span>
-                    <!--end::Content-->
-                </div>
-                <!--end::Wrapper-->
-
-                <!--begin::Close-->
-                <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
-                    <i class="bi bi-x fs-1 alert-text-color"></i>
-                </button>
-                <!--end::Close-->
-            </div>
-            <!--end::Alert-->
+            <input type="hidden" id="flash-message" value="{{session('flashMessage')['message']}}">
         @endsession
+
+        <!--begin::Toast-->
+        <div class="position-fixed end-0 me-9 z-index-3">
+            <div id="notification_toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header {{$notificationColor}}">
+                    <i class="bi bi-bell fs-3 me-2 alert-text-color"></i>
+                    <strong class="me-auto alert-text-color">Notification</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body h-40px d-flex align-items-center {{$notificationColor}}">
+                    <span id="toast-message" class="fs-5 alert-text-color"></span>
+                </div>
+            </div>
+        </div>
+        <!--end::Toast-->
     </div>
     <!--end::Toolbar container-->
 </div>
+
+@push('js')
+    <script src="/assets/js/custom/include/toolbar.js"></script>
+@endpush

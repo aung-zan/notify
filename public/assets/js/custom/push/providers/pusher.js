@@ -10,7 +10,13 @@ var pusher = new Pusher(pusherConfig.key, {
 
 var channel = pusher.subscribe('pushNotificationTest');
 channel.bind('pushNotificationTest', function(data) {
-  console.log(data.message);
+  const toastElement = document.getElementById('notification_toast');
+  const toastMessage = document.getElementById('toast-message');
+
+  toastMessage.innerText = data.message;
+
+  const toast = bootstrap.Toast.getOrCreateInstance(toastElement);
+  toast.show();
 });
 
 sendButton.addEventListener("click", async function () {

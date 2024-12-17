@@ -24,10 +24,10 @@ class PushController extends Controller
 
         $this->flashMessage = [
             'success' => [
-                'color' => 'success',
+                'color' => 'bg-success',
             ],
             'failed' => [
-                'color' => 'danger',
+                'color' => 'bg-danger',
             ],
         ];
     }
@@ -145,6 +145,7 @@ class PushController extends Controller
 
     public function test(Request $request, string $id)
     {
+        \Log::info($request);
         try {
             $request->merge([
                 'channelName' => 'pushNotificationTest',
