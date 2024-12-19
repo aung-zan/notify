@@ -34,6 +34,8 @@ class PushController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -42,6 +44,9 @@ class PushController extends Controller
 
     /**
      * Return push notification channel's resource.
+     *
+     * @param DatatableRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getData(DatatableRequest $request)
     {
@@ -52,6 +57,8 @@ class PushController extends Controller
 
     /**
      * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -64,6 +71,9 @@ class PushController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param PushRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(PushRequest $request)
     {
@@ -88,6 +98,9 @@ class PushController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @param string $id
+     * @return \Illuminate\View\View
      */
     public function show(string $id)
     {
@@ -100,6 +113,9 @@ class PushController extends Controller
 
     /**
      * Show the form for editing the specified resource.
+     *
+     * @param string $id
+     * @return \Illuminate\View\View
      */
     public function edit(string $id)
     {
@@ -112,6 +128,10 @@ class PushController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param PushRequest $request
+     * @param string $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(PushRequest $request, string $id)
     {
@@ -134,18 +154,36 @@ class PushController extends Controller
             ->with('flashMessage', $message);
     }
 
+    /**
+     * The push notification page to test.
+     *
+     * @param string $id
+     * @return \Illuminate\View\View
+     */
     public function testPage(string $id)
     {
         $channel = $this->channelDBService->getByIdForTest($id);
 
-        return view('push.providers.' . $channel['provider'], [
+        return view('push.providers.' . $channel['provider_name'], [
             'channel' => $channel
         ]);
     }
 
+    /**
+     * Send push notification to test.
+     *
+     * @param Request $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function test(Request $request, string $id)
     {
-        \Log::info($request);
+        if (! $request->has('message')) {
+            return response()->json([
+                'message' => 'No data provided.'
+            ], 400);
+        }
+
         try {
             $request->merge([
                 'channelName' => 'pushNotificationTest',

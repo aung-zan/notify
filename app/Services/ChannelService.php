@@ -3,32 +3,68 @@
 namespace App\Services;
 
 use App\Events\PushNotification;
-use Illuminate\Support\Facades\Broadcast;
 
 class ChannelService
 {
-    public function sendPushNotification(array $request, array $channel)
+    /**
+     * Send push notification to the channel.
+     *
+     * @param array $request
+     * @param array $channel
+     * @return void
+     */
+    public function sendPushNotification(array $request, array $channel): void
     {
-        $this->configChannel($channel);
+        $this->setChannel($channel);
 
         PushNotification::dispatch($request);
     }
 
-    private function configChannel(array $channel): void
+    /**
+     * Set the channel for the push notification.
+     *
+     * @param array $channel
+     * @return void
+     */
+    private function setChannel(array $channel): void
     {
-        // TODO: Implement switch case for different channels.
-        $this->setPusherChannel($channel['credentials']);
-        // $this->setLogChannel();
+        if (env('APP_ENV') === 'testing') {
+            $this->setLogChannel();
+        } else {
+            // TODO: Implement different channels inside switch case.
+            switch ($channel['provider']) {
+                case 1:
+                    $this->setPusherChannel($channel['credentials']);
+                    break;
+
+                case 2 || 3:
+                    break;
+
+                default:
+                    \Log::info('Unknown channel provider');
+                    break;
+            }
+        }
     }
 
+    /**
+     * Set the log channel for the push notification.
+     *
+     * @return void
+     */
     private function setLogChannel(): void
     {
-        Broadcast::setDefaultDriver('log');
+        config(['broadcasting.default' => 'log']);
     }
 
+    /**
+     * Set the pusher channel for the push notification.
+     *
+     * @param array $credentials
+     * @return void
+     */
     private function setPusherChannel(array $credentials): void
     {
-        // Broadcast::setDefaultDriver('pusher');
         config(['broadcasting.default' => 'pusher']);
 
         config(['broadcasting.connections.pusher' => [

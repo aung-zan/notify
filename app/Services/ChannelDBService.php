@@ -44,8 +44,10 @@ class ChannelDBService
         $totalRecords = $this->pushRepository->getAllCount();
 
         $filteredRecords = $this->pushRepository->getAll($searchValue, $order);
-        $records = $filteredRecords->slice($request['start'], $request['length'])
-            ->values();
+        $records = $filteredRecords->makeHidden('credentials')
+            ->slice($request['start'], $request['length'])
+            ->values()
+            ->toArray();
 
         return [
             'draw' => $draw,
@@ -117,7 +119,7 @@ class ChannelDBService
 
         return [
             'id' => $channel['id'],
-            'provider' => $channel['provider'],
+            'provider_name' => $channel['provider_name'],
             'name' => $channel['name'],
             'key' => $channel['credentials']['key'],
             'cluster' => $channel['credentials']['cluster'],

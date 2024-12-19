@@ -5,6 +5,7 @@ namespace Tests\Feature\Web;
 use App\Models\Push;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class PushTest extends TestCase
@@ -60,9 +61,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for index function.
+     * Test case for index page.
      */
-    public function testIndexFunction(): void
+    public function testIndexPage(): void
     {
         $response = $this->get('/push');
 
@@ -72,18 +73,18 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for getData function.
+     * Test case for getData function with empty request.
      */
-    public function testGetDataFunctionWithEmptyRequest(): void
+    public function testGetDataEmptyRequest(): void
     {
         $response = $this->postJson('/push/data', []);
         $response->assertStatus(422);
     }
 
     /**
-     * Test case for getData function.
+     * Test case for getData function with invalid request.
      */
-    public function testGetDataFunctionWithWrongRequest(): void
+    public function testGetDataInvalidRequest(): void
     {
         $response = $this->postJson('/push/data', [
             'columns' => [
@@ -94,9 +95,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for getData function.
+     * Test case for getData function with valid request.
      */
-    public function testGetDataFunctionWithRightRequest(): void
+    public function testGetDataValidRequest(): void
     {
         Push::create($this->request);
         Push::create($this->requestTypeTwo);
@@ -111,9 +112,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for getData function.
+     * Test case for getData function with valid and search request.
      */
-    public function testGetDataFunctionWithRightRequestAndSearch(): void
+    public function testGetDataSearch(): void
     {
         Push::create($this->request);
         Push::create($this->requestTypeTwo);
@@ -130,9 +131,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for create function.
+     * Test case for createcreate page.
      */
-    public function testCreateFunction(): void
+    public function testCreatePage(): void
     {
         $response = $this->get('/push/create');
 
@@ -142,9 +143,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for store function.
+     * Test case for store function with empty request.
      */
-    public function testStoreFunctionWithEmptyData(): void
+    public function testStoreEmptyRequest(): void
     {
         $request = [];
         $response = $this->from('/push/create')
@@ -160,9 +161,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for store function.
+     * Test case for store function with invalid request.
      */
-    public function testStoreFunctionWithWrongData(): void
+    public function testStoreInvalidRequest(): void
     {
         $request = [
             'provider' => 100,
@@ -182,9 +183,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for store function.
+     * Test case for store function with valid request.
      */
-    public function testStoreFunctionWithRightData(): void
+    public function testStoreValidRequest(): void
     {
         $response = $this->from('/push/create')
             ->post('/push', $this->request);
@@ -200,9 +201,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for show function.
+     * Test case for show page with invalid id.
      */
-    public function testShowFunctionWithWrongId(): void
+    public function testShowPageInvalidId(): void
     {
         $response = $this->get('/push/100');
 
@@ -210,9 +211,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for show function.
+     * Test case for show page with valid id.
      */
-    public function testShowFunctionWithRightId(): void
+    public function testShowPageValidId(): void
     {
         $record = Push::create($this->request);
 
@@ -225,9 +226,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for edit function.
+     * Test case for edit page with invalid id.
      */
-    public function testEditFunctionWithWrongId(): void
+    public function testEditPageInvalidId(): void
     {
         $response = $this->get('/push/100/edit');
 
@@ -235,9 +236,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for edit function.
+     * Test case for edit page with valid id.
      */
-    public function testEditFunctionWithRightId(): void
+    public function testEditPageValidId(): void
     {
         $record = Push::create($this->request);
 
@@ -249,9 +250,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for update function.
+     * Test case for update function with empty request.
      */
-    public function testUpdateFunctionWithEmptyData(): void
+    public function testUpdateEmptyRequest(): void
     {
         $request = [];
         $record = Push::create($this->request);
@@ -273,9 +274,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for update function.
+     * Test case for update function with invalid request.
      */
-    public function testUpdateFunctionWithWrongData(): void
+    public function testUpdateInvalidRequest(): void
     {
         $request = [
             'name' => 'testing 123',
@@ -301,9 +302,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for update function.
+     * Test case for update function with valid request.
      */
-    public function testUpdateFunctionWithRightData1(): void
+    public function testUpdateValidRequest(): void
     {
         $request = [
             'user_id' => 3,
@@ -327,9 +328,9 @@ class PushTest extends TestCase
     }
 
     /**
-     * Test case for update function.
+     * Test case for update function with valid request credentials.
      */
-    public function testUpdateFunctionWithRightData2(): void
+    public function testUpdateValidRequestCredentials(): void
     {
         $request = [
             'name' => 'pusher testing 1',
@@ -352,5 +353,75 @@ class PushTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertRedirect('/push');
+    }
+
+    /**
+     * Test case for test notification page with invalid id.
+     */
+    public function testTestNotificationPageInvalidId(): void
+    {
+        $response = $this->get('/push/100/test');
+
+        $response->assertStatus(404);
+    }
+
+    /**
+     * Test case for test notification page with valid id.
+     */
+    public function testTestNotificationPageValidId(): void
+    {
+        $record = Push::create($this->request);
+
+        $response = $this->get('/push/' . $record->id . '/test');
+
+        $response->assertStatus(200);
+        $response->assertSee('Push Notification');
+        $response->assertSee('Test Pusher Channel');
+        $response->assertSee('pusher testing');
+    }
+
+    /**
+     * Test case for test notification function with empty request.
+     */
+    public function testTestNotificationEmptyRequest(): void
+    {
+        $record = Push::create($this->request);
+
+        $response = $this->post('/push/' . $record->id . '/test', []);
+
+        $response->assertHeader('Content-Type', 'application/json');
+        $response->assertStatus(400);
+        $response->assertJson([
+            'message' => 'No data provided.'
+        ]);
+    }
+
+    /**
+     * Test case for test notification function with valid request.
+     */
+    public function testTestNotificationValidRequest(): void
+    {
+        Log::spy();
+
+        $request = [
+            'message' => 'Hello Notifcation Testing.'
+        ];
+
+        Log::shouldReceive('info')
+            ->withArgs(function ($message) {
+                return str_contains($message, 'Hello Notifcation Testing.');
+            })
+            ->once();
+
+        $record = Push::create($this->request);
+        $response = $this->post('/push/' . $record->id . '/test', $request);
+
+        $this->assertEquals('log', config('broadcasting.default'));
+
+        $response->assertHeader('Content-Type', 'application/json');
+        $response->assertStatus(200);
+        $response->assertJson([
+            'message' => 'Push notification sent successfully.'
+        ]);
     }
 }

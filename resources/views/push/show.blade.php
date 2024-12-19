@@ -28,7 +28,7 @@
                         </div>
 
                         <div class="col-2">
-                            <lable class="form-label">{{$channel['provider']}}</lable>
+                            <lable class="form-label">{{$channel['provider_name']}}</lable>
                         </div>
                     </div>
                 </div>

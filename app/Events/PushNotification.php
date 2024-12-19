@@ -17,7 +17,7 @@ class PushNotification implements ShouldBroadcastNow
     use InteractsWithSockets;
     use SerializesModels;
 
-    private $message;
+    public $message;
 
     /**
      * Create a new event instance.

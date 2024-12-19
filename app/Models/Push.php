@@ -23,6 +23,13 @@ class Push extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['provider_name'];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -36,11 +43,11 @@ class Push extends Model
     }
 
     /**
-     * Accessor for provider attribute.
+     * Accessor for provider_name attribute.
      *
      * @return string
      */
-    protected function getProviderAttribute(): string
+    protected function getProviderNameAttribute(): string
     {
         return PushProvider::getNameByValue($this->attributes['provider']);
     }

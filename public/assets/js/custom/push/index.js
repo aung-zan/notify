@@ -6,7 +6,7 @@ $.ajaxSetup({
 
 const columns = [
   {data: 'name'},
-  {data: 'provider'},
+  {data: 'provider_name'},
   {data: 'created_at'},
   {
     data: function (row, type, set) {

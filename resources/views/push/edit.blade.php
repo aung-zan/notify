@@ -33,7 +33,7 @@
                             </div>
 
                             <div class="col-2">
-                                <lable class="form-label disabled">{{$channel['provider']}}</lable>
+                                <lable class="form-label disabled">{{$channel['provider_name']}}</lable>
                             </div>
                         </div>
                     </div>
