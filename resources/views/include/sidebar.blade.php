@@ -25,9 +25,8 @@
                     @foreach ($menu as $item)
                         @php
                             $isActive = '';
-                            $currentRouteName = Route::currentRouteName();
 
-                            if ($item['group'] === explode('.', $currentRouteName)[0]) {
+                            if ($item['group'] === $groupRouteName) {
                                 $isActive = 'active';
                             }
                         @endphp

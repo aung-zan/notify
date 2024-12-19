@@ -1,19 +1,11 @@
-// (function () {
-//   Pusher.logToConsole = true;
+let flashMessage = document.getElementById('flash-message');
 
-//   let pusher = new Pusher('9d4cf63cf16c877f6d5e', {
-//     cluster: 'ap1'
-//   });
+if (flashMessage) {
+  let toastElement = document.getElementById('notification_toast');
+  let toastMessage = document.getElementById('toast-message');
 
-//   let channel = pusher.subscribe('micro-noti');
-//   channel.bind('public.event', function (data) {
-//     // alert(JSON.stringify(data?.message));
-//     const notiDiv = document.getElementById('noti-message');
-//     notiDiv.innerHTML = JSON.stringify(data?.message);
+  toastMessage.innerText = flashMessage.value;
 
-//     // toolbar toast
-//     showToast('noti-toast');
-//   });
-
-//   showToast('kt_docs_toast_toggle');
-// })();
+  const toast = bootstrap.Toast.getOrCreateInstance(toastElement);
+  toast.show();
+}

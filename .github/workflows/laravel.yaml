@@ -49,24 +49,19 @@ jobs:
           sleep 10
         done
     - name: Create Database
+      env:
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_USER: ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       run: |
-        mysql -h 127.0.0.1 -u root -pP@ssw0rd -e "CREATE DATABASE IF NOT EXISTS notify;"
-        mysql -h 127.0.0.1 -u root -pP@ssw0rd -e "GRANT ALL PRIVILEGES ON notify.* TO 'aungminzan';"
-    # - name: Migrate Database
-    #   env:
-    #     DB_CONNECTION: mysql
-    #     DB_HOST: 127.0.0.1
-    #     DB_PORT: 3306
-    #     DB_DATABASE: notification
-    #     DB_USERNAME: aungminzan
-    #     DB_PASSWORD: password
-    #   run: php artisan migrate:refresh --seed
+        mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD -e "CREATE DATABASE IF NOT EXISTS notify_testing;"
+        mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD -e "GRANT ALL PRIVILEGES ON notify_testing.* TO 'aungminzan';"
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
       env:
         DB_CONNECTION: mysql
         DB_HOST: 127.0.0.1
         DB_PORT: 3306
-        DB_DATABASE: notify
+        DB_DATABASE: notify_testing
         DB_USERNAME: aungminzan
         DB_PASSWORD: password
       run: php artisan test
