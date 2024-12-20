@@ -15,6 +15,9 @@ Route::get('/test', function () {
 
 Route::controller(AppController::class)->prefix('app')->group(function () {
     Route::get('', 'index')->name('app.index');
+    Route::post('data', 'getData')->name('app.getData');
+    Route::get('create', 'create')->name('app.create');
+    Route::post('', 'store')->name('app.store');
 
     Route::prefix('{id}')->group(function () {
         Route::get('', 'show')->name('app.show');

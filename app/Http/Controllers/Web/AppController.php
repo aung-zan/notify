@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DatatableRequest;
 use Illuminate\Http\Request;
 
 class AppController extends Controller
@@ -18,6 +19,41 @@ class AppController extends Controller
     public function index()
     {
         return view('app.index');
+    }
+
+    /**
+     * Return app's resource.
+     *
+     * @param DatatableRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getData(DatatableRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $draw = $request['draw'];
+
+        $data = [
+            [
+                'id' => 1,
+                'name' => 'John Doe',
+                'notification' => 'Email',
+                'channel' => 'Email',
+                'created_at' => '2021-01-01 00:00',
+            ],
+            [
+                'id' => 2,
+                'name' => 'Jane Doe',
+                'notification' => 'Push',
+                'channel' => 'Push',
+                'created_at' => '2021-01-01 00:00',
+            ]
+        ];
+
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => 2,
+            'recordsFiltered' => 2,
+            'data' => $data,
+        ]);
     }
 
     /**

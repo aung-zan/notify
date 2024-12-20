@@ -23,7 +23,7 @@ class DatatableRequest extends FormRequest
     {
         return [
             'draw' => 'required',
-            'columns' => 'required|array|size:4',
+            'columns' => 'required|array',
             'columns.*.data' => 'required',
             'order' => 'sometimes|array|size:1',
             'order.*.column' => 'present_with:order',
