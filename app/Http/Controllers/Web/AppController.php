@@ -15,8 +15,10 @@ class AppController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(): \Illuminate\View\View
     {
         return view('app.index');
     }
@@ -54,6 +56,27 @@ class AppController extends Controller
             'recordsFiltered' => 2,
             'data' => $data,
         ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function create(): \Illuminate\View\View
+    {
+        return view('app.create');
+    }
+
+     /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request)
+    {
+        return redirect()->route('app.index');
     }
 
     /**

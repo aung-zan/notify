@@ -1,7 +1,7 @@
 <div class="mb-10">
     <div class="row">
         <div class="col-2">
-            <label for="" class="form-label">Choose a provider</label>
+            <label class="required form-label">Choose a provider</label>
         </div>
 
         @php
@@ -19,7 +19,7 @@
                         class="form-check-input"
                         {{$value == old('provider', 1) ? 'checked' : ''}}
                     >
-                    <label for="" class="form-check-label">{{$provider}}</label>
+                    <label class="form-check-label">{{$provider}}</label>
                 </div>
 
                 @php

@@ -1,0 +1,29 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  border-radius: 50px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  margin: 0.25rem;
+  background-color: #f8f9fa;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.chip:hover {
+  background-color: #e2e6ea;
+}
+
+.chip.active {
+  background-color: var(--bs-success);
+  color: white;
+  border-color: var(--bs-success);
+}
+
+.chip .close-btn {
+  margin-left: 8px;
+  font-size: 1rem;
+  line-height: 1;
+  color: inherit;
+  cursor: pointer;
+}

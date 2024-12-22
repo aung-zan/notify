@@ -4,11 +4,11 @@
     <div class="app-container container-xxl">
         <div class="card">
             <div class="card-header">
-                <div class="card-title">Create New Channel</div>
+                <div class="card-title">Create New App</div>
 
                 <div class="card-toolbar">
                     <div class="d-flex justify-content-end">
-                        <a href="{{route('push.index')}}" class="btn btn-flex btn-secondary me-2">
+                        <a href="{{route('app.index')}}" class="btn btn-flex btn-secondary me-2">
                             <i class="bi bi-x-lg fs-3"></i>
                             Cancel
                         </a>
@@ -21,22 +21,20 @@
             </div>
 
             <div class="card-body">
-                <form action="{{route('push.store')}}" method="POST" id="store">
+                <form action="{{route('app.store')}}" method="post" id="store">
                     @csrf
-
-                    @include('include.option')
 
                     <div class="mb-10">
                         <div class="row">
                             <div class="col-2">
-                                <label class="required form-label">Channel Name</label>
+                                <label class="form-label required">App Name</label>
                             </div>
 
                             <div class="col-7">
                                 <input type="text"
                                     name="name"
                                     class="form-control @error('name') is-invalid @enderror"
-                                    placeholder="Eg. Testing Channel"
+                                    placeholder="Eg. Testing App"
                                     value="{{old('name', '')}}"
                                 >
                                 @error('name')
@@ -49,24 +47,27 @@
                     <div class="mb-10">
                         <div class="row">
                             <div class="col-2">
-                                <label class="required form-label">Enter credentials</label>
+                                <label class="form-label">App Description</label>
                             </div>
 
                             <div class="col-7">
-                                <textarea name="credentials"
+                                <textarea name="description"
+                                    class="form-control @error('description') is-invalid @enderror"
                                     cols="30"
-                                    rows="10"
-                                    class="form-control @error('credentials') is-invalid @enderror"
-                                    placeholder="Copy credentials and paste here."
-                                >{{old('credentials', '')}}</textarea>
-                                @error('credentials')
+                                    rows="5"
+                                    placeholder="Eg. This is a testing app"
+                                ></textarea>
+                                @error('description')
                                     <div class="invalid-feedback">{{$message}}</div>
                                 @enderror
                             </div>
                         </div>
                     </div>
+
+                    @include('include.app.options')
                 </form>
             </div>
         </div>
     </div>
 @endsection
+
