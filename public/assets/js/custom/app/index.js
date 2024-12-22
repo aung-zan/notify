@@ -11,12 +11,13 @@ const columns = [
   {data: 'created_at'},
   {
     data: function (row, type, set) {
-      const actionDiv = document.getElementById('action-div').cloneNode(true);
+      const appShowURL = app_detail_url.replace('id', row.id);
+
+      const actionDiv = document.querySelector('.dropdown').cloneNode(true);
       actionDiv.removeAttribute('hidden');
 
-      let appShowURL = actionDiv.querySelector('#detail-btn').getAttribute('href');
-      appShowURL = appShowURL.replace(':id', row.id);
-      actionDiv.querySelector('#detail-btn').setAttribute('href', appShowURL);
+      const appShowBtn = actionDiv.querySelector('.details');
+      appShowBtn.setAttribute('href', appShowURL);
 
       return actionDiv;
     }
@@ -90,7 +91,3 @@ search.addEventListener('keydown', function (event) {
     appDT.search(this.value).draw();
   }
 });
-
-// appDT.on('click', '#action-btn', function (event) {
-//   event.stopPropagation();
-// });
