@@ -25,7 +25,7 @@
                 <div class="card-toolbar">
                     <div class="d-flex justify-content-end">
                         <a href="{{route('app.create')}}" class="btn btn-outline btn-outline-primary">
-                            <i class="bi bi-box fs-1"></i>
+                            <i class="bi bi-grid fs-1"></i>
                             Create New App
                         </a>
                     </div>

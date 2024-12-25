@@ -4,7 +4,7 @@ return [
     'sidebar' => [
         [
             'route' => 'app.index',
-            'icon' => 'bi bi-grid',
+            'icon' => 'bi bi-box',
             'display_name' => 'App',
             'group' => 'app',
         ],
