@@ -6,20 +6,27 @@ $.ajaxSetup({
 
 const columns = [
   {data: 'name'},
-  {data: 'provider_name'},
+  {
+    data: 'provider_name',
+    render: function (data, type, row) {
+      return '<span class="badge badge-outline badge-primary">' + data + '</span>';
+    }
+  },
   {data: 'created_at'},
+  {data: 'updated_at'},
   {
     data: function (row, type, set) {
       changed_push_test_url = push_test_url.replace('id', row.id);
 
       let action_buttons = '<a href="' + changed_push_test_url + '"' +
         'id="send"' +
-        'class="btn btn-icon btn-danger hover-scale"' +
+        'class="btn btn-outline btn-outline-danger hover-scale"' +
         'data-bs-toggle="tooltip"' +
         'data-bs-placement="top"' +
         'title="Test Push Notification"' +
       '>' +
         '<i class="bi bi-send fs-5"></i>' +
+        'Test' +
       '</a>';
 
       return action_buttons;
@@ -33,7 +40,7 @@ const columnDef = [
     className: 'dt-left'
   },
   {
-    targets: 3,
+    targets: 4,
     orderable: false,
     searchable: false,
   }

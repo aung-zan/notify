@@ -6,9 +6,20 @@ $.ajaxSetup({
 
 const columns = [
   {data: 'name'},
-  {data: 'notification'},
-  {data: 'channel'},
+  {
+    data: 'notification',
+    render: function (data, type, row) {
+      return '<span class="badge badge-outline badge-primary">' + data + '</span>';
+    }
+  },
+  {
+    data: 'channel',
+    render: function (data, type, row) {
+      return '<span class="badge badge-outline badge-success">' + data + '</span>';
+    }
+  },
   {data: 'created_at'},
+  {data: 'updated_at'},
   {
     data: function (row, type, set) {
       const appShowURL = app_detail_url.replace('id', row.id);

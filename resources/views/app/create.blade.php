@@ -8,11 +8,11 @@
 
                 <div class="card-toolbar">
                     <div class="d-flex justify-content-end">
-                        <a href="{{route('app.index')}}" class="btn btn-flex btn-secondary me-2">
+                        <a href="{{route('app.index')}}" class="btn btn-outline btn-outline-secondary me-2">
                             <i class="bi bi-x-lg fs-3"></i>
                             Cancel
                         </a>
-                        <button type="submit" form="store" class="btn btn-flex btn-primary">
+                        <button type="submit" form="store" class="btn btn-outline btn-outline-primary">
                             <i class="bi bi-cloud-upload fs-2 mt-1"></i>
                             Submit
                         </button>

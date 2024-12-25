@@ -24,8 +24,8 @@
 
                 <div class="card-toolbar">
                     <div class="d-flex justify-content-end">
-                        <a href="{{route('app.create')}}" class="btn btn-flex btn-primary">
-                            <i class="bi bi-app fs-1"></i>
+                        <a href="{{route('app.create')}}" class="btn btn-outline btn-outline-primary">
+                            <i class="bi bi-box fs-1"></i>
                             Create New App
                         </a>
                     </div>
@@ -41,7 +41,8 @@
                                 <th>Notification</th>
                                 <th>Channel</th>
                                 <th>Created At</th>
-                                <th>Actions</th>
+                                <th>Updated At</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -49,7 +50,7 @@
                 </div>
 
                 <div class="dropdown" hidden>
-                    <button class="btn btn-danger dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <button class="btn btn-outline btn-outline-danger dropdown-toggle" type="button" data-bs-toggle="dropdown">
                         Action
                     </button>
                     <ul class="dropdown-menu">

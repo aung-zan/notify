@@ -22,7 +22,7 @@
 
                 <div class="card-toolbar">
                     <div class="d-flex justify-content-end">
-                        <a href="{{route('push.create')}}" class="btn btn-flex btn-primary">
+                        <a href="{{route('push.create')}}" class="btn btn-outline btn-outline-primary">
                             <i class="bi bi-broadcast-pin fs-1"></i>
                             Create New Channel
                         </a>
@@ -38,7 +38,8 @@
                                 <th>Name</th>
                                 <th>Provider</th>
                                 <th>Created At</th>
-                                <th>Actions</th>
+                                <th>Updated At</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody></tbody>

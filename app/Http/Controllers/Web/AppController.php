@@ -37,9 +37,10 @@ class AppController extends Controller
             [
                 'id' => 1,
                 'name' => 'John Doe',
-                'notification' => 'Email',
-                'channel' => 'Email',
+                'notification' => 'Email, Push',
+                'channel' => 'SMTP, Pusher',
                 'created_at' => '2021-01-01 00:00',
+                'updated_at' => '2021-01-01 00:00',
             ],
             [
                 'id' => 2,
@@ -47,6 +48,7 @@ class AppController extends Controller
                 'notification' => 'Push',
                 'channel' => 'Push',
                 'created_at' => '2021-01-01 00:00',
+                'updated_at' => '2021-01-01 00:00',
             ]
         ];
 
