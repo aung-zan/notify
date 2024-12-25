@@ -9,6 +9,10 @@
             <label class="form-label required">Services</label>
         </div>
 
+        {{-- TODO: service chips and channels select should be in loop and
+        the resrouce data should be in the array structure with the chosen
+        service and channels. [email, push] and [mailtrap, smtp, amazon ses, pusher, rabbitmq]. --}}
+
         {{-- service chips row --}}
         <div class="col-10">
             {{-- service chips --}}

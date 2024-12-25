@@ -92,10 +92,13 @@ class AppController extends Controller
 
     /**
      * Show the form for editing the specified resource.
+     *
+     * @param string $id
+     * @return \Illuminate\View\View
      */
-    public function edit(string $id)
+    public function edit(string $id): \Illuminate\View\View
     {
-        return 'edit';
+        return view('app.edit');
     }
 
     /**
