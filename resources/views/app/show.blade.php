@@ -13,7 +13,7 @@
                             Cancel
                         </a>
                         <a href="{{route('app.edit', 1)}}" class="btn btn-flex btn-primary">
-                            <i class="bi bi-pencil-square fs-2 mt-1"></i>
+                            <i class="bi bi-cloud-download fs-2 mt-1"></i>
                             Edit
                         </a>
                     </div>
