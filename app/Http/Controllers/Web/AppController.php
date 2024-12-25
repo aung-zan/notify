@@ -81,10 +81,13 @@ class AppController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @param string $id
+     * @return \Illuminate\View\View
      */
-    public function show(string $id)
+    public function show(string $id): \Illuminate\View\View
     {
-        return 'show';
+        return view('app.show');
     }
 
     /**
