@@ -2,6 +2,16 @@
     <link href="/assets/css/custom/include/app/options.css" rel="stylesheet" type="text/css"/>
 @endpush
 
+@php
+    $defaultActive = [2];
+    $serviceErrorMessage = '';
+
+    if ($errors->has('scope')) {
+        $channelError = $serviceError = true;
+        $channelErrorMessage = $serviceErrorMessage = $errors->first('scope');
+    }
+@endphp
+
 {{-- Service row --}}
 <div class="mb-10">
     <div class="row">
@@ -13,32 +23,39 @@
         the resrouce data should be in the array structure with the chosen
         service and channels. [email, push] and [mailtrap, smtp, amazon ses, pusher, rabbitmq]. --}}
 
-        {{-- service chips row --}}
         <div class="col-10">
-            {{-- service chips --}}
-            <button type="button"
-                class="chip active @error('scope[0][service]"') is-invalid @enderror"
-                data-type="email"
-            >Email Service</button>
-            @error('scope[0][service]')
-                <div class="invalid-feedback">{{$message}}</div>
-            @enderror
+            @foreach ($services as $serviceName => $serviceValue)
+                @php
+                    $serviceType = strtolower($serviceName);
+                    $isActive = in_array($serviceValue, $defaultActive);
 
-            <button type="button"
-                class="chip @error('scope[1][service]') is-invalid @enderror"
-                data-type="push"
-            >Push Service</button>
-            @error('scope[1][service]')
-                <div class="invalid-feedback">{{$message}}</div>
-            @enderror
-            {{-- service chips --}}
+                    if (! $errors->has('scope')) {
+                        $serviceError = false;
 
-            {{-- service hidden inputs --}}
-            <input type="hidden" name="scope[0][service]" id="email" value="email">
-            <input type="hidden" name="scope[1][service]" id="push" value="push" disabled>
-            {{-- service hidden inputs --}}
+                        if ($errors->has('scope.' . $serviceValue . '.service')) {
+                            $serviceError = true;
+                            $serviceErrorMessage = $errors->first('scope.' . $serviceValue . '.service');
+                        }
+                    }
+                @endphp
+
+                <input type="hidden"
+                    name="scope[{{$serviceValue}}][service]"
+                    id="{{$serviceType}}"
+                    value={{$serviceValue}}
+                    {{$isActive ? '' : 'disabled'}}
+                >
+
+                <button type="button"
+                    class="chip {{$isActive ? 'active' : ''}} {{$serviceError ? 'is-invalid' : ''}}"
+                    data-type="{{$serviceType}}"
+                >{{$serviceName}} Service</button>
+            @endforeach
+
+            @if (! empty($serviceErrorMessage))
+                <div class="invalid-feedback">{{$serviceErrorMessage}}</div>
+            @endif
         </div>
-        {{-- service chips row --}}
     </div>
 </div>
 {{-- Service row --}}
@@ -53,31 +70,41 @@
         <div class="col-10">
             <div class="row" id="channels">
                 {{-- channels select --}}
-                <div class="col-3 mb-3" id="email-channels">
-                    <select name="scope[0][channel]"
-                        class="form-select @error('scope[0][channel]"') is-invalid @enderror"
-                    >
-                        <option value="1">Mailtrap</option>
-                        <option value="2">SMTP</option>
-                        <option value="3">Amazon SES</option>
-                    </select>
-                    @error('scope[0][channel]')
-                        <div class="invalid-feedback">{{$message}}</div>
-                    @enderror
-                </div>
+                @foreach ($services as $serviceName => $serviceValue)
+                    @php
+                        $service = strtolower($serviceName);
+                        $isSelected = in_array($serviceValue, $defaultActive);
 
-                <div class="col-3 mb-3" id="push-channels" hidden>
-                    <select name="scope[1][channel]"
-                        class="form-select @error('scope[1][channel]') is-invalid @enderror"
-                        disabled
-                    >
-                        <option value="1">Pusher</option>
-                        <option value="2">RabbitMQ</option>
-                    </select>
-                    @error('scope[1][channel]')
-                        <div class="invalid-feedback">{{$message}}</div>
-                    @enderror
-                </div>
+                        if (! $errors->has('scope')) {
+                            $channelError = false;
+
+                            if ($errors->has('scope.' . $serviceValue . '.channel')) {
+                                $channelError = true;
+                                $channelErrorMessage = $errors->first('scope.' . $serviceValue . '.channel');
+                            }
+                        }
+                    @endphp
+
+                    <div class="col-3 mb-3" id="{{$service}}-channels" {{$isSelected ? '' : 'hidden'}}>
+                        <select name="scope[{{$serviceValue}}][channel]"
+                            class="form-select {{$channelError ? 'is-invalid' : ''}}"
+                            data-control="select2"
+                            {{$isSelected ? '' : 'disabled'}}
+                        >
+                            @foreach ($providers[$service] as $channelGroups => $channels)
+                                <optgroup label={{$channelGroups}}>
+                                    @foreach ($channels as $channel)
+                                        <option value={{$channel['id']}}>{{$channel['name']}}</option>
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
+                        </select>
+
+                        @if (! empty($channelErrorMessage))
+                            <div class="invalid-feedback">{{$channelErrorMessage}}</div>
+                        @endif
+                    </div>
+                @endforeach
                 {{-- channels select --}}
             </div>
         </div>

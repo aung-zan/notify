@@ -2,15 +2,25 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Enums\EmailProvider;
+use App\Enums\PushProvider;
+use App\Enums\Service;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AppRequest;
 use App\Http\Requests\DatatableRequest;
+use App\Services\AppDBService;
+use App\Services\ChannelDBService;
 use Illuminate\Http\Request;
 
 class AppController extends Controller
 {
-    public function __construct()
+    private $channelDBService;
+    private $appDBService;
+
+    public function __construct(ChannelDBService $channelDBService, AppDBService $appDBService)
     {
-        //
+        $this->channelDBService = $channelDBService;
+        $this->appDBService = $appDBService;
     }
 
     /**
@@ -67,17 +77,30 @@ class AppController extends Controller
      */
     public function create(): \Illuminate\View\View
     {
-        return view('app.create');
+        $services = Service::getAll();
+        $providers = [
+            // 'email' => EmailProvider::getAll(),
+            'push' => $this->channelDBService->getByGroupProvider(),
+        ];
+
+        return view('app.create', [
+            'services' => $services,
+            'providers' => $providers,
+        ]);
     }
 
      /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param AppRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(AppRequest $request): \Illuminate\Http\RedirectResponse
     {
+        $data = $request->except('_token');
+
+        $this->appDBService->create($data);
+
         return redirect()->route('app.index');
     }
 

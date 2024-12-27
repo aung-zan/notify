@@ -20,10 +20,6 @@
   border-color: var(--bs-success);
 }
 
-.chip .close-btn {
-  margin-left: 8px;
-  font-size: 1rem;
-  line-height: 1;
-  color: inherit;
-  cursor: pointer;
+.chip.is-invalid {
+  border-color: var(--bs-form-invalid-border-color);
 }

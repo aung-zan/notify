@@ -10,11 +10,11 @@ interface DBInterface
 
     public function create(array $data);
 
-    public function getById(int $id);
+    public function getById(int $id, bool $checkOnly = false);
 
     public function update(int $id, array $data);
 
-    public function softDelete();
+    public function softDelete(int $id);
 
-    public function delete();
+    public function delete(int $id);
 }

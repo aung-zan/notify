@@ -125,4 +125,30 @@ class ChannelDBService
             'cluster' => $channel['credentials']['cluster'],
         ];
     }
+
+    /**
+     * get all the channels and group by the provider.
+     *
+     * @return array
+     */
+    public function getByGroupProvider(): array
+    {
+        $channels = $this->pushRepository->getAll([], [])
+            ->select(['id', 'name', 'provider_name'])
+            ->groupBy('provider_name')
+            ->toArray();
+
+        return $channels;
+    }
+
+    /**
+     * check the channel by id is valid or not.
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function checkChannel(int $id): bool
+    {
+        return $this->pushRepository->getById($id, true) ? true : false;
+    }
 }

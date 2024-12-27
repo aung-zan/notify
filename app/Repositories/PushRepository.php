@@ -67,11 +67,18 @@ class PushRepository implements DBInterface
      * return a push notification channel by channel_id.
      *
      * @param int $id
-     * @return Push
+     * @param bool $checkOnly
+     * @return Push|null
      */
-    public function getById(int $id): Push
+    public function getById(int $id, bool $checkOnly = false): Push|null
     {
         $userId = 1;
+
+        if ($checkOnly) {
+            return $this->push->where('user_id', $userId)
+                ->where('id', $id)
+                ->first();
+        }
 
         return $this->push->where('user_id', $userId)
             ->findOrFail($id);
@@ -92,12 +99,12 @@ class PushRepository implements DBInterface
             ->update($data);
     }
 
-    public function softDelete()
+    public function softDelete(int $id)
     {
         //
     }
 
-    public function delete()
+    public function delete(int $id)
     {
         //
     }
