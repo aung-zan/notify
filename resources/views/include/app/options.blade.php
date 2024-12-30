@@ -6,9 +6,9 @@
     $defaultActive = [2];
     $serviceErrorMessage = '';
 
-    if ($errors->has('scope')) {
+    if ($errors->has('scopes')) {
         $channelError = $serviceError = true;
-        $channelErrorMessage = $serviceErrorMessage = $errors->first('scope');
+        $channelErrorMessage = $serviceErrorMessage = $errors->first('scopes');
     }
 @endphp
 
@@ -29,18 +29,18 @@
                     $serviceType = strtolower($serviceName);
                     $isActive = in_array($serviceValue, $defaultActive);
 
-                    if (! $errors->has('scope')) {
+                    if (! $errors->has('scopes')) {
                         $serviceError = false;
 
-                        if ($errors->has('scope.' . $serviceValue . '.service')) {
+                        if ($errors->has('scopes.' . $serviceValue . '.service')) {
                             $serviceError = true;
-                            $serviceErrorMessage = $errors->first('scope.' . $serviceValue . '.service');
+                            $serviceErrorMessage = $errors->first('scopes.' . $serviceValue . '.service');
                         }
                     }
                 @endphp
 
                 <input type="hidden"
-                    name="scope[{{$serviceValue}}][service]"
+                    name="scopes[{{$serviceValue}}][service]"
                     id="{{$serviceType}}"
                     value={{$serviceValue}}
                     {{$isActive ? '' : 'disabled'}}
@@ -75,18 +75,18 @@
                         $service = strtolower($serviceName);
                         $isSelected = in_array($serviceValue, $defaultActive);
 
-                        if (! $errors->has('scope')) {
+                        if (! $errors->has('scopes')) {
                             $channelError = false;
 
-                            if ($errors->has('scope.' . $serviceValue . '.channel')) {
+                            if ($errors->has('scopes.' . $serviceValue . '.channel')) {
                                 $channelError = true;
-                                $channelErrorMessage = $errors->first('scope.' . $serviceValue . '.channel');
+                                $channelErrorMessage = $errors->first('scopes.' . $serviceValue . '.channel');
                             }
                         }
                     @endphp
 
                     <div class="col-3 mb-3" id="{{$service}}-channels" {{$isSelected ? '' : 'hidden'}}>
-                        <select name="scope[{{$serviceValue}}][channel]"
+                        <select name="scopes[{{$serviceValue}}][channel]"
                             class="form-select {{$channelError ? 'is-invalid' : ''}}"
                             data-control="select2"
                             {{$isSelected ? '' : 'disabled'}}

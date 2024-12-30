@@ -2,25 +2,40 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Enums\EmailProvider;
-use App\Enums\PushProvider;
 use App\Enums\Service;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppRequest;
 use App\Http\Requests\DatatableRequest;
 use App\Services\AppDBService;
 use App\Services\ChannelDBService;
+use App\Services\TokenService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AppController extends Controller
 {
     private $channelDBService;
     private $appDBService;
+    private $tokenService;
+    protected $flashMessage;
 
-    public function __construct(ChannelDBService $channelDBService, AppDBService $appDBService)
-    {
+    public function __construct(
+        ChannelDBService $channelDBService,
+        AppDBService $appDBService,
+        TokenService $tokenService
+    ) {
         $this->channelDBService = $channelDBService;
         $this->appDBService = $appDBService;
+        $this->tokenService = $tokenService;
+
+        $this->flashMessage = [
+            'success' => [
+                'color' => 'bg-success',
+            ],
+            'failed' => [
+                'color' => 'bg-danger',
+            ],
+        ];
     }
 
     /**
@@ -97,11 +112,24 @@ class AppController extends Controller
      */
     public function store(AppRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $data = $request->except('_token');
+        try {
+            $data = $request->except('_token');
 
-        $this->appDBService->create($data);
+            DB::transaction(function () use ($data) {
+                $app = $this->appDBService->create($data);
+                $tokens = $this->tokenService->generateToken($app, $data);
+                $this->appDBService->update($app['id'], $tokens);
+            });
 
-        return redirect()->route('app.index');
+            $this->flashMessage['success']['message'] = 'Successfully created.';
+        } catch (\Throwable $th) {
+            $this->handleException($th);
+            return redirect()->back()
+                ->with('flashMessage', $this->flashMessage['failed']);
+        }
+
+        return redirect()->route('app.index')
+            ->with('flashMessage', $this->flashMessage['success']);
     }
 
     /**

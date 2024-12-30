@@ -19,8 +19,8 @@ return new class extends Migration
             $table->json('scopes');
             $table->string('name', '100');
             $table->text('description')->nullable();
-            $table->string('token');
-            $table->string('refresh_token');
+            $table->text('token')->nullable();
+            $table->text('refresh_token')->nullable();
             $table->timestamps();
         });
     }

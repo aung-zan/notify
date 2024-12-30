@@ -35,9 +35,9 @@ class AppRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
-            'scope' => 'required|array',
-            'scope.*.service' => ['required', new Enum(Service::class)],
-            'scope.*.channel' => 'required',
+            'scopes' => 'required|array',
+            'scopes.*.service' => ['required', new Enum(Service::class)],
+            'scopes.*.channel' => 'required',
         ];
     }
 
@@ -49,8 +49,8 @@ class AppRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'scope.*.service' => 'service',
-            'scope.*.channel' => 'channel',
+            'scopes.*.service' => 'service',
+            'scopes.*.channel' => 'channel',
         ];
     }
 
@@ -62,7 +62,7 @@ class AppRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'scope.required' => 'The service and channel fields are required.',
+            'scopes.required' => 'The service and channel fields are required.',
         ];
     }
 
@@ -75,13 +75,13 @@ class AppRequest extends FormRequest
             function (Validator $validator) {
                 if ($validator->errors()->isEmpty()) {
                     $requestData = $validator->validated();
-                    $scopes = $requestData['scope'];
+                    $scopes = $requestData['scopes'];
 
                     foreach ($scopes as $key => $scope) {
                         // TODO: Add validation for email service.
                         if ((int)$scope['service'] === Service::Push->value) {
                             if (! $this->channelDBService->checkChannel($scope['channel'])) {
-                                $validator->errors()->add("scope.{$key}.channel", 'The selected channel is invalid.');
+                                $validator->errors()->add("scopes.{$key}.channel", 'The selected channel is invalid.');
                             }
                         }
                     }

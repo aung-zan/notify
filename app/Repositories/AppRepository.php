@@ -35,14 +35,34 @@ class AppRepository implements DBInterface
         return $this->app->create($data);
     }
 
-    public function getById(int $id, bool $checkOnly = false)
+    /**
+     * return an app by app_id.
+     *
+     * @param int $id
+     * @param bool $checkOnly
+     * @return App
+     */
+    public function getById(int $id, bool $checkOnly = false): App
     {
-        // Implement getById method
+        $userId = 1;
+
+        return $this->app->where('user_id', $userId)
+            ->findOrFail($id);
     }
 
-    public function update(int $id, array $data)
+    /**
+     * update an app by app_id.
+     *
+     * @param int $id
+     * @param array $data
+     * @return void
+     */
+    public function update(int $id, array $data): void
     {
-        // Implement update method
+        $this->getById($id);
+
+        $this->app->where('id', $id)
+            ->update($data);
     }
 
     public function softDelete(int $id)
