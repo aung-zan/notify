@@ -4,8 +4,8 @@ namespace App\Enums;
 
 enum Service: int
 {
-    // case Email = 1;
-    case Push = 2;
+    case Push = 1;
+    // case Email = 2;
 
     public static function getAll(): array
     {

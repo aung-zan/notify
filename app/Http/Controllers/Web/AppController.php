@@ -17,7 +17,6 @@ class AppController extends Controller
     private $channelDBService;
     private $appDBService;
     private $tokenService;
-    protected $flashMessage;
 
     public function __construct(
         ChannelDBService $channelDBService,
@@ -27,15 +26,6 @@ class AppController extends Controller
         $this->channelDBService = $channelDBService;
         $this->appDBService = $appDBService;
         $this->tokenService = $tokenService;
-
-        $this->flashMessage = [
-            'success' => [
-                'color' => 'bg-success',
-            ],
-            'failed' => [
-                'color' => 'bg-danger',
-            ],
-        ];
     }
 
     /**
@@ -94,8 +84,8 @@ class AppController extends Controller
     {
         $services = Service::getAll();
         $providers = [
-            // 'email' => EmailProvider::getAll(),
             'push' => $this->channelDBService->getByGroupProvider(),
+            // 'email' => EmailProvider::getAll()
         ];
 
         return view('app.create', [
@@ -125,6 +115,7 @@ class AppController extends Controller
         } catch (\Throwable $th) {
             $this->handleException($th);
             return redirect()->back()
+                ->withInput()
                 ->with('flashMessage', $this->flashMessage['failed']);
         }
 

@@ -15,21 +15,11 @@ class PushController extends Controller
 {
     private $channelDBService;
     private $channelService;
-    private $flashMessage;
 
     public function __construct(ChannelDBService $channelDBService, ChannelService $channelService)
     {
         $this->channelDBService = $channelDBService;
         $this->channelService = $channelService;
-
-        $this->flashMessage = [
-            'success' => [
-                'color' => 'bg-success',
-            ],
-            'failed' => [
-                'color' => 'bg-danger',
-            ],
-        ];
     }
 
     /**
@@ -84,9 +74,7 @@ class PushController extends Controller
             $this->flashMessage['success']['message'] = 'Successfully created.';
             $message = $this->flashMessage['success'];
         } catch (\Throwable $th) {
-            \Log::info($th->getMessage() . ' in ' . $th->getFile() . ' at ' . $th->getLine());
-
-            $this->flashMessage['failed']['message'] = 'Something went wrong.';
+            $this->handleException($th);
 
             return redirect()->back()
                 ->with('flashMessage', $this->flashMessage['failed']);
@@ -142,9 +130,7 @@ class PushController extends Controller
             $this->flashMessage['success']['message'] = 'Successfully updated.';
             $message = $this->flashMessage['success'];
         } catch (\Throwable $th) {
-            \Log::info($th->getMessage() . ' in ' . $th->getFile() . ' at ' . $th->getLine());
-
-            $this->flashMessage['failed']['message'] = 'Something went wrong.';
+            $this->handleException($th);
 
             return redirect()->back()
                 ->with('flashMessage', $this->flashMessage['failed']);

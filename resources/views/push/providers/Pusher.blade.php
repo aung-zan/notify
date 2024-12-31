@@ -8,11 +8,11 @@
 
                 <div class="card-toolbar">
                     <div class="d-flex justify-content-end">
-                        <a href="{{route('push.index')}}" class="btn btn-flex btn-secondary me-2">
+                        <a href="{{route('push.index')}}" class="btn btn-outline btn-outline-secondary me-2">
                             <i class="bi bi-x-lg fs-3"></i>
                             Cancel
                         </a>
-                        <button type="button" form="store" class="btn btn-flex btn-primary" id="send-button">
+                        <button type="button" form="store" class="btn btn-outline btn-outline-primary" id="send-button">
                             <i class="bi bi-send-plus fs-2 mt-1"></i>
                             Send
                         </button>

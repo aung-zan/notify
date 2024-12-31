@@ -3,7 +3,7 @@
 @endpush
 
 @php
-    $defaultActive = [2];
+    $defaultActive = [1];
     $serviceErrorMessage = '';
 
     if ($errors->has('scopes')) {
