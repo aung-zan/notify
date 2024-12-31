@@ -4,9 +4,13 @@ namespace App\Repositories;
 
 use App\Interfaces\DBInterface;
 use App\Models\App;
+use App\Traits\QueryBuilder;
+use Illuminate\Database\Eloquent\Collection;
 
 class AppRepository implements DBInterface
 {
+    use QueryBuilder;
+
     private $app;
 
     public function __construct(App $app)
@@ -14,14 +18,38 @@ class AppRepository implements DBInterface
         $this->app = $app;
     }
 
-    public function getAll(array $keywords, array $order)
+    /**
+     * return all apps by user_id.
+     *
+     * @param array $keywords
+     * @param array $order
+     * @return Collection
+     */
+    public function getAll(array $keywords, array $order): Collection
     {
-        // Implement getAll method
+        $userId = 1;
+
+        $query = $this->app->query();
+
+        $query = $this->queryBuilder($query, $userId, $keywords, $order);
+
+        return $query->get();
     }
 
-    public function getAllCount()
+    /**
+     * return the apps' count by user_id.
+     *
+     * @return int
+     */
+    public function getAllCount(): int
     {
-        // Implement getAllCount method
+        $userId = 1;
+
+        $query = $this->app->query();
+
+        $query = $this->queryBuilder($query, $userId);
+
+        return $query->count();
     }
 
     /**

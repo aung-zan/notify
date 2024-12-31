@@ -6,13 +6,44 @@ use App\Enums\Service;
 use App\Models\App;
 use App\Repositories\AppRepository;
 
-class AppDBService
+class AppDBService extends DBService
 {
     private $appRepository;
 
     public function __construct(AppRepository $appRepository)
     {
         $this->appRepository = $appRepository;
+    }
+
+    /**
+     * get the app list by the datatable request.
+     *
+     * @param array $request
+     * @return array
+     */
+    public function list(array $request): array
+    {
+        $draw = $request['draw'];
+        $columns = ['name'];
+
+        $searchValue = $this->getSearchRequest($request, $columns);
+
+        $order = $this->getOrderRequest($request);
+
+        $totalRecords = $this->appRepository->getAllCount();
+
+        $filteredRecords = $this->appRepository->getAll($searchValue, $order);
+        $records = $filteredRecords->makeHidden(['user_id', 'description', 'scopes', 'token', 'refresh_token'])
+            ->slice($request['start'], $request['length'])
+            ->values()
+            ->toArray();
+
+        return [
+            'draw' => $draw,
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $filteredRecords->count(),
+            'data' => $records,
+        ];
     }
 
     /**
@@ -30,6 +61,13 @@ class AppDBService
             ->toArray();
     }
 
+    /**
+     * update an app's information by id.
+     *
+     * @param int $id
+     * @param array $request
+     * @return void
+     */
     public function update(int $id, array $request): void
     {
         $this->appRepository->update($id, $request);
@@ -41,7 +79,7 @@ class AppDBService
      * @param array $scopes
      * @return array
      */
-    public function formatScopes(array $scopes): array
+    private function formatScopes(array $scopes): array
     {
         $formatScopes = [];
 

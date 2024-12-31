@@ -7,15 +7,19 @@ $.ajaxSetup({
 const columns = [
   {data: 'name'},
   {
-    data: 'notification',
+    data: 'notifications',
     render: function (data, type, row) {
       return '<span class="badge badge-outline badge-primary">' + data + '</span>';
     }
   },
   {
-    data: 'channel',
+    data: 'channels',
     render: function (data, type, row) {
-      return '<span class="badge badge-outline badge-success">' + data + '</span>';
+      const channel = '<span class="badge badge-outline badge-success mb-2">' + data + '</span>';
+      // '<br />' +
+      // '<span class="badge badge-outline badge-success mb-2">Email Testing - SMTP</span>';
+
+      return channel;
     }
   },
   {data: 'created_at'},

@@ -46,33 +46,9 @@ class AppController extends Controller
      */
     public function getData(DatatableRequest $request): \Illuminate\Http\JsonResponse
     {
-        $draw = $request['draw'];
+        $result = $this->appDBService->list($request->toArray());
 
-        $data = [
-            [
-                'id' => 1,
-                'name' => 'John Doe',
-                'notification' => 'Email, Push',
-                'channel' => 'SMTP, Pusher',
-                'created_at' => '2021-01-01 00:00',
-                'updated_at' => '2021-01-01 00:00',
-            ],
-            [
-                'id' => 2,
-                'name' => 'Jane Doe',
-                'notification' => 'Push',
-                'channel' => 'Push',
-                'created_at' => '2021-01-01 00:00',
-                'updated_at' => '2021-01-01 00:00',
-            ]
-        ];
-
-        return response()->json([
-            'draw' => $draw,
-            'recordsTotal' => 2,
-            'recordsFiltered' => 2,
-            'data' => $data,
-        ]);
+        return response()->json($result, 200);
     }
 
     /**
@@ -84,8 +60,8 @@ class AppController extends Controller
     {
         $services = Service::getAll();
         $providers = [
+            //TODO: add email provider
             'push' => $this->channelDBService->getByGroupProvider(),
-            // 'email' => EmailProvider::getAll()
         ];
 
         return view('app.create', [
@@ -131,6 +107,7 @@ class AppController extends Controller
      */
     public function show(string $id): \Illuminate\View\View
     {
+        // \Log::info($id);
         return view('app.show');
     }
 
