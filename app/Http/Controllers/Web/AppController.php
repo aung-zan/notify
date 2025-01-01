@@ -107,8 +107,11 @@ class AppController extends Controller
      */
     public function show(string $id): \Illuminate\View\View
     {
-        // \Log::info($id);
-        return view('app.show');
+        $app = $this->appDBService->getById($id);
+
+        return view('app.show', [
+            'app' => $app,
+        ]);
     }
 
     /**

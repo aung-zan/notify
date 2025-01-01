@@ -4,7 +4,10 @@
     <div class="app-container container-xxl">
         <div class="card">
             <div class="card-header">
-                <div class="card-title">App Details</div>
+                <div class="card-title">
+                    App Details
+                    <span class="badge badge-outline badge-danger ms-3">Active</span>
+                </div>
 
                 <div class="card-toolbar">
                     <div class="d-flex justify-content-end">
@@ -29,7 +32,7 @@
                             </div>
 
                             <div class="col-8">
-                                <label class="form-label">Testing App</label>
+                                <label class="form-label">{{$app['name']}}</label>
                             </div>
                         </div>
                     </div>
@@ -40,24 +43,21 @@
                             </div>
 
                             <div class="col-8">
-                                <label class="form-label">Email, Push</label>
+                                <span class="badge badge-outline badge-primary">{{$app['notifications']}}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row mb-5">
+                <div class="row mb-10">
                     <div class="col-6">
                         <div class="row">
                             <div class="col-4">
-                                <label class="form-label text-muted">Token</label>
+                                <label class="form-label text-muted">App Description</label>
                             </div>
 
-                            <div class="col-8 d-flex align-items-start">
-                                <label class="form-label">jk076590ygghgh324vd33</label>
-                                <button class="btn btn-icon pb-8 copy">
-                                    <i class="bi bi-copy fs-3"></i>
-                                </button>
+                            <div class="col-8">
+                                <label class="form-label">{{$app['description']}}</label>
                             </div>
                         </div>
                     </div>
@@ -68,7 +68,7 @@
                             </div>
 
                             <div class="col-8">
-                                <label class="form-label">SMTP, Pusher</label>
+                                <span class="badge badge-outline badge-success">{{$app['channels']}}</span>
                             </div>
                         </div>
                     </div>
@@ -78,25 +78,65 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-4">
-                                <label class="form-label text-muted">Refresh Token</label>
+                                <label class="form-label text-muted">Created At</label>
                             </div>
 
-                            <div class="col-8 d-flex align-items-start">
-                                <label class="form-label">jk076590ygghgh324re33</label>
-                                <button class="btn btn-icon pb-8 copy">
-                                    <i class="bi bi-copy fs-3"></i>
-                                </button>
+                            <div class="col-8">
+                                <label class="form-label">{{$app['created_at']}}</label>
                             </div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="row">
                             <div class="col-4">
-                                <label class="form-label text-muted">Created At</label>
+                                <label class="form-label text-muted">Updated At</label>
                             </div>
 
                             <div class="col-8">
-                                <label class="form-label">23 Dec, 2024</label>
+                                <label class="form-label">{{$app['updated_at']}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-10">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4">
+                                <label class="form-label text-muted">Token</label>
+                            </div>
+
+                            <div class="col-8 d-flex align-items-start">
+                                <div class="row">
+                                    <div class="col-9">
+                                        <label class="form-label text-break">{{$app['token']}}</label>
+                                    </div>
+                                    <div class="col-3">
+                                        <button class="btn btn-icon pb-8 copy">
+                                            <i class="bi bi-copy fs-3"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4">
+                                <label class="form-label text-muted">Refresh Token</label>
+                            </div>
+
+                            <div class="col-8 d-flex align-items-start">
+                                <div class="row">
+                                    <div class="col-9">
+                                        <label class="form-label text-break">{{$app['refresh_token']}}</label>
+                                    </div>
+                                    <div class="col-3">
+                                        <button class="btn btn-icon pb-8 copy">
+                                            <i class="bi bi-copy fs-3"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

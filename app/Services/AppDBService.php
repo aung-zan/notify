@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Enums\Service;
-use App\Models\App;
 use App\Repositories\AppRepository;
 
 class AppDBService extends DBService
@@ -25,6 +24,7 @@ class AppDBService extends DBService
     {
         $draw = $request['draw'];
         $columns = ['name'];
+        $hiddenColumns = ['user_id', 'description', 'scopes', 'token', 'refresh_token'];
 
         $searchValue = $this->getSearchRequest($request, $columns);
 
@@ -33,7 +33,7 @@ class AppDBService extends DBService
         $totalRecords = $this->appRepository->getAllCount();
 
         $filteredRecords = $this->appRepository->getAll($searchValue, $order);
-        $records = $filteredRecords->makeHidden(['user_id', 'description', 'scopes', 'token', 'refresh_token'])
+        $records = $filteredRecords->makeHidden($hiddenColumns)
             ->slice($request['start'], $request['length'])
             ->values()
             ->toArray();
@@ -58,6 +58,21 @@ class AppDBService extends DBService
         $request['scopes'] = json_encode($this->formatScopes($request['scopes']));
 
         return $this->appRepository->create($request)
+            ->toArray();
+    }
+
+    /**
+     * get an app details by id.
+     * TODO: refactor $type not to based on the method.
+     *
+     * @param int $id
+     * @param bool $type (false for show and true for edit)
+     * @return array
+     */
+    public function getById(int $id): array
+    {
+        return $this->appRepository->getById($id)
+            ->makeHidden(['user_id', 'scopes'])
             ->toArray();
     }
 
