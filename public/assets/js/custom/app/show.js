@@ -1,7 +1,7 @@
 const copyButtons = document.querySelectorAll('.copy');
 
 copyButtons.forEach(copyButton => {
-  const target = copyButton.previousElementSibling;
+  const target = copyButton.parentElement.previousElementSibling.childNodes[1];
   const icon = copyButton.childNodes[1];
 
   new ClipboardJS(copyButton, {
