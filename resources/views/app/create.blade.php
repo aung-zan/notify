@@ -56,7 +56,7 @@
                                     cols="30"
                                     rows="5"
                                     placeholder="Eg. This is a testing app"
-                                ></textarea>
+                                >{{old('description', '')}}</textarea>
                                 @error('description')
                                     <div class="invalid-feedback">{{$message}}</div>
                                 @enderror
@@ -64,7 +64,7 @@
                         </div>
                     </div>
 
-                    @include('include.app.options')
+                    @include('include.app.options2')
                 </form>
             </div>
         </div>

@@ -58,15 +58,15 @@ class AppController extends Controller
      */
     public function create(): \Illuminate\View\View
     {
-        $services = Service::getAll();
-        $providers = [
+        $services = array_column(Service::cases(), 'value');
+        $channels = [
             //TODO: add email provider
             'push' => $this->channelDBService->getByGroupProvider(),
         ];
 
         return view('app.create', [
             'services' => $services,
-            'providers' => $providers,
+            'channels' => $channels,
         ]);
     }
 
@@ -122,7 +122,21 @@ class AppController extends Controller
      */
     public function edit(string $id): \Illuminate\View\View
     {
-        return view('app.edit');
+        $services = Service::getAll();
+        $providers = [
+            //TODO: add email provider
+            'push' => $this->channelDBService->getByGroupProvider(),
+        ];
+
+        $app = $this->appDBService->getById($id, true);
+        \Log::info($services);
+        die();
+
+        return view('app.edit', [
+            'services' => $services,
+            'providers' => $providers,
+            'app' => $app,
+        ]);
     }
 
     /**

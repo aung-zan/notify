@@ -38,8 +38,8 @@
                         <thead>
                             <tr class="fw-bold fs-6 text-gray-800">
                                 <th>Name</th>
-                                <th>Notification</th>
-                                <th>Channel</th>
+                                <th>Services</th>
+                                <th>Channels</th>
                                 <th>Created At</th>
                                 <th>Updated At</th>
                                 <th></th>

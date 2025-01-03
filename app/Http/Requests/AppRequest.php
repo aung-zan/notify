@@ -35,9 +35,10 @@ class AppRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
-            'scopes' => 'required|array',
-            'scopes.*.service' => ['required', new Enum(Service::class)],
-            'scopes.*.channel' => 'required',
+            'services' => 'required|array',
+            'channels' => 'required|array',
+            'services.*' => ['required', new Enum(Service::class)],
+            'channels.*' => 'required',
         ];
     }
 
@@ -49,20 +50,8 @@ class AppRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'scopes.*.service' => 'service',
-            'scopes.*.channel' => 'channel',
-        ];
-    }
-
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array<string, string>
-     */
-    public function messages(): array
-    {
-        return [
-            'scopes.required' => 'The service and channel fields are required.',
+            'services.*' => 'service',
+            'channels.*' => 'channel',
         ];
     }
 
@@ -75,14 +64,16 @@ class AppRequest extends FormRequest
             function (Validator $validator) {
                 if ($validator->errors()->isEmpty()) {
                     $requestData = $validator->validated();
-                    $scopes = $requestData['scopes'];
+                    $services = $requestData['services'];
+                    $channels = $requestData['channels'];
 
-                    foreach ($scopes as $key => $scope) {
-                        // TODO: Add validation for email service.
-                        if ((int)$scope['service'] === Service::Push->value) {
-                            if (! $this->channelDBService->checkChannel($scope['channel'])) {
-                                $validator->errors()->add("scopes.{$key}.channel", 'The selected channel is invalid.');
+                    foreach ($channels as $key => $channel) {
+                        if ($services[$key] === Service::Push->value) {
+                            if (! $this->channelDBService->checkChannel($channel)) {
+                                $validator->errors()->add("channels.{$key}", 'The selected channel is invalid.');
                             }
+                        } elseif ($services[$key] === Service::Email->value) {
+                            # TODO: Implement channel validation for email.
                         }
                     }
                 }

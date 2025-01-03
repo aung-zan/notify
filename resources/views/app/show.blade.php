@@ -15,7 +15,7 @@
                             <i class="bi bi-x-lg fs-3"></i>
                             Cancel
                         </a>
-                        <a href="{{route('app.edit', 1)}}" class="btn btn-outline btn-outline-primary">
+                        <a href="{{route('app.edit', $app['id'])}}" class="btn btn-outline btn-outline-primary">
                             <i class="bi bi-cloud-download fs-2 mt-1"></i>
                             Edit
                         </a>
@@ -39,11 +39,14 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-4">
-                                <label class="form-label text-muted">Notification</label>
+                                <label class="form-label text-muted">Services</label>
                             </div>
 
                             <div class="col-8">
-                                <span class="badge badge-outline badge-primary">{{$app['notifications']}}</span>
+                                @php
+                                    $services = implode(', ', $app['services']);
+                                @endphp
+                                <span class="badge badge-outline badge-primary">{{$services}}</span>
                             </div>
                         </div>
                     </div>
@@ -68,7 +71,9 @@
                             </div>
 
                             <div class="col-8">
-                                <span class="badge badge-outline badge-success">{{$app['channels']}}</span>
+                                @foreach ($app['channels'] as $channel)
+                                    <span class="badge badge-outline badge-success">{{$channel}}</span>
+                                @endforeach
                             </div>
                         </div>
                     </div>

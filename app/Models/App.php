@@ -43,9 +43,18 @@ class App extends Model
      * @var array
      */
     protected $appends = [
-        'notifications',
+        'services',
         'channels'
     ];
+
+    /**
+     * cache the scopes column's values.
+     * this is used to prevent multiple query executions because of the appends attributes.
+     * there is still going to be multiple query executions if the app's record is more than one.
+     *
+     * TODO: Implement caching mechanism <redis> and make changes in a query.
+     */
+    private $cachedScopes;
 
     /**
      * Accessor for scopes attribute.
@@ -56,54 +65,79 @@ class App extends Model
     protected function getScopesAttribute($value): array
     {
         $scopesArray = (array) json_decode($value);
-        $scopes = [];
 
-        foreach ($scopesArray as $key => $channelId) {
-            $notification = $this->getNotificationType($key);
-            // TODO: Implement for email notification.
-            $channel = Push::findOrFail($channelId);
-
-            $scopes[$notification] = substr($channel->name, 0, 16) . " - {$channel->provider_name}";
-        }
-
-        return $scopes;
+        return $scopesArray;
     }
 
     /**
-     * Accessor for notifications attribute.
+     * Accessor for services attribute.
      *
-     * @return string
+     * @return array
      */
-    protected function getNotificationsAttribute(): string
+    protected function getServicesAttribute(): array
     {
-        return implode(', ', array_keys($this->scopes));
+        $services = [];
+        $serviceScopes = array_keys($this->scopes);
+
+        foreach ($serviceScopes as $serviceScope) {
+            $services[] = $this->getService($serviceScope);
+        }
+
+        return $services;
     }
 
     /**
      * Accessor for channels attribute.
      *
-     * @return string
+     * @return array
      */
-    protected function getChannelsAttribute(): string
+    protected function getChannelsAttribute(): array
     {
-        return implode(', ', array_values($this->scopes));
+        $channels = [];
+
+        foreach ($this->scopes as $serviceScope => $channelId) {
+            $channel = $this->getChannel($serviceScope, $channelId);
+            $channels[] = substr($channel->name, 0, 16) . " - {$channel->provider_name}";
+        }
+
+        return $channels;
     }
 
     /**
      * Get the notification type.
      *
-     * @param string $string
-     * @return string
+     * @param string $serviceScope
+     * @return array
      */
-    private function getNotificationType($string): string
+    private function getService(string $serviceScope): string
     {
-        $notificationType = [
+        $servicesType = [
             'push' => 'Push',
             'email' => 'Email',
         ];
 
-        list(, $type, ) = explode('.', $string);
+        list(, $type, ) = explode('.', $serviceScope);
 
-        return $notificationType[$type];
+        return $servicesType[$type];
+    }
+
+    /**
+     * Get the channel by serviceScope and id.
+     *
+     * @param string $serviceScope
+     * @param int $id
+     * @return Model
+     */
+    private function getChannel(string $serviceScope, int $id): Model
+    {
+        list(, $type, ) = explode('.', $serviceScope);
+
+        $table = [
+            'push' => new Push(),
+            'email' => new Email(),
+        ][$type];
+
+        return $table->select('name', 'provider')
+            ->findOrFail($id);
     }
 }

@@ -53,8 +53,8 @@ class TokenService
             'iat'  => time(),
             'exp'  => time() + 3600,
             'appId'  => $app['id'],
-            'channels' => $this->getChannelsFromScopes($data['scopes']),
-            'scopes' => (array) json_decode($app['scopes']),
+            'channels' => $data['channels'],
+            'scopes' => $app['scopes'],
         ];
     }
 
@@ -70,22 +70,5 @@ class TokenService
             'type' => 'refresh',
             'exp' => time() + (3600 * 24 * 30)
         ]);
-    }
-
-    /**
-     * Get channels from scopes.
-     *
-     * @param array $scopes
-     * @return array
-     */
-    private function getChannelsFromScopes($scopes): array
-    {
-        $channels = [];
-
-        foreach ($scopes as $scope) {
-            $channels[] = $scope['channel'];
-        }
-
-        return $channels;
     }
 }

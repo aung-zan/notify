@@ -1,5 +1,6 @@
 $.ajaxSetup({
   headers: {
+      // 'X-Requested-With': 'XMLHttpRequest',
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
   }
 });
@@ -7,25 +8,29 @@ $.ajaxSetup({
 const columns = [
   {data: 'name'},
   {
-    data: 'notifications',
-    render: function (data, type, row) {
-      return '<span class="badge badge-outline badge-primary">' + data + '</span>';
+    data: 'services',
+    render: function (data) {
+      const services = data.join(', ');
+
+      return '<span class="badge badge-outline badge-primary">' + services + '</span>';
     }
   },
   {
     data: 'channels',
-    render: function (data, type, row) {
-      const channel = '<span class="badge badge-outline badge-success mb-2">' + data + '</span>';
-      // '<br />' +
-      // '<span class="badge badge-outline badge-success mb-2">Email Testing - SMTP</span>';
+    render: function (data) {
+      let channels = '';
 
-      return channel;
+      data.forEach(element => {
+        channels += '<span class="badge badge-outline badge-success mb-2">' + element + '</span><br/>';
+      });
+
+      return channels;
     }
   },
   {data: 'created_at'},
   {data: 'updated_at'},
   {
-    data: function (row, type, set) {
+    data: function (row) {
       const appShowURL = app_detail_url.replace('id', row.id);
 
       const actionDiv = document.querySelector('.dropdown').cloneNode(true);

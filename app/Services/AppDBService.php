@@ -55,7 +55,7 @@ class AppDBService extends DBService
     public function create(array $request): array
     {
         $request['user_id'] = 1;
-        $request['scopes'] = json_encode($this->formatScopes($request['scopes']));
+        $request['scopes'] = $this->createScopes($request);
 
         return $this->appRepository->create($request)
             ->toArray();
@@ -63,16 +63,21 @@ class AppDBService extends DBService
 
     /**
      * get an app details by id.
-     * TODO: refactor $type not to based on the method.
      *
      * @param int $id
-     * @param bool $type (false for show and true for edit)
+     * @param bool $hideAppends
      * @return array
      */
-    public function getById(int $id): array
+    public function getById(int $id, bool $hideAppends = false): array
     {
+        $hideColumns = ['scopes'];
+
+        if ($hideAppends) {
+            $hideColumns = ['services', 'channels', 'token', 'refresh_token'];
+        }
+
         return $this->appRepository->getById($id)
-            ->makeHidden(['user_id', 'scopes'])
+            ->makeHidden($hideColumns)
             ->toArray();
     }
 
@@ -89,22 +94,26 @@ class AppDBService extends DBService
     }
 
     /**
-     * Format scopes.
+     * create and format scopes.
+     * TODO: Think about new format for permissions.
      *
-     * @param array $scopes
-     * @return array
+     * @param array $request
+     * @return string
      */
-    private function formatScopes(array $scopes): array
+    private function createScopes(array &$request): string
     {
-        $formatScopes = [];
+        $scopes = [];
+        $services = $request['services'];
+        $channels = $request['channels'];
 
-        foreach ($scopes as $scope) {
-            $service = 'notifications.' . strtolower(Service::getNameByValue($scope['service'])) . '.send';
-            $formatScopes = [
-                $service => $scope['channel']
-            ];
+        foreach ($channels as $key => $channel) {
+            $service = 'notifications.' . $services[$key];
+            $scopes[$service] = $channel;
         }
 
-        return $formatScopes;
+        unset($request['services']);
+        unset($request['channels']);
+
+        return json_encode($scopes);
     }
 }

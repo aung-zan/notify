@@ -2,10 +2,10 @@
 
 namespace App\Enums;
 
-enum Service: int
+enum Service: string
 {
-    case Push = 1;
-    // case Email = 2;
+    case Push = 'push';
+    // case Email = 'email';
 
     public static function getAll(): array
     {

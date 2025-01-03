@@ -2,8 +2,11 @@
     <link href="/assets/css/custom/include/app/options.css" rel="stylesheet" type="text/css"/>
 @endpush
 
+{{-- TODO: refactor with [label, label] and [value, value].
+Current is [label, value] and [label, value]. --}}
+
 @php
-    $defaultActive = [1];
+    $defaultActive = ['push'];
     $serviceErrorMessage = '';
 
     if ($errors->has('scopes')) {
@@ -19,36 +22,32 @@
             <label class="form-label required">Services</label>
         </div>
 
-        {{-- TODO: service chips and channels select should be in loop and
-        the resrouce data should be in the array structure with the chosen
-        service and channels. [email, push] and [mailtrap, smtp, amazon ses, pusher, rabbitmq]. --}}
-
         <div class="col-10">
-            @foreach ($services as $serviceName => $serviceValue)
+            @foreach ($services as $key => $service)
                 @php
-                    $serviceType = strtolower($serviceName);
-                    $isActive = in_array($serviceValue, $defaultActive);
+                    $serviceName = ucfirst($service);
+                    $isActive = in_array($service, $defaultActive);
 
                     if (! $errors->has('scopes')) {
                         $serviceError = false;
 
-                        if ($errors->has('scopes.' . $serviceValue . '.service')) {
+                        if ($errors->has('scopes.' . $key . '.service')) {
                             $serviceError = true;
-                            $serviceErrorMessage = $errors->first('scopes.' . $serviceValue . '.service');
+                            $serviceErrorMessage = $errors->first('scopes.' . $key . '.service');
                         }
                     }
                 @endphp
 
                 <input type="hidden"
-                    name="scopes[{{$serviceValue}}][service]"
-                    id="{{$serviceType}}"
-                    value={{$serviceValue}}
+                    name="scopes[{{$key}}][service]"
+                    id="{{$service}}"
+                    value={{$service}}
                     {{$isActive ? '' : 'disabled'}}
                 >
 
                 <button type="button"
                     class="chip {{$isActive ? 'active' : ''}} {{$serviceError ? 'is-invalid' : ''}}"
-                    data-type="{{$serviceType}}"
+                    data-type="{{$service}}"
                 >{{$serviceName}} Service</button>
             @endforeach
 
@@ -70,23 +69,22 @@
         <div class="col-10">
             <div class="row" id="channels">
                 {{-- channels select --}}
-                @foreach ($services as $serviceName => $serviceValue)
+                @foreach ($services as $serviceName => $service)
                     @php
-                        $service = strtolower($serviceName);
-                        $isSelected = in_array($serviceValue, $defaultActive);
+                        $isSelected = in_array($service, $defaultActive);
 
                         if (! $errors->has('scopes')) {
                             $channelError = false;
 
-                            if ($errors->has('scopes.' . $serviceValue . '.channel')) {
+                            if ($errors->has('scopes.' . $service . '.channel')) {
                                 $channelError = true;
-                                $channelErrorMessage = $errors->first('scopes.' . $serviceValue . '.channel');
+                                $channelErrorMessage = $errors->first('scopes.' . $service . '.channel');
                             }
                         }
                     @endphp
 
                     <div class="col-3 mb-3" id="{{$service}}-channels" {{$isSelected ? '' : 'hidden'}}>
-                        <select name="scopes[{{$serviceValue}}][channel]"
+                        <select name="scopes[{{$service}}][channel]"
                             class="form-select {{$channelError ? 'is-invalid' : ''}}"
                             data-control="select2"
                             {{$isSelected ? '' : 'disabled'}}

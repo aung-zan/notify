@@ -36,7 +36,7 @@
                                     name="name"
                                     class="form-control @error('name') is-invalid @enderror"
                                     placeholder="Eg. Testing App"
-                                    value="{{old('name', 'Testing App')}}"
+                                    value="{{old('name', $app['name'])}}"
                                 >
                                 @error('name')
                                     <div class="invalid-feedback">{{$message}}</div>
@@ -57,7 +57,7 @@
                                     cols="30"
                                     rows="5"
                                     placeholder="Eg. This is a testing app"
-                                >{{old('description', 'This is a testing app')}}</textarea>
+                                >{{old('description', $app['description'])}}</textarea>
                                 @error('description')
                                     <div class="invalid-feedback">{{$message}}</div>
                                 @enderror
