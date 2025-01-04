@@ -141,9 +141,6 @@ class AppController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * TODO: prevent the service and channel update when the app is used.
-     * TODO: create a new exception class for the used app exception.
-     *
      * @param AppRequest $request
      * @param string $id
      */

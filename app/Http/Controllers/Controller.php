@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\IsUsedException;
 use Illuminate\Support\Facades\Log;
 
 abstract class Controller
@@ -23,8 +24,11 @@ abstract class Controller
      */
     protected function handleException(\Throwable $th): void
     {
-        Log::info($th->getMessage() . ' in ' . $th->getFile() . ' at ' . $th->getLine());
-
-        $this->flashMessage['failed']['message'] = 'Something went wrong.';
+        if ($th instanceof IsUsedException) {
+            $this->flashMessage['failed']['message'] = $th->getMessage();
+        } else {
+            Log::info($th->getMessage() . ' in ' . $th->getFile() . ' at ' . $th->getLine());
+            $this->flashMessage['failed']['message'] = 'Something went wrong.';
+        }
     }
 }
