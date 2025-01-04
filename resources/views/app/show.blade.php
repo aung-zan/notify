@@ -44,7 +44,7 @@
 
                             <div class="col-8">
                                 @php
-                                    $services = implode(', ', $app['services']);
+                                    $services = implode(', ', $app['service_display']);
                                 @endphp
                                 <span class="badge badge-outline badge-primary">{{$services}}</span>
                             </div>
@@ -71,7 +71,7 @@
                             </div>
 
                             <div class="col-8">
-                                @foreach ($app['channels'] as $channel)
+                                @foreach ($app['channel_display'] as $channel)
                                     <span class="badge badge-outline badge-success">{{$channel}}</span>
                                 @endforeach
                             </div>

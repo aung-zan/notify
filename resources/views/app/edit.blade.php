@@ -21,7 +21,7 @@
             </div>
 
             <div class="card-body">
-                <form action="{{route('app.update', 1)}}" method="post" id="update">
+                <form action="{{route('app.update', $app['id'])}}" method="post" id="update">
                     @csrf
                     @method('PUT')
 

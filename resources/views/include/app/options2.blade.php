@@ -2,56 +2,53 @@
     <link href="/assets/css/custom/include/app/options.css" rel="stylesheet" type="text/css"/>
 @endpush
 
+{{-- TODO: refactor with [label, label] and [value, value].
+Current is [label, value] and [label, value]. --}}
+
 @php
-    $activeService = old('services', ['push']);
+    $defaultActive = ['push'];
     $serviceErrorMessage = '';
-    $channelErrorMessage = '';
 
-    if ($errors->has('services')) {
-        $serviceError = true;
-        $serviceErrorMessage = $errors->first('services');
-    }
-
-    if ($errors->has('channels')) {
-        $channelError = true;
-        $channelErrorMessage = $errors->first('channels');
+    if ($errors->has('scopes')) {
+        $channelError = $serviceError = true;
+        $channelErrorMessage = $serviceErrorMessage = $errors->first('scopes');
     }
 @endphp
 
+{{-- Service row --}}
 <div class="mb-10">
-    {{-- Service --}}
     <div class="row">
         <div class="col-2">
-            <label class="form-label required">Service</label>
+            <label class="form-label required">Services</label>
         </div>
+
         <div class="col-10">
             @foreach ($services as $key => $service)
                 @php
                     $serviceName = ucfirst($service);
-                    $isActive = in_array($service, $activeService);
+                    $isActive = in_array($service, $defaultActive);
 
-                    if (! $errors->has('services')) {
+                    if (! $errors->has('scopes')) {
                         $serviceError = false;
 
-                        if ($errors->has('services.' . $key)) {
+                        if ($errors->has('scopes.' . $key . '.service')) {
                             $serviceError = true;
-                            $serviceErrorMessage = $errors->first('services.' . $key);
+                            $serviceErrorMessage = $errors->first('scopes.' . $key . '.service');
                         }
                     }
                 @endphp
 
                 <input type="hidden"
-                    name="services[{{$key}}]"
+                    name="scopes[{{$key}}][service]"
                     id="{{$service}}"
-                    value="{{$service}}"
+                    value={{$service}}
                     {{$isActive ? '' : 'disabled'}}
                 >
 
                 <button type="button"
+                    class="chip {{$isActive ? 'active' : ''}} {{$serviceError ? 'is-invalid' : ''}}"
                     data-type="{{$service}}"
-                    class="chip {{$isActive ? 'active' : ''}} {{$serviceError ? 'is-invalid' : ''}}">
-                    {{$serviceName}} Service
-                </button>
+                >{{$serviceName}} Service</button>
             @endforeach
 
             @if (! empty($serviceErrorMessage))
@@ -60,39 +57,42 @@
         </div>
     </div>
 </div>
+{{-- Service row --}}
 
+{{-- Channels row --}}
 <div class="mb-10">
-    {{-- Channel --}}
     <div class="row">
         <div class="col-2">
-            <label class="form-label required">Channel</label>
+            <label class="form-label required">Channels</label>
         </div>
-        <div class="col-10">
-            <div class="row">
-                @foreach ($services as $key => $service)
-                    @php
-                        $isActive = in_array($service, $activeService);
 
-                        if (! $errors->has('channels')) {
+        <div class="col-10">
+            <div class="row" id="channels">
+                {{-- channels select --}}
+                @foreach ($services as $serviceName => $service)
+                    @php
+                        $isSelected = in_array($service, $defaultActive);
+
+                        if (! $errors->has('scopes')) {
                             $channelError = false;
 
-                            if ($errors->has('channels.' . $key)) {
+                            if ($errors->has('scopes.' . $service . '.channel')) {
                                 $channelError = true;
-                                $channelErrorMessage = $errors->first('channels.' . $key);
+                                $channelErrorMessage = $errors->first('scopes.' . $service . '.channel');
                             }
                         }
                     @endphp
 
-                    <div class="col-4 mb-3" id="{{$service}}-channels" {{$isActive ? '' : 'hidden'}}>
-                        <select data-control="select2"
+                    <div class="col-3 mb-3" id="{{$service}}-channels" {{$isSelected ? '' : 'hidden'}}>
+                        <select name="scopes[{{$service}}][channel]"
                             class="form-select {{$channelError ? 'is-invalid' : ''}}"
-                            name="channels[{{$key}}]"
-                            {{$isActive ? '' : 'disabled'}}
+                            data-control="select2"
+                            {{$isSelected ? '' : 'disabled'}}
                         >
-                            @foreach ($channels[$service] as $channelGroupName => $channelGroup)
-                                <optgroup label="{{$channelGroupName}}">
-                                    @foreach ($channelGroup as $channel)
-                                        <option value="{{$channel['id']}}">{{$channel['name']}}</option>
+                            @foreach ($providers[$service] as $channelGroups => $channels)
+                                <optgroup label={{$channelGroups}}>
+                                    @foreach ($channels as $channel)
+                                        <option value={{$channel['id']}}>{{$channel['name']}}</option>
                                     @endforeach
                                 </optgroup>
                             @endforeach
@@ -103,10 +103,12 @@
                         @endif
                     </div>
                 @endforeach
+                {{-- channels select --}}
             </div>
         </div>
     </div>
 </div>
+{{-- Channels row --}}
 
 @push('js')
     <script src="/assets/js/custom/include/app/options.js"></script>

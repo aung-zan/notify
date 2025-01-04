@@ -122,29 +122,47 @@ class AppController extends Controller
      */
     public function edit(string $id): \Illuminate\View\View
     {
-        $services = Service::getAll();
-        $providers = [
+        // $services = Service::getAll();
+        $services = array_column(Service::cases(), 'value');
+        $channels = [
             //TODO: add email provider
             'push' => $this->channelDBService->getByGroupProvider(),
         ];
 
         $app = $this->appDBService->getById($id, true);
-        \Log::info($services);
-        die();
 
         return view('app.edit', [
             'services' => $services,
-            'providers' => $providers,
+            'channels' => $channels,
             'app' => $app,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * TODO: prevent the service and channel update when the app is used.
+     * TODO: create a new exception class for the used app exception.
+     *
+     * @param AppRequest $request
+     * @param string $id
      */
-    public function update(Request $request, string $id)
+    public function update(AppRequest $request, string $id)
     {
-        return 'update';
+        try {
+            $data = $request->except('_token', '_method');
+            $this->appDBService->update($id, $data, true);
+
+            $this->flashMessage['success']['message'] = 'Successfully updated.';
+        } catch (\Throwable $th) {
+            $this->handleException($th);
+            return redirect()->back()
+                ->withInput()
+                ->with('flashMessage', $this->flashMessage['failed']);
+        }
+
+        return redirect()->route('app.index')
+            ->with('flashMessage', $this->flashMessage['success']);
     }
 
     /**

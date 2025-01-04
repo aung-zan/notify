@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class App extends Model
 {
@@ -44,17 +44,18 @@ class App extends Model
      */
     protected $appends = [
         'services',
-        'channels'
+        'channels',
+        'service_display',
+        'channel_display',
     ];
 
     /**
-     * cache the scopes column's values.
-     * this is used to prevent multiple query executions because of the appends attributes.
-     * there is still going to be multiple query executions if the app's record is more than one.
-     *
-     * TODO: Implement caching mechanism <redis> and make changes in a query.
+     * Get the notifications for the app.
      */
-    private $cachedScopes;
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
 
     /**
      * Accessor for scopes attribute.
@@ -80,10 +81,28 @@ class App extends Model
         $serviceScopes = array_keys($this->scopes);
 
         foreach ($serviceScopes as $serviceScope) {
-            $services[] = $this->getService($serviceScope);
+            list(, $service, ) = explode('.', $serviceScope);
+            $services[] = $service;
         }
 
         return $services;
+    }
+
+    /**
+     * Accessor for service_display attribute.
+     *
+     * @return array
+     */
+    protected function getServiceDisplayAttribute(): array
+    {
+        $serviceDisplay = [];
+        $services = $this->services;
+
+        foreach ($services as $service) {
+            $serviceDisplay[] = $this->getServiceDisplay($service);
+        }
+
+        return $serviceDisplay;
     }
 
     /**
@@ -92,6 +111,16 @@ class App extends Model
      * @return array
      */
     protected function getChannelsAttribute(): array
+    {
+        return array_values($this->scopes);
+    }
+
+    /**
+     * Accessor for channel_display attribute.
+     *
+     * @return array
+     */
+    protected function getChannelDisplayAttribute(): array
     {
         $channels = [];
 
@@ -106,19 +135,17 @@ class App extends Model
     /**
      * Get the notification type.
      *
-     * @param string $serviceScope
+     * @param string $service
      * @return array
      */
-    private function getService(string $serviceScope): string
+    private function getServiceDisplay(string $service): string
     {
-        $servicesType = [
+        $serviceDisplay = [
             'push' => 'Push',
             'email' => 'Email',
-        ];
+        ][$service];
 
-        list(, $type, ) = explode('.', $serviceScope);
-
-        return $servicesType[$type];
+        return $serviceDisplay;
     }
 
     /**

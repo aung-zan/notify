@@ -87,7 +87,12 @@ class AppRepository implements DBInterface
      */
     public function update(int $id, array $data): void
     {
-        $this->getById($id);
+        $app = $this->getById($id);
+
+        if ($app->notifications()->exists()) {
+            // TODO: use a custom exception.
+            throw new \Exception('App is used.');
+        }
 
         $this->app->where('id', $id)
             ->update($data);

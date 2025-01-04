@@ -64,7 +64,7 @@
                         </div>
                     </div>
 
-                    @include('include.app.options2')
+                    @include('include.app.options')
                 </form>
             </div>
         </div>

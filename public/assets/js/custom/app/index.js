@@ -8,7 +8,7 @@ $.ajaxSetup({
 const columns = [
   {data: 'name'},
   {
-    data: 'services',
+    data: 'service_display',
     render: function (data) {
       const services = data.join(', ');
 
@@ -16,7 +16,7 @@ const columns = [
     }
   },
   {
-    data: 'channels',
+    data: 'channel_display',
     render: function (data) {
       let channels = '';
 

@@ -73,7 +73,7 @@ class AppDBService extends DBService
         $hideColumns = ['scopes'];
 
         if ($hideAppends) {
-            $hideColumns = ['services', 'channels', 'token', 'refresh_token'];
+            $hideColumns = ['scopes', 'service_display', 'channel_display', 'token', 'refresh_token'];
         }
 
         return $this->appRepository->getById($id)
@@ -86,10 +86,15 @@ class AppDBService extends DBService
      *
      * @param int $id
      * @param array $request
+     * @param bool $createScopes
      * @return void
      */
-    public function update(int $id, array $request): void
+    public function update(int $id, array $request, bool $createScopes = false): void
     {
+        if ($createScopes) {
+            $request['scopes'] = $this->createScopes($request);
+        }
+
         $this->appRepository->update($id, $request);
     }
 

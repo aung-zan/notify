@@ -2,53 +2,57 @@
     <link href="/assets/css/custom/include/app/options.css" rel="stylesheet" type="text/css"/>
 @endpush
 
-{{-- TODO: refactor with [label, label] and [value, value].
-Current is [label, value] and [label, value]. --}}
-
 @php
-    $defaultActive = ['push'];
+    $activeService = old('services', isset($app['services']) ? $app['services'] : ['push']);
+    $activeChannel = old('channels', isset($app['channels']) ? $app['channels'] : []);
     $serviceErrorMessage = '';
+    $channelErrorMessage = '';
 
-    if ($errors->has('scopes')) {
-        $channelError = $serviceError = true;
-        $channelErrorMessage = $serviceErrorMessage = $errors->first('scopes');
+    if ($errors->has('services')) {
+        $serviceError = true;
+        $serviceErrorMessage = $errors->first('services');
+    }
+
+    if ($errors->has('channels')) {
+        $channelError = true;
+        $channelErrorMessage = $errors->first('channels');
     }
 @endphp
 
-{{-- Service row --}}
 <div class="mb-10">
+    {{-- Service --}}
     <div class="row">
         <div class="col-2">
-            <label class="form-label required">Services</label>
+            <label class="form-label required">Service</label>
         </div>
-
         <div class="col-10">
             @foreach ($services as $key => $service)
                 @php
                     $serviceName = ucfirst($service);
-                    $isActive = in_array($service, $defaultActive);
+                    $isActive = in_array($service, $activeService);
 
-                    if (! $errors->has('scopes')) {
+                    if (! $errors->has('services')) {
                         $serviceError = false;
 
-                        if ($errors->has('scopes.' . $key . '.service')) {
+                        if ($errors->has('services.' . $key)) {
                             $serviceError = true;
-                            $serviceErrorMessage = $errors->first('scopes.' . $key . '.service');
+                            $serviceErrorMessage = $errors->first('services.' . $key);
                         }
                     }
                 @endphp
 
                 <input type="hidden"
-                    name="scopes[{{$key}}][service]"
+                    name="services[{{$key}}]"
                     id="{{$service}}"
-                    value={{$service}}
+                    value="{{$service}}"
                     {{$isActive ? '' : 'disabled'}}
                 >
 
                 <button type="button"
-                    class="chip {{$isActive ? 'active' : ''}} {{$serviceError ? 'is-invalid' : ''}}"
                     data-type="{{$service}}"
-                >{{$serviceName}} Service</button>
+                    class="chip {{$isActive ? 'active' : ''}} {{$serviceError ? 'is-invalid' : ''}}">
+                    {{$serviceName}} Service
+                </button>
             @endforeach
 
             @if (! empty($serviceErrorMessage))
@@ -57,42 +61,46 @@ Current is [label, value] and [label, value]. --}}
         </div>
     </div>
 </div>
-{{-- Service row --}}
 
-{{-- Channels row --}}
 <div class="mb-10">
+    {{-- Channel --}}
     <div class="row">
         <div class="col-2">
-            <label class="form-label required">Channels</label>
+            <label class="form-label required">Channel</label>
         </div>
-
         <div class="col-10">
-            <div class="row" id="channels">
-                {{-- channels select --}}
-                @foreach ($services as $serviceName => $service)
+            <div class="row">
+                @foreach ($services as $key => $service)
                     @php
-                        $isSelected = in_array($service, $defaultActive);
+                        $isActive = in_array($service, $activeService);
 
-                        if (! $errors->has('scopes')) {
+                        if (! $errors->has('channels')) {
                             $channelError = false;
 
-                            if ($errors->has('scopes.' . $service . '.channel')) {
+                            if ($errors->has('channels.' . $key)) {
                                 $channelError = true;
-                                $channelErrorMessage = $errors->first('scopes.' . $service . '.channel');
+                                $channelErrorMessage = $errors->first('channels.' . $key);
                             }
                         }
                     @endphp
 
-                    <div class="col-3 mb-3" id="{{$service}}-channels" {{$isSelected ? '' : 'hidden'}}>
-                        <select name="scopes[{{$service}}][channel]"
+                    <div class="col-4 mb-3" id="{{$service}}-channels" {{$isActive ? '' : 'hidden'}}>
+                        <select data-control="select2"
                             class="form-select {{$channelError ? 'is-invalid' : ''}}"
-                            data-control="select2"
-                            {{$isSelected ? '' : 'disabled'}}
+                            name="channels[{{$key}}]"
+                            {{$isActive ? '' : 'disabled'}}
                         >
-                            @foreach ($providers[$service] as $channelGroups => $channels)
-                                <optgroup label={{$channelGroups}}>
-                                    @foreach ($channels as $channel)
-                                        <option value={{$channel['id']}}>{{$channel['name']}}</option>
+                            @foreach ($channels[$service] as $channelGroupName => $channelGroup)
+                                <optgroup label="{{$channelGroupName}}">
+                                    @foreach ($channelGroup as $channel)
+                                        @php
+                                            $isChannelActive = in_array($channel['id'], $activeChannel);
+                                        @endphp
+
+                                        <option
+                                            value="{{$channel['id']}}"
+                                            {{$isChannelActive ? 'selected' : ''}}
+                                        >{{$channel['name']}}</option>
                                     @endforeach
                                 </optgroup>
                             @endforeach
@@ -103,12 +111,10 @@ Current is [label, value] and [label, value]. --}}
                         @endif
                     </div>
                 @endforeach
-                {{-- channels select --}}
             </div>
         </div>
     </div>
 </div>
-{{-- Channels row --}}
 
 @push('js')
     <script src="/assets/js/custom/include/app/options.js"></script>
