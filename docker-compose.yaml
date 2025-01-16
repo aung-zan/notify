@@ -1,21 +1,29 @@
 services:
-  webContainer:
+  devContainer:
     container_name: notify
     image: aungzan/ubuntu-ssl
     ports:
-      - '443:443'
+      - '445:443'
     volumes:
       - '.:/var/www/html'
     depends_on:
       - dbContainer
+    networks:
+      - shared-network
 
   dbContainer:
     container_name: mysql
     image: mysql
     ports:
-      - '3306:3306'
+      - '3309:3306'
+    networks:
+      - shared-network
     environment:
       - MYSQL_ROOT_PASSWORD=P@ssw0rd
       - MYSQL_DATABASE=notify
       - MYSQL_USER=aungminzan
       - MYSQL_PASSWORD=password
+
+networks:
+  shared-network:
+    external: true

@@ -6,7 +6,7 @@ enum PushProvider: int
 {
     case Pusher = 1;
     case Firebase = 2;
-    case RabbitMQ = 3;
+    // case RabbitMQ = 3;
 
     public static function getAll(): array
     {
