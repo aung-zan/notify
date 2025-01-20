@@ -6,19 +6,19 @@ use App\Enums\PushProviders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DatatableRequest;
 use App\Http\Requests\PushRequest;
-use App\Services\ChannelDBService;
-use App\Services\ChannelService;
+use App\Services\PushChannelService;
+use App\Services\PushService;
 use Illuminate\Http\Request;
 
 class PushController extends Controller
 {
-    private $channelDBService;
-    private $channelService;
+    private $pushChannelService;
+    private $pushService;
 
-    public function __construct(ChannelDBService $channelDBService, ChannelService $channelService)
+    public function __construct(PushChannelService $pushChannelService, PushService $pushService)
     {
-        $this->channelDBService = $channelDBService;
-        $this->channelService = $channelService;
+        $this->pushChannelService = $pushChannelService;
+        $this->pushService = $pushService;
     }
 
     /**
@@ -39,7 +39,7 @@ class PushController extends Controller
      */
     public function getData(DatatableRequest $request)
     {
-        $records = $this->channelDBService->list($request->toArray());
+        $records = $this->pushChannelService->list($request->toArray());
 
         return response()->json($records, 200);
     }
@@ -68,7 +68,7 @@ class PushController extends Controller
     {
         try {
             $data = $request->except('_token');
-            $this->channelDBService->create($data);
+            $this->pushChannelService->create($data);
 
             $this->flashMessage['success']['message'] = 'Successfully created.';
             $message = $this->flashMessage['success'];
@@ -91,7 +91,7 @@ class PushController extends Controller
      */
     public function show(string $id)
     {
-        $channel = $this->channelDBService->getById($id);
+        $channel = $this->pushChannelService->getById($id);
 
         return view('push.show', [
             'channel' => $channel
@@ -106,7 +106,7 @@ class PushController extends Controller
      */
     public function edit(string $id)
     {
-        $channel = $this->channelDBService->getById($id, true);
+        $channel = $this->pushChannelService->getById($id, true);
 
         return view('push.edit', [
             'channel' => $channel
@@ -124,7 +124,7 @@ class PushController extends Controller
     {
         try {
             $data = $request->only(['name', 'credentials']);
-            $this->channelDBService->update($id, $data);
+            $this->pushChannelService->update($id, $data);
 
             $this->flashMessage['success']['message'] = 'Successfully updated.';
             $message = $this->flashMessage['success'];
@@ -147,7 +147,7 @@ class PushController extends Controller
      */
     public function testPage(string $id)
     {
-        $channel = $this->channelDBService->getByIdForTest($id);
+        $channel = $this->pushChannelService->getByIdForTest($id);
 
         return view('push.providers.' . $channel['provider_name'], [
             'channel' => $channel
@@ -175,8 +175,8 @@ class PushController extends Controller
                 'eventName' => 'pushNotificationTest',
             ]);
 
-            $channel = $this->channelDBService->getById($id);
-            $this->channelService->sendPushNotification($request->toArray(), $channel);
+            $channel = $this->pushChannelService->getById($id);
+            $this->pushService->sendPushNotification($request->toArray(), $channel);
 
             return response()->json([
                 'message' => 'Push notification sent successfully.'

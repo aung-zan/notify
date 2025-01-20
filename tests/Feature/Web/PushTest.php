@@ -68,7 +68,7 @@ class PushTest extends TestCase
         $response = $this->get('/push');
 
         $response->assertStatus(200);
-        $response->assertSee('Push Notification');
+        $response->assertSee('Push Channel');
         $response->assertSee('Channel List');
     }
 
@@ -138,7 +138,7 @@ class PushTest extends TestCase
         $response = $this->get('/push/create');
 
         $response->assertStatus(200);
-        $response->assertSee('Push Notification');
+        $response->assertSee('Push Channel');
         $response->assertSee('Create New Channel');
     }
 
@@ -220,7 +220,7 @@ class PushTest extends TestCase
         $response = $this->get('/push/' . $record->id);
 
         $response->assertStatus(200);
-        $response->assertSee('Push Notification');
+        $response->assertSee('Push Channel');
         $response->assertSee('Channel Details');
         $response->assertSee('pusher testing');
     }
@@ -245,7 +245,7 @@ class PushTest extends TestCase
         $response = $this->get('/push/' . $record->id . '/edit');
 
         $response->assertStatus(200);
-        $response->assertSee('Push Notification');
+        $response->assertSee('Push Channel');
         $response->assertSee('Edit a channel');
     }
 
@@ -375,7 +375,7 @@ class PushTest extends TestCase
         $response = $this->get('/push/' . $record->id . '/test');
 
         $response->assertStatus(200);
-        $response->assertSee('Push Notification');
+        $response->assertSee('Push Channel');
         $response->assertSee('Test Pusher Channel');
         $response->assertSee('pusher testing');
     }

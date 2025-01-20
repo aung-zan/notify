@@ -2,11 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\Push;
 use App\Models\PushChannel;
 use App\Repositories\PushRepository;
 
-class ChannelDBService
+class PushChannelService
 {
     private $pushRepository;
 

@@ -3,18 +3,18 @@
 namespace App\Http\Requests;
 
 use App\Enums\Service;
-use App\Services\ChannelDBService;
+use App\Services\PushChannelService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
 
 class AppRequest extends FormRequest
 {
-    private $channelDBService;
+    private $pushChannelService;
 
-    public function __construct(ChannelDBService $channelDBService)
+    public function __construct(PushChannelService $pushChannelService)
     {
-        $this->channelDBService = $channelDBService;
+        $this->pushChannelService = $pushChannelService;
     }
 
     /**
@@ -69,7 +69,7 @@ class AppRequest extends FormRequest
 
                     foreach ($channels as $key => $channel) {
                         if ($services[$key] === Service::Push->value) {
-                            if (! $this->channelDBService->checkChannel($channel)) {
+                            if (! $this->pushChannelService->checkChannel($channel)) {
                                 $validator->errors()->add("channels.{$key}", 'The selected channel is invalid.');
                             }
                         } elseif ($services[$key] === Service::Email->value) {
