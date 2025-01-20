@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Push;
+use App\Models\PushChannel;
 use App\Repositories\PushRepository;
 
 class ChannelDBService
@@ -61,9 +62,9 @@ class ChannelDBService
      * create a channel.
      *
      * @param array $request
-     * @return Push
+     * @return PushChannel
      */
-    public function create(array $request): Push
+    public function create(array $request): PushChannel
     {
         $request['user_id'] = 1;
 

@@ -28,7 +28,7 @@
         $groupRouteName = explode('.', $currentRouteName)[0];
         $title = ucfirst($groupRouteName);
 
-        $title .= $title !== 'App' ? ' Notification' : '';
+        $title .= $title === 'App' ? '' : ' Channels';
     @endphp
 
     <title>Notify - {{$title}}</title>

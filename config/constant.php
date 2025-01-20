@@ -11,13 +11,13 @@ return [
         [
             'route' => 'push.index',
             'icon' => 'bi bi-app-indicator',
-            'display_name' => 'Push Notification',
+            'display_name' => 'Push Channels',
             'group' => 'push',
         ],
         [
             'route' => 'email.index',
             'icon' => 'bi bi-envelope',
-            'display_name' => 'Email Notification',
+            'display_name' => 'Email Channels',
             'group' => 'email',
         ],
     ]

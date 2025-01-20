@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum PushProvider: int
+enum PushProviders: int
 {
     case Pusher = 1;
     case Firebase = 2;

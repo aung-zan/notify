@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Enums\Push;
-use App\Enums\PushProvider;
+use App\Enums\PushProviders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DatatableRequest;
 use App\Http\Requests\PushRequest;
@@ -52,10 +51,10 @@ class PushController extends Controller
      */
     public function create()
     {
-        $pushProvider = PushProvider::getAll();
+        $pushProviders = PushProviders::getAll();
 
         return view('push.create', [
-            'providers' => $pushProvider
+            'providers' => $pushProviders
         ]);
     }
 

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Web;
 
-use App\Models\Push;
+use App\Models\PushChannel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Log;
@@ -99,8 +99,8 @@ class PushTest extends TestCase
      */
     public function testGetDataValidRequest(): void
     {
-        Push::create($this->request);
-        Push::create($this->requestTypeTwo);
+        PushChannel::create($this->request);
+        PushChannel::create($this->requestTypeTwo);
 
         $response = $this->postJson('/push/data', $this->datatableRequest);
 
@@ -116,8 +116,8 @@ class PushTest extends TestCase
      */
     public function testGetDataSearch(): void
     {
-        Push::create($this->request);
-        Push::create($this->requestTypeTwo);
+        PushChannel::create($this->request);
+        PushChannel::create($this->requestTypeTwo);
 
         $this->datatableRequest['search']['value'] = 'pusher';
 
@@ -190,7 +190,7 @@ class PushTest extends TestCase
         $response = $this->from('/push/create')
             ->post('/push', $this->request);
 
-        $this->assertDatabaseHas('pushes', [
+        $this->assertDatabaseHas('push_channels', [
             'user_id' => 1,
             'provider' => 1,
             'name' => 'pusher testing',
@@ -215,7 +215,7 @@ class PushTest extends TestCase
      */
     public function testShowPageValidId(): void
     {
-        $record = Push::create($this->request);
+        $record = PushChannel::create($this->request);
 
         $response = $this->get('/push/' . $record->id);
 
@@ -240,7 +240,7 @@ class PushTest extends TestCase
      */
     public function testEditPageValidId(): void
     {
-        $record = Push::create($this->request);
+        $record = PushChannel::create($this->request);
 
         $response = $this->get('/push/' . $record->id . '/edit');
 
@@ -255,12 +255,12 @@ class PushTest extends TestCase
     public function testUpdateEmptyRequest(): void
     {
         $request = [];
-        $record = Push::create($this->request);
+        $record = PushChannel::create($this->request);
 
         $response = $this->from('/push/' . $record->id . '/edit')
             ->patch('/push/' . $record->id . '/update', $request);
 
-        $this->assertDatabaseHas('pushes', [
+        $this->assertDatabaseHas('push_channels', [
             'user_id' => 1,
             'provider' => 1,
             'name' => 'pusher testing',
@@ -283,12 +283,12 @@ class PushTest extends TestCase
             'credentials' => '',
         ];
 
-        $record = Push::create($this->request);
+        $record = PushChannel::create($this->request);
 
         $response = $this->from('/push/' . $record->id . '/edit')
             ->patch('/push/' . $record->id . '/update', $request);
 
-        $this->assertDatabaseHas('pushes', [
+        $this->assertDatabaseHas('push_channels', [
             'user_id' => 1,
             'provider' => 1,
             'name' => 'pusher testing',
@@ -312,12 +312,12 @@ class PushTest extends TestCase
             'name' => 'pusher testing 1',
         ];
 
-        $record = Push::create($this->request);
+        $record = PushChannel::create($this->request);
 
         $response = $this->from('/push/' . $record->id . '/edit')
             ->patch('/push/' . $record->id . '/update', $request);
 
-        $this->assertDatabaseHas('pushes', [
+        $this->assertDatabaseHas('push_channels', [
             'user_id' => 1,
             'provider' => 1,
             'name' => 'pusher testing 1',
@@ -340,12 +340,12 @@ class PushTest extends TestCase
             cluster = "ad1"',
         ];
 
-        $record = Push::create($this->request);
+        $record = PushChannel::create($this->request);
 
         $response = $this->from('/push/' . $record->id . '/edit')
             ->patch('/push/' . $record->id . '/update', $request);
 
-        $this->assertDatabaseHas('pushes', [
+        $this->assertDatabaseHas('push_channels', [
             'user_id' => 1,
             'provider' => 1,
             'name' => 'pusher testing 1',
@@ -370,7 +370,7 @@ class PushTest extends TestCase
      */
     public function testTestNotificationPageValidId(): void
     {
-        $record = Push::create($this->request);
+        $record = PushChannel::create($this->request);
 
         $response = $this->get('/push/' . $record->id . '/test');
 
@@ -385,7 +385,7 @@ class PushTest extends TestCase
      */
     public function testTestNotificationEmptyRequest(): void
     {
-        $record = Push::create($this->request);
+        $record = PushChannel::create($this->request);
 
         $response = $this->post('/push/' . $record->id . '/test', []);
 
@@ -413,7 +413,7 @@ class PushTest extends TestCase
             })
             ->once();
 
-        $record = Push::create($this->request);
+        $record = PushChannel::create($this->request);
         $response = $this->post('/push/' . $record->id . '/test', $request);
 
         $this->assertEquals('log', config('broadcasting.default'));

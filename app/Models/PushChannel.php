@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Enums\PushProvider;
+use App\Enums\PushProviders;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Push extends Model
+class PushChannel extends Model
 {
     use HasFactory;
 
@@ -49,7 +49,7 @@ class Push extends Model
      */
     protected function getProviderNameAttribute(): string
     {
-        return PushProvider::getNameByValue($this->attributes['provider']);
+        return PushProviders::getNameByValue($this->attributes['provider']);
     }
 
     /**

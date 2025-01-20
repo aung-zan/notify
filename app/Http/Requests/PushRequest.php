@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\PushProvider;
+use App\Enums\PushProviders;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
@@ -25,7 +25,7 @@ class PushRequest extends FormRequest
     {
         if ($this->isMethod('post')) {
             return [
-                'provider' => ['required', new Enum(PushProvider::class)],
+                'provider' => ['required', new Enum(PushProviders::class)],
                 'name' => 'required|max:100',
                 'credentials' => 'required|min:10',
             ];
