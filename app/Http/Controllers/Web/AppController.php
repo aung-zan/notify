@@ -122,7 +122,6 @@ class AppController extends Controller
      */
     public function edit(string $id): \Illuminate\View\View
     {
-        // $services = Service::getAll();
         $services = array_column(Service::cases(), 'value');
         $channels = [
             //TODO: add email provider

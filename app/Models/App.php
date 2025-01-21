@@ -160,8 +160,8 @@ class App extends Model
         list(, $type, ) = explode('.', $serviceScope);
 
         $table = [
-            'push' => new Push(),
-            'email' => new Email(),
+            'push' => new PushChannel(),
+            'email' => new EmailChannel(),
         ][$type];
 
         return $table->select('name', 'provider')

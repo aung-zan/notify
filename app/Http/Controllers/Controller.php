@@ -27,7 +27,7 @@ abstract class Controller
         if ($th instanceof IsUsedException) {
             $this->flashMessage['failed']['message'] = $th->getMessage();
         } else {
-            Log::info($th->getMessage() . ' in ' . $th->getFile() . ' at ' . $th->getLine());
+            Log::info($th);
             $this->flashMessage['failed']['message'] = 'Something went wrong.';
         }
     }

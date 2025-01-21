@@ -6,7 +6,7 @@ use App\Enums\PushProviders;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Push>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PushChannels>
  */
 class PushChannelFactory extends Factory
 {
