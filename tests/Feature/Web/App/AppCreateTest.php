@@ -26,6 +26,7 @@ class AppCreateTest extends TestCase
         $response = $this->get($this->createPageURL);
 
         $response->assertStatus(200);
+        $response->assertSee('Create New App');
     }
 
     /**
