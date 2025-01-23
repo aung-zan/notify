@@ -2,11 +2,11 @@
 
 namespace App\Enums;
 
-enum PushProvider: int
+enum EmailProvider: int
 {
-    case Pusher = 1;
-    case Firebase = 2;
-    case RabbitMQ = 3;
+    case Mailtrap = 1;
+    case SMTP = 2;
+    case Amazon_SES = 3;
 
     public static function getAll(): array
     {

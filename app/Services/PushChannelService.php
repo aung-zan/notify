@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\Push;
+use App\Models\PushChannel;
 use App\Repositories\PushRepository;
 
-class ChannelDBService
+class PushChannelService
 {
     private $pushRepository;
 
@@ -61,9 +61,9 @@ class ChannelDBService
      * create a channel.
      *
      * @param array $request
-     * @return Push
+     * @return PushChannel
      */
-    public function create(array $request): Push
+    public function create(array $request): PushChannel
     {
         $request['user_id'] = 1;
 
@@ -124,5 +124,31 @@ class ChannelDBService
             'key' => $channel['credentials']['key'],
             'cluster' => $channel['credentials']['cluster'],
         ];
+    }
+
+    /**
+     * get all the channels and group by the provider.
+     *
+     * @return array
+     */
+    public function getByGroupProvider(): array
+    {
+        $channels = $this->pushRepository->getAll([], [])
+            ->select(['id', 'name', 'provider_name'])
+            ->groupBy('provider_name')
+            ->toArray();
+
+        return $channels;
+    }
+
+    /**
+     * check the channel by id is valid or not.
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function checkChannel(int $id): bool
+    {
+        return $this->pushRepository->getById($id, true) ? true : false;
     }
 }

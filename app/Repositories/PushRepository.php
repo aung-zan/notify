@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Interfaces\DBInterface;
-use App\Models\Push;
+use App\Models\PushChannel;
 use App\Traits\QueryBuilder;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -13,7 +13,7 @@ class PushRepository implements DBInterface
 
     private $push;
 
-    public function __construct(Push $push)
+    public function __construct(PushChannel $push)
     {
         $this->push = $push;
     }
@@ -56,9 +56,9 @@ class PushRepository implements DBInterface
      * create a push notification channel.
      *
      * @param array $data
-     * @return Push
+     * @return PushChannel
      */
-    public function create(array $data): Push
+    public function create(array $data): PushChannel
     {
         return $this->push->create($data);
     }
@@ -67,11 +67,18 @@ class PushRepository implements DBInterface
      * return a push notification channel by channel_id.
      *
      * @param int $id
-     * @return Push
+     * @param bool $checkOnly
+     * @return PushChannel|null
      */
-    public function getById(int $id): Push
+    public function getById(int $id, bool $checkOnly = false): PushChannel|null
     {
         $userId = 1;
+
+        if ($checkOnly) {
+            return $this->push->where('user_id', $userId)
+                ->where('id', $id)
+                ->first();
+        }
 
         return $this->push->where('user_id', $userId)
             ->findOrFail($id);
@@ -92,14 +99,14 @@ class PushRepository implements DBInterface
             ->update($data);
     }
 
-    public function softDelete()
+    public function softDelete(int $id)
     {
-        //
+        // this function will implement later.
     }
 
-    public function delete()
+    public function delete(int $id)
     {
-        //
+        // this function will implement later.
     }
 
     /**

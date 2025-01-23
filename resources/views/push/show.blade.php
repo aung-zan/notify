@@ -8,11 +8,11 @@
 
                 <div class="card-toolbar">
                     <div class="d-flex jstify-content-end">
-                        <a href="{{route('push.index')}}" class="btn btn-flex btn-secondary me-2">
+                        <a href="{{route('push.index')}}" class="btn btn-outline btn-outline-secondary me-2">
                             <i class="bi bi-x-lg fs-3"></i>
                             Cancel
                         </a>
-                        <a href="{{route('push.edit', $channel['id'])}}" class="btn btn-flex btn-primary">
+                        <a href="{{route('push.edit', $channel['id'])}}" class="btn btn-outline btn-outline-primary">
                             <i class="bi bi-cloud-download fs-2 mt-1"></i>
                             Edit
                         </a>

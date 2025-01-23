@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Events\PushNotification;
 
-class ChannelService
+class PushService
 {
     /**
      * Send push notification to the channel.

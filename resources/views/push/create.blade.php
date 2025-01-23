@@ -8,11 +8,11 @@
 
                 <div class="card-toolbar">
                     <div class="d-flex justify-content-end">
-                        <a href="{{route('push.index')}}" class="btn btn-flex btn-secondary me-2">
+                        <a href="{{route('push.index')}}" class="btn btn-outline btn-outline-secondary me-2">
                             <i class="bi bi-x-lg fs-3"></i>
                             Cancel
                         </a>
-                        <button type="submit" form="store" class="btn btn-flex btn-primary">
+                        <button type="submit" form="store" class="btn btn-outline btn-outline-primary">
                             <i class="bi bi-cloud-upload fs-2 mt-1"></i>
                             Submit
                         </button>
@@ -29,7 +29,7 @@
                     <div class="mb-10">
                         <div class="row">
                             <div class="col-2">
-                                <label class="form-label">Channel Name</label>
+                                <label class="required form-label">Channel Name</label>
                             </div>
 
                             <div class="col-7">
@@ -49,7 +49,7 @@
                     <div class="mb-10">
                         <div class="row">
                             <div class="col-2">
-                                <label class="form-label">Enter credentials</label>
+                                <label class="required form-label">Enter credentials</label>
                             </div>
 
                             <div class="col-7">

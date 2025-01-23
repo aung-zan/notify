@@ -18,9 +18,9 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->json('scopes');
             $table->string('name', '100');
-            $table->text('description');
-            $table->string('token');
-            $table->string('refresh_token');
+            $table->text('description')->nullable();
+            $table->text('token')->nullable();
+            $table->text('refresh_token')->nullable();
             $table->timestamps();
         });
     }

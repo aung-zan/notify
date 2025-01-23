@@ -8,11 +8,11 @@
 
                 <div class="card-toolbar">
                     <div class="d-flex jstify-content-end">
-                        <a href="{{route('push.index')}}" class="btn btn-flex btn-secondary me-2">
+                        <a href="{{route('push.index')}}" class="btn btn-outline btn-outline-secondary me-2">
                             <i class="bi bi-x-lg fs-3"></i>
                             Cancel
                         </a>
-                        <button type="submit" form="update" class="btn btn-flex btn-primary">
+                        <button type="submit" form="update" class="btn btn-outline btn-outline-primary">
                             <i class="bi bi-cloud-upload fs-2 mt-1"></i>
                             Update
                         </button>
@@ -65,7 +65,7 @@
                             </div>
 
                             <div class="col-7">
-                                <button type="button" class="btn btn-danger" id="edit-credentials">Make changes the credentials.</button>
+                                <button type="button" class="btn btn-outline btn-outline-danger" id="edit-credentials">Make changes the credentials.</button>
 
                                 <textarea name="credentials"
                                     cols="30"
@@ -80,7 +80,7 @@
                                     <div class="invalid-feedback">{{$message}}</div>
                                 @enderror
 
-                                <button type="button" class="btn btn-secondary" id="cancel" hidden>Cancel</button>
+                                <button type="button" class="btn btn-outline btn-outline-secondary" id="cancel" hidden>Cancel</button>
                             </div>
                         </div>
                     </div>

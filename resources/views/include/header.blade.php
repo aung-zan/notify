@@ -11,14 +11,23 @@
         <!--begin::Mobile logo-->
         <div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
             <a href="index.html" class="d-lg-none">
-                <img alt="Logo" src="/assets/media/logos/default-small.svg" class="theme-light-show h-30px" />
-                <img alt="Logo" src="/assets/media/logos/default-small-dark.svg" class="theme-dark-show h-30px" />
+                <img alt="Logo" src="/assets/media/logos/default.svg" class="theme-light-show h-30px" />
             </a>
         </div>
         <!--end::Mobile logo-->
         <!--begin::Header wrapper-->
         <div class="d-flex align-items-stretch justify-content-between flex-lg-grow-1" id="kt_app_header_wrapper">
-            <div class="app-header-menu"></div>
+            <div class="app-header-menu app-header-mobile-drawer align-items-stretch" data-kt-drawer="true" data-kt-drawer-name="app-header-menu" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="225px" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_app_header_menu_toggle" data-kt-swapper="true" data-kt-swapper-mode="{default: 'append', lg: 'prepend'}" data-kt-swapper-parent="{default: '#kt_app_body', lg: '#kt_app_header_wrapper'}">
+                <!--begin::Menu-->
+                <div class="menu menu-rounded menu-column menu-lg-row my-5 my-lg-0 align-items-stretch fw-semibold px-2 px-lg-0" id="kt_app_header_menu" data-kt-menu="true">
+                    <!--begin:Menu item-->
+                    <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-start" class="menu-item here show menu-here-bg menu-lg-down-accordion me-0 me-lg-2">
+                        <img alt="Logo" src="/assets/media/logos/default.svg" class="theme-light-show h-30px" />
+                    </div>
+                    <!--end:Menu item-->
+                </div>
+                <!--end::Menu-->
+            </div>
             <!--begin::Navbar-->
             <div class="app-navbar flex-shrink-0">
                 <!--begin::Theme mode-->
