@@ -12,6 +12,7 @@ class AppShowTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $showPageURL = '/app/%s';
     private $request = [
         'name' => 'Unit Testing',
         'description' => 'Unit Testing',
@@ -25,7 +26,9 @@ class AppShowTest extends TestCase
     {
         $id = 1;
 
-        $response = $this->get('/app/' . $id);
+        $url = sprintf($this->showPageURL, $id);
+
+        $response = $this->get($url);
 
         $response->assertStatus(404);
     }
@@ -45,7 +48,9 @@ class AppShowTest extends TestCase
         $this->post('/app', $request);
         $app = App::first();
 
-        $response = $this->get('/app/' . $app->id);
+        $url = sprintf($this->showPageURL, $app->id);
+
+        $response = $this->get($url);
 
         $response->assertStatus(200);
         $response->assertSee($request['name']);

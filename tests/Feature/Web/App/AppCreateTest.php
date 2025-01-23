@@ -12,6 +12,7 @@ class AppCreateTest extends TestCase
     use RefreshDatabase;
 
     private $createPageURL = '/app/create';
+    private $storePageURL = '/app';
     private $request = [
         'name' => 'Unit Testing',
         'description' => 'Unit Testing',
@@ -34,10 +35,8 @@ class AppCreateTest extends TestCase
      */
     public function testStoreFunctionWithEmptyRequest(): void
     {
-        $request = [];
-
         $response = $this->from($this->createPageURL)
-            ->post('/app', $request);
+            ->post($this->storePageURL, []);
 
         $response->assertStatus(302);
         $response->assertRedirect($this->createPageURL);
@@ -53,7 +52,7 @@ class AppCreateTest extends TestCase
         $request['services'] = ['test'];
 
         $response = $this->from($this->createPageURL)
-            ->post('/app', $request);
+            ->post($this->storePageURL, $request);
 
         $response->assertStatus(302);
         $response->assertRedirect($this->createPageURL);
@@ -77,7 +76,7 @@ class AppCreateTest extends TestCase
         $request['channels'] = [$pushChannel->id];
 
         $response = $this->from('/app/create')
-            ->post('/app', $request);
+            ->post($this->storePageURL, $request);
 
         $this->assertDatabaseHas('apps', [
             'user_id' => 1,

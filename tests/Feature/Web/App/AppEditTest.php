@@ -12,6 +12,7 @@ class AppEditTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $editPageURL = '/app/%s/edit';
     private $request = [
         'name' => 'Unit Testing',
         'description' => 'Unit Testing',
@@ -25,7 +26,9 @@ class AppEditTest extends TestCase
     {
         $id = 1;
 
-        $response = $this->get('/app/' . $id);
+        $url = sprintf($this->editPageURL, $id);
+
+        $response = $this->get($url);
 
         $response->assertStatus(404);
     }
@@ -45,12 +48,12 @@ class AppEditTest extends TestCase
         $this->post('/app', $request);
         $app = App::first();
 
-        $response = $this->get('/app/' . $app->id);
+        $url = sprintf($this->editPageURL, $app->id);
+
+        $response = $this->get($url);
 
         $response->assertStatus(200);
         $response->assertSee($request['name']);
         $response->assertSee($request['description']);
-        $response->assertSee($app->token);
-        $response->assertSee($app->refresh_token);
     }
 }

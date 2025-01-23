@@ -75,9 +75,7 @@ class AppIndexTest extends TestCase
      */
     public function testGetDataFunctionWithValidRequest(): void
     {
-        $data = [''];
-
-        $this->createAppData($data);
+        $this->createAppData(['']);
 
         $datatableRequest = $this->datatableRequest;
 
@@ -95,9 +93,9 @@ class AppIndexTest extends TestCase
      */
     public function testGetDataFunctionWithSearchRequest(): void
     {
-        $data = [' One', ' Two'];
+        $appData = [' One', ' Two'];
 
-        $this->createAppData($data);
+        $this->createAppData($appData);
 
         $datatableRequest = $this->datatableRequest;
         $datatableRequest['search']['value'] = 'One';
@@ -116,10 +114,10 @@ class AppIndexTest extends TestCase
      */
     public function testGetDataFunctionWithOrderRequest(): void
     {
-        $data = [' One', ' Two'];
+        $appData = [' One', ' Two'];
         $expectedResult = ['Unit Testing Two', 'Unit Testing One'];
 
-        $this->createAppData($data);
+        $this->createAppData($appData);
 
         $datatableRequest = $this->datatableRequest;
         $datatableRequest['order'][0]['dir'] = 'desc';
