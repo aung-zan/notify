@@ -1,6 +1,7 @@
+const token = document.querySelector('meta[name="csrf-token"]');
 $.ajaxSetup({
   headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
   }
 });
 
@@ -16,14 +17,14 @@ const columns = [
   {data: 'updated_at'},
   {
     data: function (row, type, set) {
-      const changed_push_test_url = push_test_url.replace('id', row.id);
+      const changed_email_test_url = email_test_url.replace('id', row.id);
 
-      let action_buttons = '<a href="' + changed_push_test_url + '"' +
+      let action_buttons = '<a href="' + changed_email_test_url + '"' +
         'id="send"' +
         'class="btn btn-outline btn-outline-danger hover-scale"' +
         'data-bs-toggle="tooltip"' +
         'data-bs-placement="top"' +
-        'title="Test Push Notification"' +
+        'title="Test Email Notification"' +
       '>' +
         '<i class="bi bi-send fs-5"></i>' +
         'Test' +
@@ -46,9 +47,11 @@ const columnDef = [
   }
 ];
 
-let tableEle = document.getElementById('channel-list');
-let channelDT = new DataTable(tableEle, {
+let tableEle = document.getElementById('email-list');
+let emailDT = new DataTable(tableEle, {
   responsive: true,
+  // scrollY: "350px",
+  // scrollCollapse: true,
   lengthMenu: [5, 10, 25, 100],
   dom:
     "<'#dTToolbar.row mb-2'" +
@@ -66,7 +69,7 @@ let channelDT = new DataTable(tableEle, {
   processing: true,
   serverSide: true,
   ajax: {
-    url: push_data_url,
+    url: email_data_url,
     type: 'POST',
     data: function (response) {
       return response.data;
@@ -75,11 +78,11 @@ let channelDT = new DataTable(tableEle, {
 });
 
 // datatable row click
-channelDT.on('click', 'tbody tr', function () {
-  let data = channelDT.row(this).data();
-  const changed_push_detail_url = push_detail_url.replace('id', data.id);
+emailDT.on('click', 'tbody tr', function () {
+  let data = emailDT.row(this).data();
+  const changed_email_detail_url = email_detail_url.replace('id', data.id);
 
-  location.href = changed_push_detail_url;
+  location.href = changed_email_detail_url;
 });
 
 // search box wrapper
@@ -101,22 +104,22 @@ let search = document.getElementById('dTSearch');
 let searchBtn = document.getElementById('dTSearchBtn');
 // search button onClick
 searchBtn.addEventListener('click', function () {
-  channelDT.search(search.value).draw();
+  emailDT.search(search.value).draw();
 });
 // search on hit enter
 search.addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
-    channelDT.search(this.value).draw();
+    emailDT.search(this.value).draw();
   }
 });
 
 // test push notification button
-channelDT.on('click', '#send', function (event) {
+emailDT.on('click', '#send', function (event) {
   event.stopPropagation();
 });
 
 // test push notification button tooltip
-channelDT.on('draw', function () {
+emailDT.on('draw', function () {
   let tooltipElList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
   tooltipElList.map(function (tooltipEl) {
     return new bootstrap.Tooltip(tooltipEl)
