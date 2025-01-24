@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum EmailProvider: int
+enum EmailProviders: int
 {
     case Mailtrap = 1;
     case SMTP = 2;

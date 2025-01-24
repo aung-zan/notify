@@ -3,21 +3,40 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DatatableRequest;
+use App\Services\EmailChannelService;
 use Illuminate\Http\Request;
 
 class EmailController extends Controller
 {
-    public function __construct()
+    private $emailChannelService;
+
+    public function __construct(EmailChannelService $emailChannelService)
     {
-        //
+        $this->emailChannelService = $emailChannelService;
     }
 
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(): \Illuminate\View\View
     {
         return view('email.index');
+    }
+
+    /**
+     * Return push notification channel's resource.
+     *
+     * @param DatatableRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getData(DatatableRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $records = $this->emailChannelService->list($request->toArray());
+
+        return response()->json($records, 200);
     }
 
     /**

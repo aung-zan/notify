@@ -29,6 +29,7 @@ Route::controller(AppController::class)->prefix('app')->group(function () {
 
 Route::controller(EmailController::class)->prefix('email')->group(function () {
     Route::get('', 'index')->name('email.index');
+    Route::post('data', 'getData')->name('email.getData');
     Route::get('create', 'create')->name('email.create');
     Route::post('', 'store')->name('email.store');
 
