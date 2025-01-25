@@ -64,9 +64,19 @@ class EmailChannelRepository implements DBInterface
         return $this->emailChannel->create($data);
     }
 
-    public function getById(int $id, bool $checkOnly = false)
+    /**
+     * get an email notification channel by id.
+     *
+     * @param int $id
+     * @param bool $checkOnly
+     * @return EmailChannel
+     */
+    public function getById(int $id, bool $checkOnly = false): EmailChannel
     {
-        // this function will implemented in another branch.
+        $userId = 1;
+
+        return $this->emailChannel->where('user_id', $userId)
+            ->findOrFail($id);
     }
 
     public function update(int $id, array $data)

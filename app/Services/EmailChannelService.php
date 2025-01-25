@@ -59,4 +59,16 @@ class EmailChannelService extends DBService
 
         return $this->emailChannelRepository->create($request);
     }
+
+    /**
+     * get an email_channel details by id.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getById(int $id): array
+    {
+        return $this->emailChannelRepository->getById($id)
+            ->toArray();
+    }
 }

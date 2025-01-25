@@ -43,8 +43,10 @@ class EmailController extends Controller
 
     /**
      * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(): \Illuminate\View\View
     {
         $emailProviders = EmailProviders::getAll();
 
@@ -55,8 +57,11 @@ class EmailController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param EmailRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(EmailRequest $request)
+    public function store(EmailRequest $request): \Illuminate\Http\RedirectResponse
     {
         try {
             $data = $request->except('_token');
@@ -77,10 +82,17 @@ class EmailController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
      */
-    public function show(string $id)
+    public function show(int $id): \Illuminate\View\View
     {
-        return 'show';
+        $emailChannel = $this->emailChannelService->getById($id);
+
+        return view('email.show', [
+            'channel' => $emailChannel
+        ]);
     }
 
     /**
