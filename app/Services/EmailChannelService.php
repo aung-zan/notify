@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\EmailChannel;
+use App\Models\PushChannel;
 use App\Repositories\EmailChannelRepository;
 
 class EmailChannelService extends DBService
@@ -43,5 +45,18 @@ class EmailChannelService extends DBService
             'recordsFiltered' => $filteredRecords->count(),
             'data' => $records,
         ];
+    }
+
+     /**
+     * create a channel.
+     *
+     * @param array $request
+     * @return EmailChannel
+     */
+    public function create(array $request): EmailChannel
+    {
+        $request['user_id'] = 1;
+
+        return $this->emailChannelRepository->create($request);
     }
 }

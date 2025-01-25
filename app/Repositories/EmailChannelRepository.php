@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\DBInterface;
 use App\Models\EmailChannel;
+use App\Models\PushChannel;
 use App\Traits\QueryBuilder;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -52,9 +53,15 @@ class EmailChannelRepository implements DBInterface
         return $query->count();
     }
 
-    public function create(array $data)
+    /**
+     * create an email notification channel.
+     *
+     * @param array $data
+     * @return EmailChannel
+     */
+    public function create(array $data): EmailChannel
     {
-        // this function will implemented in another branch.
+        return $this->emailChannel->create($data);
     }
 
     public function getById(int $id, bool $checkOnly = false)

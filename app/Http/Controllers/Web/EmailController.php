@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Enums\EmailProviders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DatatableRequest;
+use App\Http\Requests\EmailRequest;
 use App\Services\EmailChannelService;
 use Illuminate\Http\Request;
 
@@ -44,15 +46,33 @@ class EmailController extends Controller
      */
     public function create()
     {
-        return 'create';
+        $emailProviders = EmailProviders::getAll();
+
+        return view('email.create', [
+            'providers' => $emailProviders
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(EmailRequest $request)
     {
-        return 'store';
+        try {
+            $data = $request->except('_token');
+
+            $this->emailChannelService->create($data);
+
+            $this->flashMessage['success']['message'] = 'Successfully created.';
+        } catch (\Throwable $th) {
+            $this->handleException($th);
+
+            return redirect()->back()
+                ->with('flashMessage', $this->flashMessage['failed']);
+        }
+
+        return redirect()->route('email.index')
+            ->with('flashMessage', $this->flashMessage['success']);
     }
 
     /**
