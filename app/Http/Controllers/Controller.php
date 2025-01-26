@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\IsUsedException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
 abstract class Controller
@@ -24,7 +25,9 @@ abstract class Controller
      */
     protected function handleException(\Throwable $th): void
     {
-        if ($th instanceof IsUsedException) {
+        if ($th instanceof ModelNotFoundException) {
+            $this->flashMessage['failed']['message'] = 'The requested resource does not exit.';
+        } elseif ($th instanceof IsUsedException) {
             $this->flashMessage['failed']['message'] = $th->getMessage();
         } else {
             Log::info($th);

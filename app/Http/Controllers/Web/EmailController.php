@@ -65,7 +65,6 @@ class EmailController extends Controller
     {
         try {
             $data = $request->except('_token');
-
             $this->emailChannelService->create($data);
 
             $this->flashMessage['success']['message'] = 'Successfully created.';
@@ -97,17 +96,41 @@ class EmailController extends Controller
 
     /**
      * Show the form for editing the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
      */
-    public function edit(string $id)
+    public function edit(int $id): \Illuminate\View\View
     {
-        return 'edit';
+        $emailChannel = $this->emailChannelService->getById($id);
+
+        return view('email.edit', [
+            'channel' => $emailChannel
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param EmailRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, string $id)
+    public function update(EmailRequest $request, int $id): \Illuminate\Http\RedirectResponse
     {
-        return 'update';
+        try {
+            $data = $request->only(['name', 'credentials']);
+            $this->emailChannelService->update($id, $data);
+
+            $this->flashMessage['success']['message'] = 'Successfully created.';
+        } catch (\Throwable $th) {
+            $this->handleException($th);
+
+            return redirect()->back()
+                ->with('flashMessage', $this->flashMessage['failed']);
+        }
+
+        return redirect()->route('email.index')
+            ->with('flashMessage', $this->flashMessage['success']);
     }
 }

@@ -69,6 +69,14 @@ class EmailChannelService extends DBService
     public function getById(int $id): array
     {
         return $this->emailChannelRepository->getById($id)
+            ->setAppends(['provider_name', 'credentials_string'])
             ->toArray();
+    }
+
+    public function update(int $id, array $request): void
+    {
+        $request['user_id'] = 1;
+
+        $this->emailChannelRepository->update($id, $request);
     }
 }

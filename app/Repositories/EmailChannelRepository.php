@@ -79,9 +79,20 @@ class EmailChannelRepository implements DBInterface
             ->findOrFail($id);
     }
 
-    public function update(int $id, array $data)
+    /**
+     * update the email notification channel by channel_id.
+     *
+     * @param int $id
+     * @param array $data
+     * @return void
+     */
+    public function update(int $id, array $data): void
     {
-        // this function will implemented in another branch.
+        $emailChannel = $this->getById($id);
+
+        $emailChannel->fill($data);
+
+        $emailChannel->save();
     }
 
     public function softDelete(int $id)
