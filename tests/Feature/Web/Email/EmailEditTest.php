@@ -7,11 +7,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class EmailShowTest extends TestCase
+class EmailEditTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $showPageURL = '/email/%s';
+    private $editPageURL = '/email/%s/edit';
     private $request = [
         'user_id' => 1,
         'provider' => 1,
@@ -24,13 +24,12 @@ class EmailShowTest extends TestCase
     ];
 
     /**
-     * Test case for show page with invalid id.
+     * Test case for edit page with invalid id.
      */
-    public function testShowPageWithInvalidId(): void
+    public function testEditPageWithInvalidId(): void
     {
         $id = 1;
-
-        $url = sprintf($this->showPageURL, $id);
+        $url = sprintf($this->editPageURL, $id);
 
         $response = $this->get($url);
 
@@ -38,20 +37,20 @@ class EmailShowTest extends TestCase
     }
 
     /**
-     * Test case for show page with valid id.
+     * Test case for edit page with valid id.
      */
-    public function testShowPageWithValidId(): void
+    public function testEditPageWithValidId(): void
     {
         $request = $this->request;
 
         $emailChannel = EmailChannel::create($request);
 
-        $url = sprintf($this->showPageURL, $emailChannel->id);
+        $url = sprintf($this->editPageURL, $emailChannel->id);
 
         $response = $this->get($url);
 
         $response->assertStatus(200);
-        $response->assertSee('Channel Details');
+        $response->assertSee('Edit a channel');
         $response->assertSee('Mailtrap');
         $response->assertSee($request['name']);
     }
