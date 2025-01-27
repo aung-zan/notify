@@ -89,5 +89,6 @@ class EmailCreateTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertRedirect('/email');
+        $response->assertSessionHas('flashMessage.message', 'Successfully created.');
     }
 }

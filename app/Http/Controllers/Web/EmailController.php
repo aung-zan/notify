@@ -122,7 +122,7 @@ class EmailController extends Controller
             $data = $request->only(['name', 'credentials']);
             $this->emailChannelService->update($id, $data);
 
-            $this->flashMessage['success']['message'] = 'Successfully created.';
+            $this->flashMessage['success']['message'] = 'Successfully updated.';
         } catch (\Throwable $th) {
             $this->handleException($th);
 

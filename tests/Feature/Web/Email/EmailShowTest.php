@@ -13,14 +13,8 @@ class EmailShowTest extends TestCase
 
     private $showPageURL = '/email/%s';
     private $request = [
-        'user_id' => 1,
         'provider' => 1,
         'name' => 'mail testing',
-        'credentials' => 'MAIL_MAILER=smtp
-        MAIL_HOST=sandbox.smtp.mailtrap.io
-        MAIL_PORT=2525
-        MAIL_USERNAME=1a601ae54273fa
-        MAIL_PASSWORD=ec32bbd0f06979',
     ];
 
     /**
@@ -43,8 +37,9 @@ class EmailShowTest extends TestCase
     public function testShowPageWithValidId(): void
     {
         $request = $this->request;
-
-        $emailChannel = EmailChannel::create($request);
+        $emailChannel = EmailChannel::factory(1)
+            ->create($request)
+            ->first();
 
         $url = sprintf($this->showPageURL, $emailChannel->id);
 

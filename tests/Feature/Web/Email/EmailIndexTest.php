@@ -17,8 +17,6 @@ class EmailIndexTest extends TestCase
     private $getDataURL = '/email/data';
     private $request = [
         'user_id' => 1,
-        'provider' => 1,
-        'name' => 'mailtrap testing',
         'credentials' => 'MAIL_MAILER=smtp
         MAIL_HOST=sandbox.smtp.mailtrap.io
         MAIL_PORT=2525
@@ -147,7 +145,7 @@ class EmailIndexTest extends TestCase
         $data = EmailProviders::getAll();
 
         foreach ($data as $text => $value) {
-            $request = $this->updateRequest($text, $value);
+            $request = $this->updateRequestData($text, $value);
 
             EmailChannel::create($request);
         }
@@ -160,7 +158,7 @@ class EmailIndexTest extends TestCase
      * @param int $value
      * @return array
      */
-    private function updateRequest(string $text, int $value): array
+    private function updateRequestData(string $text, int $value): array
     {
         $request = $this->request;
         $request['provider'] = $value;

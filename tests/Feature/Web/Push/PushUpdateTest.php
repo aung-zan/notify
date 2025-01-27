@@ -14,13 +14,8 @@ class PushUpdateTest extends TestCase
     private $editPageURL = '/push/%s/edit';
     private $updatePageURL = '/push/%s/update';
     private $request = [
-        'user_id' => 1,
         'provider' => 1,
         'name' => 'pusher testing',
-        'credentials' => 'app_id = "1885"
-        key = "26c0723"
-        secret = "80e7f5"
-        cluster = "ad1"',
     ];
 
     /**
@@ -34,8 +29,8 @@ class PushUpdateTest extends TestCase
 
         $response = $this->put($url, $request);
 
-        // need to recheck why not 404.
         $response->assertStatus(302);
+        $response->assertSessionHas('flashMessage.message', 'The requested resource does not exit.');
     }
 
     /**
@@ -44,7 +39,9 @@ class PushUpdateTest extends TestCase
     public function testUpdateFunctionWithEmptyRequest(): void
     {
         $request = $this->request;
-        $pushChannel = PushChannel::create($request);
+        $pushChannel = PushChannel::factory(1)
+            ->create($request)
+            ->first();
 
         $editURL = sprintf($this->editPageURL, $pushChannel->id);
         $updateURL = sprintf($this->updatePageURL, $pushChannel->id);
@@ -65,7 +62,9 @@ class PushUpdateTest extends TestCase
     public function testUpdateFunctionWithInvalidRequest(): void
     {
         $request = $this->request;
-        $pushChannel = PushChannel::create($request);
+        $pushChannel = PushChannel::factory(1)
+            ->create($request)
+            ->first();
 
         $editURL = sprintf($this->editPageURL, $pushChannel->id);
         $updateURL = sprintf($this->updatePageURL, $pushChannel->id);
@@ -90,7 +89,9 @@ class PushUpdateTest extends TestCase
     public function testUpdateFunctionWithValidRequest(): void
     {
         $request = $this->request;
-        $pushChannel = PushChannel::create($request);
+        $pushChannel = PushChannel::factory(1)
+            ->create($request)
+            ->first();
 
         $editURL = sprintf($this->editPageURL, $pushChannel->id);
         $updateURL = sprintf($this->updatePageURL, $pushChannel->id);
@@ -109,5 +110,6 @@ class PushUpdateTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertRedirect('/push');
+        $response->assertSessionHas('flashMessage.message', 'Successfully updated.');
     }
 }

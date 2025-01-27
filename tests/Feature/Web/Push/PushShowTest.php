@@ -13,13 +13,8 @@ class PushShowTest extends TestCase
 
     private $showPageURL = '/push/%s';
     private $request = [
-        'user_id' => 1,
         'provider' => 1,
         'name' => 'pusher testing',
-        'credentials' => 'app_id = "1885"
-        key = "26c0723"
-        secret = "80e7f5"
-        cluster = "ad1"',
     ];
 
     /**
@@ -43,7 +38,9 @@ class PushShowTest extends TestCase
     {
         $request = $this->request;
 
-        $pushChannel = PushChannel::create($request);
+        $pushChannel = PushChannel::factory(1)
+            ->create($request)
+            ->first();
 
         $url = sprintf($this->showPageURL, $pushChannel->id);
 
