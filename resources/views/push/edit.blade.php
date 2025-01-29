@@ -41,7 +41,7 @@
                     <div class="mb-10">
                         <div class="row">
                             <div class="col-2">
-                                <lable class="form-label">Name</lable>
+                                <lable class="required form-label">Name</lable>
                             </div>
 
                             <div class="col-7">
@@ -61,7 +61,7 @@
                     <div class="mb-10">
                         <div class="row">
                             <div class="col-2">
-                                <lable class="form-label">Credentials</lable>
+                                <lable class="required form-label">Credentials</lable>
                             </div>
 
                             <div class="col-7">

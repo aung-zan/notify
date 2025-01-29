@@ -29,7 +29,7 @@
                     <div class="mb-10">
                         <div class="row">
                             <div class="col-2">
-                                <lable class="required form-label">Provider</lable>
+                                <lable class="form-label">Provider</lable>
                             </div>
 
                             <div class="col-2">
