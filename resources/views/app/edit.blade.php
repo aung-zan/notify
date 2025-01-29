@@ -27,7 +27,7 @@
 
                     <div class="mb-10">
                         <div class="row">
-                            <div class="col-2">
+                            <div class="col-4 col-md-2">
                                 <label class="form-label required">App Name</label>
                             </div>
 
@@ -47,8 +47,8 @@
 
                     <div class="mb-10">
                         <div class="row">
-                            <div class="col-2">
-                                <label class="form-label">App Description</label>
+                            <div class="col-4 col-md-2">
+                                <label for="description" class="form-label">App Description</label>
                             </div>
 
                             <div class="col-7">

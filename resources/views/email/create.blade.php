@@ -28,11 +28,11 @@
 
                     <div class="mb-10">
                         <div class="row">
-                            <div class="col-2">
+                            <div class="col-4 col-md-2">
                                 <label class="required form-label">Channel Name</label>
                             </div>
 
-                            <div class="col-7">
+                            <div class="col-8">
                                 <input type="text"
                                     name="name"
                                     class="form-control @error('name') is-invalid @enderror"
@@ -48,11 +48,11 @@
 
                     <div class="mb-10">
                         <div class="row">
-                            <div class="col-2">
+                            <div class="col-4 col-md-2">
                                 <label class="required form-label">Enter credentials</label>
                             </div>
 
-                            <div class="col-7">
+                            <div class="col-8">
                                 <textarea name="credentials"
                                     cols="30"
                                     rows="10"

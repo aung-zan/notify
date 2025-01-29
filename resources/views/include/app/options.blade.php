@@ -22,10 +22,10 @@
 <div class="mb-10">
     {{-- Service --}}
     <div class="row">
-        <div class="col-2">
-            <label class="form-label required">Service</label>
+        <div class="col-4 col-md-2">
+            <label for="services" class="form-label required">Service</label>
         </div>
-        <div class="col-10">
+        <div class="col-8">
             @foreach ($services as $key => $service)
                 @php
                     $serviceName = ucfirst($service);
@@ -65,10 +65,10 @@
 <div class="mb-10">
     {{-- Channel --}}
     <div class="row">
-        <div class="col-2">
+        <div class="col-4 col-md-2">
             <label class="form-label required">Channel</label>
         </div>
-        <div class="col-10">
+        <div class="col-8">
             <div class="row">
                 @foreach ($services as $key => $service)
                     @php
@@ -84,7 +84,7 @@
                         }
                     @endphp
 
-                    <div class="col-4 mb-3" id="{{$service}}-channels" {{$isActive ? '' : 'hidden'}}>
+                    <div class="col-12 col-md-4 mb-3" id="{{$service}}-channels" {{$isActive ? '' : 'hidden'}}>
                         <select data-control="select2"
                             class="form-select {{$channelError ? 'is-invalid' : ''}}"
                             name="channels[{{$key}}]"
