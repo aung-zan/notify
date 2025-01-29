@@ -75,7 +75,7 @@
                                     id="credentials"
                                     hidden
                                     disabled
-                                >{{old('credentials', $channel['credentials'])}}</textarea>
+                                >{{old('credentials', $channel['credentials_string'])}}</textarea>
                                 @error('credentials')
                                     <div class="invalid-feedback">{{$message}}</div>
                                 @enderror

@@ -3,13 +3,13 @@
 namespace App\Services;
 
 use App\Models\PushChannel;
-use App\Repositories\PushRepository;
+use App\Repositories\PushChannelRepository;
 
-class PushChannelService
+class PushChannelService extends DBService
 {
     private $pushRepository;
 
-    public function __construct(PushRepository $pushRepository)
+    public function __construct(PushChannelRepository $pushRepository)
     {
         $this->pushRepository = $pushRepository;
     }
@@ -23,28 +23,17 @@ class PushChannelService
     public function list(array $request): array
     {
         $draw = $request['draw'];
-        $searchValue = [];
-        $order = [];
+        $columns = ['name', 'provider'];
+        $hiddenColumns = ['credentials'];
 
-        if (! is_null($request['search']['value'])) {
-            $searchValue = [
-                'name' => $request['search']['value'],
-                'provider' => $request['search']['value'],
-            ];
-        }
+        $searchValue = $this->getSearchRequest($request, $columns);
 
-        if (array_key_exists('order', $request)) {
-            $column = $request['order'][0]['column'];
-            $order = [
-                'column' => $request['columns'][$column]['data'],
-                'dir' => $request['order'][0]['dir'],
-            ];
-        }
+        $order = $this->getOrderRequest($request);
 
         $totalRecords = $this->pushRepository->getAllCount();
 
         $filteredRecords = $this->pushRepository->getAll($searchValue, $order);
-        $records = $filteredRecords->makeHidden('credentials')
+        $records = $filteredRecords->makeHidden($hiddenColumns)
             ->slice($request['start'], $request['length'])
             ->values()
             ->toArray();
@@ -72,27 +61,16 @@ class PushChannelService
 
     /**
      * get the channel details by id.
-     * TODO: refactor $type not to based on the method.
      *
      * @param int $id
      * @param bool $type (false for show and true for edit)
      * @return array
      */
-    public function getById(int $id, bool $type = false): array
+    public function getById(int $id): array
     {
-        $channel = $this->pushRepository->getById($id)
+        return $this->pushRepository->getById($id)
+            ->setAppends(['provider_name', 'credentials_string'])
             ->toArray();
-
-        if ($type) {
-            $credentialString = '';
-            foreach ($channel['credentials'] as $key => $value) {
-                $credentialString .= $key . " = '" . $value . "'\n";
-            }
-
-            $channel['credentials'] = $credentialString;
-        }
-
-        return $channel;
     }
 
     /**
@@ -104,7 +82,7 @@ class PushChannelService
      */
     public function update(int $id, array $request): void
     {
-        $this->pushRepository->save($id, $request);
+        $this->pushRepository->update($id, $request);
     }
 
     /**
@@ -133,12 +111,10 @@ class PushChannelService
      */
     public function getByGroupProvider(): array
     {
-        $channels = $this->pushRepository->getAll([], [])
+        return $this->pushRepository->getAll([], [])
             ->select(['id', 'name', 'provider_name'])
             ->groupBy('provider_name')
             ->toArray();
-
-        return $channels;
     }
 
     /**

@@ -6,6 +6,8 @@ use App\Events\PushNotification;
 
 class PushService
 {
+    private $info;
+
     /**
      * Send push notification to the channel.
      *
@@ -17,7 +19,9 @@ class PushService
     {
         $this->setChannel($channel);
 
-        PushNotification::dispatch($request);
+        $data = array_merge($request, $this->info);
+
+        PushNotification::dispatch($data);
     }
 
     /**
@@ -54,6 +58,9 @@ class PushService
      */
     private function setLogChannel(): void
     {
+        $this->info['channelName'] = 'pushNotificationLog';
+        $this->info['eventName'] = 'pushNotificationLog';
+
         config(['broadcasting.default' => 'log']);
     }
 
@@ -65,6 +72,9 @@ class PushService
      */
     private function setPusherChannel(array $credentials): void
     {
+        $this->info['channelName'] = 'pushNotificationTest';
+        $this->info['eventName'] = 'pushNotificationTest';
+
         config(['broadcasting.default' => 'pusher']);
 
         config(['broadcasting.connections.pusher' => [

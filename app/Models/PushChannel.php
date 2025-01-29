@@ -55,7 +55,7 @@ class PushChannel extends Model
     /**
      * Accessor for credentials attribute.
      *
-     * @return string
+     * @return array
      */
     protected function getCredentialsAttribute(): array
     {
@@ -67,6 +67,23 @@ class PushChannel extends Model
         }
 
         return $credentials;
+    }
+
+    /**
+     * Accessor for credentials_string attribute.
+     *
+     * @return string
+     */
+    protected function getCredentialsStringAttribute(): string
+    {
+        $credentials = $this->getCredentialsAttribute();
+        $credentialsString = '';
+
+        foreach ($credentials as $key => $value) {
+            $credentialsString .= $key . "=" . $value . "\n";
+        }
+
+        return $credentialsString;
     }
 
     /**

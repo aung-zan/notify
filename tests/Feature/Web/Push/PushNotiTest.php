@@ -60,7 +60,7 @@ class PushNotiTest extends TestCase
         $response = $this->postJson($url, []);
 
         $response->assertHeader('Content-Type', 'application/json');
-        $response->assertStatus(400);
+        $response->assertStatus(422);
         $response->assertJson([
             'message' => 'No data provided.'
         ]);

@@ -58,7 +58,7 @@
 @push('js')
     <script>
         let test_url = '{!! route('push.test', 'id') !!}';
-        let pusherConfig = '{!! json_encode($channel) !!}';
+        let config = '{!! json_encode($channel) !!}';
     </script>
     <script src="/assets/plugins/custom/pusher/pusher.min.js"></script>
     <script src="/assets/js/custom/push/providers/pusher.js"></script>
