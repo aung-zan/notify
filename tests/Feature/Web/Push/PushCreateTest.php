@@ -88,5 +88,6 @@ class PushCreateTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertRedirect('/push');
+        $response->assertSessionHas('flashMessage.message', 'Successfully created.');
     }
 }

@@ -23,11 +23,11 @@
             <div class="card-body">
                 <div class="mb-10">
                     <div class="row">
-                        <div class="col-2">
+                        <div class="col-4 col-md-2">
                             <lable class="form-label">Provider</lable>
                         </div>
 
-                        <div class="col-2">
+                        <div class="col-4 col-md-2">
                             <lable class="form-label">{{$channel['provider_name']}}</lable>
                         </div>
                     </div>
@@ -35,11 +35,11 @@
 
                 <div class="mb-10">
                     <div class="row">
-                        <div class="col-2">
+                        <div class="col-4 col-md-2">
                             <lable class="form-label">Name</lable>
                         </div>
 
-                        <div class="col-2">
+                        <div class="col-4 col-md-2">
                             <lable class="form-label">{{$channel['name']}}</lable>
                         </div>
                     </div>
@@ -47,11 +47,11 @@
 
                 <div class="mb-10">
                     <div class="row">
-                        <div class="col-2">
+                        <div class="col-4 col-md-2">
                             <lable class="form-label">Credentials</lable>
                         </div>
 
-                        <div class="col-5">
+                        <div class="col-8">
                             @foreach ($channel['credentials'] as $key => $value)
                                 <lable class="form-label text-muted">{{$key}}=</lable>
                                 <lable class="form-label text-muted">{{$value}}</lable>

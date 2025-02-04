@@ -17,8 +17,6 @@ class PushIndexTest extends TestCase
     private $getDataURL = '/push/data';
     private $request = [
         'user_id' => 1,
-        'provider' => 1,
-        'name' => 'pusher testing',
         'credentials' => 'app_id = "1885"
         key = "26c0723"
         secret = "80e7f5"
@@ -146,7 +144,7 @@ class PushIndexTest extends TestCase
         $data = PushProviders::getAll();
 
         foreach ($data as $text => $value) {
-            $request = $this->updateRequest($text, $value);
+            $request = $this->updateRequestData($text, $value);
 
             PushChannel::create($request);
         }
@@ -159,7 +157,7 @@ class PushIndexTest extends TestCase
      * @param int $value
      * @return array
      */
-    private function updateRequest(string $text, int $value): array
+    private function updateRequestData(string $text, int $value): array
     {
         $request = $this->request;
         $request['provider'] = $value;

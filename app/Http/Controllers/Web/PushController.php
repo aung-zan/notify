@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Web;
 use App\Enums\PushProviders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DatatableRequest;
+use App\Http\Requests\PushNotiRequest;
 use App\Http\Requests\PushRequest;
 use App\Services\PushChannelService;
 use App\Services\PushService;
-use Illuminate\Http\Request;
 
 class PushController extends Controller
 {
@@ -26,7 +26,7 @@ class PushController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(): \Illuminate\View\View
     {
         return view('push.index');
     }
@@ -37,7 +37,7 @@ class PushController extends Controller
      * @param DatatableRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getData(DatatableRequest $request)
+    public function getData(DatatableRequest $request): \Illuminate\Http\JsonResponse
     {
         $records = $this->pushChannelService->list($request->toArray());
 
@@ -49,7 +49,7 @@ class PushController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(): \Illuminate\View\View
     {
         $pushProviders = PushProviders::getAll();
 
@@ -64,14 +64,13 @@ class PushController extends Controller
      * @param PushRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(PushRequest $request)
+    public function store(PushRequest $request): \Illuminate\Http\RedirectResponse
     {
         try {
             $data = $request->except('_token');
             $this->pushChannelService->create($data);
 
             $this->flashMessage['success']['message'] = 'Successfully created.';
-            $message = $this->flashMessage['success'];
         } catch (\Throwable $th) {
             $this->handleException($th);
 
@@ -80,16 +79,16 @@ class PushController extends Controller
         }
 
         return redirect()->route('push.index')
-            ->with('flashMessage', $message);
+            ->with('flashMessage', $this->flashMessage['success']);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param string $id
+     * @param int $id
      * @return \Illuminate\View\View
      */
-    public function show(string $id)
+    public function show(int $id): \Illuminate\View\View
     {
         $channel = $this->pushChannelService->getById($id);
 
@@ -101,12 +100,12 @@ class PushController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param string $id
+     * @param int $id
      * @return \Illuminate\View\View
      */
-    public function edit(string $id)
+    public function edit(int $id): \Illuminate\View\View
     {
-        $channel = $this->pushChannelService->getById($id, true);
+        $channel = $this->pushChannelService->getById($id);
 
         return view('push.edit', [
             'channel' => $channel
@@ -117,17 +116,16 @@ class PushController extends Controller
      * Update the specified resource in storage.
      *
      * @param PushRequest $request
-     * @param string $id
+     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(PushRequest $request, string $id)
+    public function update(PushRequest $request, int $id): \Illuminate\Http\RedirectResponse
     {
         try {
             $data = $request->only(['name', 'credentials']);
             $this->pushChannelService->update($id, $data);
 
             $this->flashMessage['success']['message'] = 'Successfully updated.';
-            $message = $this->flashMessage['success'];
         } catch (\Throwable $th) {
             $this->handleException($th);
 
@@ -136,16 +134,16 @@ class PushController extends Controller
         }
 
         return redirect()->route('push.index')
-            ->with('flashMessage', $message);
+            ->with('flashMessage', $this->flashMessage['success']);
     }
 
     /**
      * The push notification page to test.
      *
-     * @param string $id
+     * @param int $id
      * @return \Illuminate\View\View
      */
-    public function testPage(string $id)
+    public function testPage(int $id): \Illuminate\View\View
     {
         $channel = $this->pushChannelService->getByIdForTest($id);
 
@@ -157,36 +155,25 @@ class PushController extends Controller
     /**
      * Send push notification to test.
      *
-     * @param Request $request
-     * @param string $id
+     * @param PushNotiRequest $request
+     * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function test(Request $request, string $id)
+    public function test(PushNotiRequest $request, int $id): \Illuminate\Http\JsonResponse
     {
-        if (! $request->has('message')) {
-            return response()->json([
-                'message' => 'No data provided.'
-            ], 400);
-        }
-
         try {
-            $request->merge([
-                'channelName' => 'pushNotificationTest',
-                'eventName' => 'pushNotificationTest',
-            ]);
-
             $channel = $this->pushChannelService->getById($id);
             $this->pushService->sendPushNotification($request->toArray(), $channel);
-
-            return response()->json([
-                'message' => 'Push notification sent successfully.'
-            ], 200);
         } catch (\Throwable $th) {
-            \Log::info($th->getMessage() . ' in ' . $th->getFile() . ' at ' . $th->getLine());
+            $this->handleException($th);
 
             return response()->json([
                 'message' => 'Something went wrong.'
             ], 500);
         }
+
+        return response()->json([
+            'message' => 'Push notification sent successfully.'
+        ], 200);
     }
 }

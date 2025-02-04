@@ -26,11 +26,11 @@
 
                     <div class="mb-10">
                         <div class="row">
-                            <div class="col-2">
+                            <div class="col-4 col-md-2">
                                 <label class="form-label required">App Name</label>
                             </div>
 
-                            <div class="col-7">
+                            <div class="col-8">
                                 <input type="text"
                                     name="name"
                                     class="form-control @error('name') is-invalid @enderror"
@@ -46,11 +46,11 @@
 
                     <div class="mb-10">
                         <div class="row">
-                            <div class="col-2">
+                            <div class="col-4 col-md-2">
                                 <label class="form-label">App Description</label>
                             </div>
 
-                            <div class="col-7">
+                            <div class="col-8">
                                 <textarea name="description"
                                     class="form-control @error('description') is-invalid @enderror"
                                     cols="30"

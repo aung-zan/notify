@@ -102,10 +102,10 @@ class AppController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param string $id
+     * @param int $id
      * @return \Illuminate\View\View
      */
-    public function show(string $id): \Illuminate\View\View
+    public function show(int $id): \Illuminate\View\View
     {
         $app = $this->appDBService->getById($id);
 
@@ -117,10 +117,10 @@ class AppController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param string $id
+     * @param int $id
      * @return \Illuminate\View\View
      */
-    public function edit(string $id): \Illuminate\View\View
+    public function edit(int $id): \Illuminate\View\View
     {
         $services = array_column(Service::cases(), 'value');
         $channels = [
@@ -141,9 +141,10 @@ class AppController extends Controller
      * Update the specified resource in storage.
      *
      * @param AppRequest $request
-     * @param string $id
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(AppRequest $request, string $id)
+    public function update(AppRequest $request, int $id): \Illuminate\Http\RedirectResponse
     {
         try {
             $data = $request->except('_token', '_method');
@@ -164,7 +165,7 @@ class AppController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete(string $id)
+    public function delete(int $id)
     {
         return 'delete';
     }

@@ -14,14 +14,8 @@ class EmailUpdateTest extends TestCase
     private $editPageURL = '/email/%s/edit';
     private $updatePageURL = '/email/%s/update';
     private $request = [
-        'user_id' => 1,
         'provider' => 1,
         'name' => 'mail testing',
-        'credentials' => 'MAIL_MAILER=smtp
-        MAIL_HOST=sandbox.smtp.mailtrap.io
-        MAIL_PORT=2525
-        MAIL_USERNAME=1a601ae54273fa
-        MAIL_PASSWORD=ec32bbd0f06979',
     ];
 
     /**
@@ -45,7 +39,9 @@ class EmailUpdateTest extends TestCase
     public function testUpdateFunctionWithEmptyRequest(): void
     {
         $request = $this->request;
-        $emailChannel = EmailChannel::create($request);
+        $emailChannel = EmailChannel::factory(1)
+            ->create($request)
+            ->first();
 
         $editURL = sprintf($this->editPageURL, $emailChannel->id);
         $updateURL = sprintf($this->updatePageURL, $emailChannel->id);
@@ -66,7 +62,9 @@ class EmailUpdateTest extends TestCase
     public function testUpdateFunctionWithInvalidRequest(): void
     {
         $request = $this->request;
-        $emailChannel = EmailChannel::create($request);
+        $emailChannel = EmailChannel::factory(1)
+            ->create($request)
+            ->first();
 
         $editURL = sprintf($this->editPageURL, $emailChannel->id);
         $updateURL = sprintf($this->updatePageURL, $emailChannel->id);
@@ -91,7 +89,9 @@ class EmailUpdateTest extends TestCase
     public function testUpdateFunctionWithValidRequest(): void
     {
         $request = $this->request;
-        $emailChannel = EmailChannel::create($request);
+        $emailChannel = EmailChannel::factory(1)
+            ->create($request)
+            ->first();
 
         $editURL = sprintf($this->editPageURL, $emailChannel->id);
         $updateURL = sprintf($this->updatePageURL, $emailChannel->id);
@@ -111,5 +111,6 @@ class EmailUpdateTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertRedirect('/email');
+        $response->assertSessionHas('flashMessage.message', 'Successfully updated.');
     }
 }

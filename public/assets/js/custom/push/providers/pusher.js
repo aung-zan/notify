@@ -1,21 +1,20 @@
-pusherConfig = JSON.parse(pusherConfig);
+const pusherConfig = JSON.parse(config);
 const sendButton = document.getElementById('send-button');
+
+const toastElement = document.getElementById('notification_toast');
+const toast = bootstrap.Toast.getOrCreateInstance(toastElement);
+const toastMessage = document.getElementById('toast-message');
 
 // Enable pusher logging - don't include this in production
 // Pusher.logToConsole = true;
 
-var pusher = new Pusher(pusherConfig.key, {
+let pusher = new Pusher(pusherConfig.key, {
   cluster: pusherConfig.cluster
 });
 
-var channel = pusher.subscribe('pushNotificationTest');
+let channel = pusher.subscribe('pushNotificationTest');
 channel.bind('pushNotificationTest', function(data) {
-  const toastElement = document.getElementById('notification_toast');
-  const toastMessage = document.getElementById('toast-message');
-
   toastMessage.innerText = data.message;
-
-  const toast = bootstrap.Toast.getOrCreateInstance(toastElement);
   toast.show();
 });
 
@@ -24,12 +23,13 @@ sendButton.addEventListener("click", async function () {
   const message = document.getElementById('message').value;
   const channelId = document.getElementById('channel-id').value;
 
-  test_url = test_url.replace('id', channelId);
+  const url = test_url.replace('id', channelId);
 
-  const response = await fetch(test_url, {
+  let response = await fetch(url, {
     headers: {
       'X-CSRF-TOKEN': token,
       'Content-Type': 'application/json',
+      'Accept': 'application/json',
     },
     method: 'POST',
     body: JSON.stringify({
@@ -37,5 +37,9 @@ sendButton.addEventListener("click", async function () {
     })
   });
 
-  const data = await response.json();
+  if (! response.ok) {
+    const data = await response.json();
+    toastMessage.innerText = data.message;
+    toast.show();
+  }
 });

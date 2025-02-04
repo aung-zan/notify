@@ -28,11 +28,11 @@
 
                     <div class="mb-10">
                         <div class="row">
-                            <div class="col-2">
-                                <lable class="required form-label">Provider</lable>
+                            <div class="col-4 col-md-2">
+                                <lable class="form-label">Provider</lable>
                             </div>
 
-                            <div class="col-2">
+                            <div class="col-4 col-md-2">
                                 <lable class="form-label disabled">{{$channel['provider_name']}}</lable>
                             </div>
                         </div>
@@ -40,7 +40,7 @@
 
                     <div class="mb-10">
                         <div class="row">
-                            <div class="col-2">
+                            <div class="col-4 col-md-2">
                                 <lable class="required form-label">Name</lable>
                             </div>
 
@@ -60,7 +60,7 @@
 
                     <div class="mb-10">
                         <div class="row">
-                            <div class="col-2">
+                            <div class="col-4 col-md-2">
                                 <lable class="required form-label">Credentials</lable>
                             </div>
 

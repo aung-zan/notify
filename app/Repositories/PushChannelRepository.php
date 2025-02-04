@@ -7,7 +7,7 @@ use App\Models\PushChannel;
 use App\Traits\QueryBuilder;
 use Illuminate\Database\Eloquent\Collection;
 
-class PushRepository implements DBInterface
+class PushChannelRepository implements DBInterface
 {
     use QueryBuilder;
 
@@ -93,10 +93,10 @@ class PushRepository implements DBInterface
      */
     public function update(int $id, array $data): void
     {
-        $this->getById($id);
+        $pushChannel = $this->getById($id);
 
-        $this->push->where('id', $id)
-            ->update($data);
+        $pushChannel->fill($data);
+        $pushChannel->save();
     }
 
     public function softDelete(int $id)
@@ -107,21 +107,5 @@ class PushRepository implements DBInterface
     public function delete(int $id)
     {
         // this function will implement later.
-    }
-
-    /**
-     * update the push notification channel by channel_id.
-     * (use this method if there is the mutator.)
-     *
-     * @param int $id
-     * @param array $data
-     * @return void
-     */
-    public function save(int $id, array $data): void
-    {
-        $channel = $this->getById($id);
-
-        $channel->fill($data);
-        $channel->save();
     }
 }

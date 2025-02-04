@@ -17,13 +17,8 @@ class PushNotiTest extends TestCase
         'message' => 'Hello Notifcation Testing.'
     ];
     private $request = [
-        'user_id' => 1,
         'provider' => 1,
         'name' => 'pusher testing',
-        'credentials' => 'app_id = "1885"
-        key = "26c0723"
-        secret = "80e7f5"
-        cluster = "ad1"',
     ];
 
     /**
@@ -40,7 +35,9 @@ class PushNotiTest extends TestCase
 
     public function testNotificationTestPageWithValidId(): void
     {
-        $pushChannel = PushChannel::create($this->request);
+        $pushChannel = PushChannel::factory(1)
+            ->create($this->request)
+            ->first();
 
         $url = sprintf($this->notiPageURL, $pushChannel->id);
 
@@ -54,14 +51,16 @@ class PushNotiTest extends TestCase
 
     public function testNotificationTestFunctionWithEmptyRequest(): void
     {
-        $pushChannel = PushChannel::create($this->request);
+        $pushChannel = PushChannel::factory(1)
+            ->create($this->request)
+            ->first();
 
         $url = sprintf($this->notiPageURL, $pushChannel->id);
 
         $response = $this->postJson($url, []);
 
         $response->assertHeader('Content-Type', 'application/json');
-        $response->assertStatus(400);
+        $response->assertStatus(422);
         $response->assertJson([
             'message' => 'No data provided.'
         ]);
@@ -77,7 +76,9 @@ class PushNotiTest extends TestCase
             })
             ->once();
 
-        $pushChannel = PushChannel::create($this->request);
+        $pushChannel = PushChannel::factory(1)
+            ->create($this->request)
+            ->first();
         $url = sprintf($this->notiPageURL, $pushChannel->id);
 
         $response = $this->postJson($url, $this->notiRequest);

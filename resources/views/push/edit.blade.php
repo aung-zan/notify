@@ -28,11 +28,11 @@
 
                     <div class="mb-10">
                         <div class="row">
-                            <div class="col-2">
+                            <div class="col-4 col-md-2">
                                 <lable class="form-label">Provider</lable>
                             </div>
 
-                            <div class="col-2">
+                            <div class="col-4 col-md-2">
                                 <lable class="form-label disabled">{{$channel['provider_name']}}</lable>
                             </div>
                         </div>
@@ -40,8 +40,8 @@
 
                     <div class="mb-10">
                         <div class="row">
-                            <div class="col-2">
-                                <lable class="form-label">Name</lable>
+                            <div class="col-4 col-md-2">
+                                <lable class="required form-label">Name</lable>
                             </div>
 
                             <div class="col-7">
@@ -60,8 +60,8 @@
 
                     <div class="mb-10">
                         <div class="row">
-                            <div class="col-2">
-                                <lable class="form-label">Credentials</lable>
+                            <div class="col-4 col-md-2">
+                                <lable class="required form-label">Credentials</lable>
                             </div>
 
                             <div class="col-7">
@@ -75,7 +75,7 @@
                                     id="credentials"
                                     hidden
                                     disabled
-                                >{{old('credentials', $channel['credentials'])}}</textarea>
+                                >{{old('credentials', $channel['credentials_string'])}}</textarea>
                                 @error('credentials')
                                     <div class="invalid-feedback">{{$message}}</div>
                                 @enderror
