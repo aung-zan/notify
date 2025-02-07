@@ -5,7 +5,7 @@ namespace App\Enums;
 enum Service: string
 {
     case Push = 'push';
-    // case Email = 'email';
+    case Email = 'email';
 
     public static function getAll(): array
     {

@@ -18,6 +18,7 @@
                         name="provider"
                         class="form-check-input"
                         {{$value == old('provider', 1) ? 'checked' : ''}}
+                        {{$value !== 1 ? 'disabled' : ''}}
                     >
                     <label class="form-check-label">{{$provider}}</label>
                 </div>

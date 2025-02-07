@@ -108,11 +108,10 @@ class AppDBService extends DBService
     private function createScopes(array &$request): string
     {
         $scopes = [];
-        $services = $request['services'];
         $channels = $request['channels'];
 
         foreach ($channels as $key => $channel) {
-            $service = 'notifications.' . $services[$key];
+            $service = 'notifications.' . $key;
             $scopes[$service] = $channel;
         }
 

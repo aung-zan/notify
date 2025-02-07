@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AppRequest;
 use App\Http\Requests\DatatableRequest;
 use App\Services\AppDBService;
+use App\Services\EmailChannelService;
 use App\Services\PushChannelService;
 use App\Services\TokenService;
 use Illuminate\Http\Request;
@@ -15,15 +16,18 @@ use Illuminate\Support\Facades\DB;
 class AppController extends Controller
 {
     private $pushChannelService;
+    private $emailChannelService;
     private $appDBService;
     private $tokenService;
 
     public function __construct(
         PushChannelService $pushChannelService,
+        EmailChannelService $emailChannelService,
         AppDBService $appDBService,
         TokenService $tokenService
     ) {
         $this->pushChannelService = $pushChannelService;
+        $this->emailChannelService = $emailChannelService;
         $this->appDBService = $appDBService;
         $this->tokenService = $tokenService;
     }
@@ -60,8 +64,8 @@ class AppController extends Controller
     {
         $services = array_column(Service::cases(), 'value');
         $channels = [
-            //TODO: add email provider
             'push' => $this->pushChannelService->getByGroupProvider(),
+            'email' => $this->emailChannelService->getByGroupProvider()
         ];
 
         return view('app.create', [
@@ -124,8 +128,8 @@ class AppController extends Controller
     {
         $services = array_column(Service::cases(), 'value');
         $channels = [
-            //TODO: add email provider
             'push' => $this->pushChannelService->getByGroupProvider(),
+            'email' => $this->emailChannelService->getByGroupProvider()
         ];
 
         $app = $this->appDBService->getById($id, true);

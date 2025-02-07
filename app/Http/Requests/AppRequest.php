@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\Service;
+use App\Services\EmailChannelService;
 use App\Services\PushChannelService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
@@ -11,10 +12,12 @@ use Illuminate\Validation\Validator;
 class AppRequest extends FormRequest
 {
     private $pushChannelService;
+    private $emailChannelService;
 
-    public function __construct(PushChannelService $pushChannelService)
+    public function __construct(PushChannelService $pushChannelService, EmailChannelService $emailChannelService)
     {
         $this->pushChannelService = $pushChannelService;
+        $this->emailChannelService = $emailChannelService;
     }
 
     /**
@@ -64,16 +67,18 @@ class AppRequest extends FormRequest
             function (Validator $validator) {
                 if ($validator->errors()->isEmpty()) {
                     $requestData = $validator->validated();
-                    $services = $requestData['services'];
                     $channels = $requestData['channels'];
+                    $channelRepo = [
+                        'push' => $this->pushChannelService,
+                        'email' => $this->emailChannelService,
+                    ];
 
                     foreach ($channels as $key => $channel) {
-                        if ($services[$key] === Service::Push->value) {
-                            if (! $this->pushChannelService->checkChannel($channel)) {
-                                $validator->errors()->add("channels.{$key}", 'The selected channel is invalid.');
-                            }
-                        } elseif ($services[$key] === Service::Email->value) {
-                            # TODO: Implement channel validation for email.
+                        if (
+                            ! array_key_exists($key, $channelRepo) ||
+                            ! $channelRepo[$key]->checkChannel($channel)
+                        ) {
+                            $validator->errors()->add("channels", 'The selected channel is invalid.');
                         }
                     }
                 }

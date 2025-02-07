@@ -43,7 +43,7 @@ class AppShowTest extends TestCase
             ->first();
 
         $request = $this->request;
-        $request['channels'] = [$pushChannel->id];
+        $request['channels'] = ['push' => $pushChannel->id];
 
         $this->post('/app', $request);
         $app = App::first();

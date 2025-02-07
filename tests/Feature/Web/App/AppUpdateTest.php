@@ -46,7 +46,7 @@ class AppUpdateTest extends TestCase
             ->first();
 
         $request = $this->request;
-        $request['channels'] = [$pushChannel->id];
+        $request['channels'] = ['push' => $pushChannel->id];
 
         $this->post($this->storePageURL, $request);
         $app = App::first();
@@ -76,7 +76,7 @@ class AppUpdateTest extends TestCase
             ->first();
 
         $request = $this->request;
-        $request['channels'] = [$pushChannel->id];
+        $request['channels'] = ['push' => $pushChannel->id];
 
         $this->post($this->storePageURL, $request);
         $app = App::first();
@@ -110,7 +110,7 @@ class AppUpdateTest extends TestCase
             ->first();
 
         $request = $this->request;
-        $request['channels'] = [$pushChannel->id];
+        $request['channels'] = ['push' => $pushChannel->id];
 
         $this->post($this->storePageURL, $request);
         $app = App::first();
