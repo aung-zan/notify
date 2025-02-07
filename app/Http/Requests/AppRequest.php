@@ -69,8 +69,8 @@ class AppRequest extends FormRequest
                     $requestData = $validator->validated();
                     $channels = $requestData['channels'];
                     $channelRepo = [
-                        $this->pushChannelService,
-                        $this->emailChannelService,
+                        'push' => $this->pushChannelService,
+                        'email' => $this->emailChannelService,
                     ];
 
                     foreach ($channels as $key => $channel) {

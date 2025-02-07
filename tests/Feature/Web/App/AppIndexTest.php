@@ -164,7 +164,7 @@ class AppIndexTest extends TestCase
         $request = $this->request;
         $request['name'] .= $text;
         $request['description'] .= $text;
-        $request['channels'] = [$channelId];
+        $request['channels'] = ['push' => $channelId];
 
         return $request;
     }
