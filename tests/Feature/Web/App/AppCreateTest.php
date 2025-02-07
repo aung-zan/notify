@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Web\App;
 
+use App\Models\EmailChannel;
 use App\Models\PushChannel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -16,7 +17,6 @@ class AppCreateTest extends TestCase
     private $request = [
         'name' => 'Unit Testing',
         'description' => 'Unit Testing',
-        'services' => ['push'],
     ];
 
     /**
@@ -64,6 +64,60 @@ class AppCreateTest extends TestCase
     }
 
     /**
+     * Test case for store function with valid request (Only Push).
+     */
+    public function testStoreFunctionWithPushOnlyValidRequest(): void
+    {
+        $pushChannel = PushChannel::factory(1)
+            ->create()
+            ->first();
+
+        $request = $this->request;
+        $request['services'] = ['push'];
+        $request['channels'] = [$pushChannel->id];
+
+        $response = $this->from($this->createPageURL)
+            ->post($this->storePageURL, $request);
+
+        $this->assertDatabaseHas('apps', [
+            'user_id' => 1,
+            'name' => $request['name'],
+            'description' => $request['description'],
+            'scopes->notifications.push' => $pushChannel->id,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect('/app');
+    }
+
+    /**
+     * Test case for store function with valid request (Only Email).
+     */
+    public function testStoreFunctionWithEmailOnlyValidRequest(): void
+    {
+        $emailChannel = EmailChannel::factory(1)
+            ->create()
+            ->first();
+
+        $request = $this->request;
+        $request['services'] = ['email'];
+        $request['channels'] = [$emailChannel->id];
+
+        $response = $this->from($this->createPageURL)
+            ->post($this->storePageURL, $request);
+
+        $this->assertDatabaseHas('apps', [
+            'user_id' => 1,
+            'name' => $request['name'],
+            'description' => $request['description'],
+            'scopes->notifications.email' => $emailChannel->id,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect('/app');
+    }
+
+    /**
      * Test case for store function with valid request.
      */
     public function testStoreFunctionWithValidRequest(): void
@@ -72,16 +126,23 @@ class AppCreateTest extends TestCase
             ->create()
             ->first();
 
-        $request = $this->request;
-        $request['channels'] = [$pushChannel->id];
+        $emailChannel = EmailChannel::factory(1)
+            ->create()
+            ->first();
 
-        $response = $this->from('/app/create')
+        $request = $this->request;
+        $request['services'] = ['push', 'email'];
+        $request['channels'] = [$pushChannel->id, $emailChannel->id];
+
+        $response = $this->from($this->createPageURL)
             ->post($this->storePageURL, $request);
 
         $this->assertDatabaseHas('apps', [
             'user_id' => 1,
             'name' => $request['name'],
             'description' => $request['description'],
+            'scopes->notifications.push' => $pushChannel->id,
+            'scopes->notifications.email' => $emailChannel->id,
         ]);
 
         $response->assertStatus(302);
