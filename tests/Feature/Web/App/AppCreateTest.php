@@ -74,7 +74,7 @@ class AppCreateTest extends TestCase
 
         $request = $this->request;
         $request['services'] = ['push'];
-        $request['channels'] = [$pushChannel->id];
+        $request['channels'] = ['push' => $pushChannel->id];
 
         $response = $this->from($this->createPageURL)
             ->post($this->storePageURL, $request);
@@ -101,7 +101,7 @@ class AppCreateTest extends TestCase
 
         $request = $this->request;
         $request['services'] = ['email'];
-        $request['channels'] = [$emailChannel->id];
+        $request['channels'] = ['email' => $emailChannel->id];
 
         $response = $this->from($this->createPageURL)
             ->post($this->storePageURL, $request);
@@ -132,7 +132,10 @@ class AppCreateTest extends TestCase
 
         $request = $this->request;
         $request['services'] = ['push', 'email'];
-        $request['channels'] = [$pushChannel->id, $emailChannel->id];
+        $request['channels'] = [
+            'push' => $pushChannel->id,
+            'email' => $emailChannel->id
+        ];
 
         $response = $this->from($this->createPageURL)
             ->post($this->storePageURL, $request);

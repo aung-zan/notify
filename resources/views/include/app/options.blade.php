@@ -87,7 +87,7 @@
                     <div class="col-12 col-md-4 mb-3" id="{{$service}}-channels" {{$isActive ? '' : 'hidden'}}>
                         <select data-control="select2"
                             class="form-select {{$channelError ? 'is-invalid' : ''}}"
-                            name="channels[{{$key}}]"
+                            name="channels[{{$service}}]"
                             {{$isActive ? '' : 'disabled'}}
                         >
                             @foreach ($channels[$service] as $channelGroupName => $channelGroup)

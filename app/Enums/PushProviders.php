@@ -5,7 +5,7 @@ namespace App\Enums;
 enum PushProviders: int
 {
     case Pusher = 1;
-    // case Firebase = 2;
+    case Firebase = 2;
 
     public static function getAll(): array
     {
