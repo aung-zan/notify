@@ -119,7 +119,7 @@ class AppController extends Controller
     public function update(AppRequest $request, int $id): \Illuminate\Http\RedirectResponse
     {
         try {
-            $data = $request->except('_token', '_method');
+            $data = $request->only(['name', 'description', 'services', 'channels']);
             $this->appDBService->update($id, $data);
 
             $this->flashMessage['success']['message'] = 'Successfully updated.';

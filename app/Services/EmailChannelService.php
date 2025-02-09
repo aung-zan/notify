@@ -96,8 +96,6 @@ class EmailChannelService extends DBService
      */
     public function update(int $id, array $request): void
     {
-        $request['user_id'] = $this->userId;
-
         $this->table->getById($id, $this->userId);
 
         $this->table->update($id, $request);
