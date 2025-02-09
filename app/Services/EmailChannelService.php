@@ -6,7 +6,7 @@ use App\Models\EmailChannel;
 use App\Models\PushChannel;
 use App\Repositories\EmailChannelRepository;
 
-class EmailChannelService extends DBService
+class EmailChannelService
 {
     private $emailChannelRepository;
 
@@ -89,10 +89,11 @@ class EmailChannelService extends DBService
 
     /**
      * get all the channels and group by the provider.
+     * used by AppDBService.
      *
      * @return array
      */
-    public function getByGroupProvider(): array
+    public function getGroupByProvider(): array
     {
         return $this->emailChannelRepository->getAll([], [])
             ->select(['id', 'name', 'provider_name'])

@@ -2,8 +2,28 @@
 
 namespace App\Services;
 
+use App\Interfaces\DBInterface;
+use Illuminate\Database\Eloquent\Model;
+
 abstract class DBService
 {
+    protected $database;
+
+    public function __construct(DBInterface $database)
+    {
+        $this->database = $database;
+    }
+
+    abstract public function list(array $request): array;
+
+    abstract public function store(array $request): void;
+
+    abstract public function show(int $id): array|Model;
+
+    abstract public function edit(int $id): array|Model;
+
+    abstract public function update(int $id, array $request): void;
+
     /**
      * return the search request.
      *

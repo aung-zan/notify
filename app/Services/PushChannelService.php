@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\PushChannel;
 use App\Repositories\PushChannelRepository;
 
-class PushChannelService extends DBService
+class PushChannelService
 {
     private $pushRepository;
 
@@ -106,10 +106,11 @@ class PushChannelService extends DBService
 
     /**
      * get all the channels and group by the provider.
+     * used by AppDBService.
      *
      * @return array
      */
-    public function getByGroupProvider(): array
+    public function getGroupByProvider(): array
     {
         return $this->pushRepository->getAll([], [])
             ->select(['id', 'name', 'provider_name'])

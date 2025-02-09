@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Exceptions\IsUsedException;
 use App\Interfaces\DBInterface;
 use App\Models\App;
 use App\Traits\QueryBuilder;
@@ -82,7 +81,6 @@ class AppRepository implements DBInterface
     /**
      * update an app by app_id.
      *
-     * TODO: think about single reponsibility principle.
      *
      * @param int $id
      * @param array $data
@@ -90,13 +88,6 @@ class AppRepository implements DBInterface
      */
     public function update(int $id, array $data): void
     {
-        $app = $this->getById($id);
-
-        if ($app->notifications()->exists()) {
-            // TODO: use a custom exception.
-            throw new IsUsedException('This app is used and cannot be updated.');
-        }
-
         $this->app->where('id', $id)
             ->update($data);
     }
