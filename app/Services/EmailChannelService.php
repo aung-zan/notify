@@ -22,9 +22,11 @@ class EmailChannelService extends DBService
 
         $order = $this->getOrderRequest($request);
 
-        $totalRecords = $this->database->getAllCount();
+        $totalRecords = $this->table->getAllCount($this->userId);
 
-        $filteredRecords = $this->database->getAll($searchValue, $order);
+        $filteredRecords = $this->table->getAll([
+            $this->userId, $searchValue, $order
+        ]);
         $records = $filteredRecords->makeHidden($hiddenColumns)
             ->slice($request['start'], $request['length'])
             ->values()
@@ -56,9 +58,9 @@ class EmailChannelService extends DBService
      */
     public function store(array $request): void
     {
-        $request['user_id'] = 1;
+        $request['user_id'] = $this->userId;
 
-        $this->database->create($request);
+        $this->table->create($request);
     }
 
     /**
@@ -69,7 +71,7 @@ class EmailChannelService extends DBService
      */
     public function show(int $id): array
     {
-        return $this->database->getById($id)
+        return $this->table->getById($id, $this->userId)
             ->setAppends(['provider_name', 'credentials_string'])
             ->toArray();
     }
@@ -94,9 +96,11 @@ class EmailChannelService extends DBService
      */
     public function update(int $id, array $request): void
     {
-        $request['user_id'] = 1;
+        $request['user_id'] = $this->userId;
 
-        $this->database->update($id, $request);
+        $this->table->getById($id, $this->userId);
+
+        $this->table->update($id, $request);
     }
 
     /**
@@ -107,7 +111,7 @@ class EmailChannelService extends DBService
      */
     public function getGroupByProvider(): array
     {
-        return $this->database->getAll([], [])
+        return $this->table->getAll([$this->userId, [], []])
             ->select(['id', 'name', 'provider_name'])
             ->groupBy('provider_name')
             ->toArray();
@@ -122,6 +126,6 @@ class EmailChannelService extends DBService
      */
     public function checkChannel(int $id): bool
     {
-        return $this->database->getById($id, true) ? true : false;
+        return $this->table->checkById($id, $this->userId) ? true : false;
     }
 }

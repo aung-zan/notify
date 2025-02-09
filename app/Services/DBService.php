@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class DBService
 {
-    protected $database;
+    protected $table;
+    protected $userId = 1;
 
-    public function __construct(DBInterface $database)
+    public function __construct(DBInterface $table)
     {
-        $this->database = $database;
+        $this->table = $table;
     }
 
     abstract public function list(array $request): array;

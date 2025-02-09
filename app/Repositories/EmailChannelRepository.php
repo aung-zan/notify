@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Interfaces\DBInterface;
 use App\Models\EmailChannel;
-use App\Models\PushChannel;
 use App\Traits\QueryBuilder;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -19,16 +18,9 @@ class EmailChannelRepository implements DBInterface
         $this->emailChannel = $emailChannel;
     }
 
-    /**
-     * return all email_channels by user_id.
-     *
-     * @param array $keywords
-     * @param array $order
-     * @return Collection
-     */
-    public function getAll(array $keywords, array $order): Collection
+    public function getAll(array $filter): Collection
     {
-        $userId = 1;
+        list($userId, $keywords, $order) = $filter;
 
         $query = $this->emailChannel->query();
 
@@ -37,15 +29,8 @@ class EmailChannelRepository implements DBInterface
         return $query->get();
     }
 
-    /**
-     * return all email_channels count by user_id.
-     *
-     * @return int
-     */
-    public function getAllCount(): int
+    public function getAllCount(int $userId): int
     {
-        $userId = 1;
-
         $query = $this->emailChannel->query();
 
         $query = $this->queryBuilder($query, $userId);
@@ -53,42 +38,21 @@ class EmailChannelRepository implements DBInterface
         return $query->count();
     }
 
-    /**
-     * create an email notification channel.
-     *
-     * @param array $data
-     * @return EmailChannel
-     */
     public function create(array $data): EmailChannel
     {
         return $this->emailChannel->create($data);
     }
 
-    /**
-     * get an email notification channel by id.
-     *
-     * @param int $id
-     * @param bool $checkOnly
-     * @return EmailChannel
-     */
-    public function getById(int $id, bool $checkOnly = false): EmailChannel
+    public function getById(int $id, int $userId): EmailChannel
     {
-        $userId = 1;
-
         return $this->emailChannel->where('user_id', $userId)
             ->findOrFail($id);
     }
 
-    /**
-     * update the email notification channel by channel_id.
-     *
-     * @param int $id
-     * @param array $data
-     * @return void
-     */
     public function update(int $id, array $data): void
     {
-        $emailChannel = $this->getById($id);
+        $emailChannel = $this->emailChannel->where('id', $id)
+            ->first();
 
         $emailChannel->fill($data);
 
@@ -103,5 +67,12 @@ class EmailChannelRepository implements DBInterface
     public function delete(int $id)
     {
         // this function will implemented in another branch.
+    }
+
+    public function checkById(int $id, int $userId): EmailChannel|null
+    {
+        return $this->emailChannel->where('user_id', $userId)
+            ->where('id', $id)
+            ->first();
     }
 }

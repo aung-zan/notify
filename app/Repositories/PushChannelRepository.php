@@ -11,89 +11,48 @@ class PushChannelRepository implements DBInterface
 {
     use QueryBuilder;
 
-    private $push;
+    private $pushChannel;
 
-    public function __construct(PushChannel $push)
+    public function __construct(PushChannel $pushChannel)
     {
-        $this->push = $push;
+        $this->pushChannel = $pushChannel;
     }
 
-    /**
-     * return all push notifications channels by user_id.
-     *
-     * @param array $keywords
-     * @param array $order
-     * @return Collection
-     */
-    public function getAll(array $keywords, array $order): Collection
+    public function getAll(array $filter): Collection
     {
-        $userId = 1;
+        list($userId, $keywords, $order) = $filter;
 
-        $query = $this->push->query();
+        $query = $this->pushChannel->query();
 
         $query = $this->queryBuilder($query, $userId, $keywords, $order);
 
         return $query->get();
     }
 
-    /**
-     * return the push notification channels' count by user_id.
-     *
-     * @return int
-     */
-    public function getAllCount(): int
+    public function getAllCount(int $userId): int
     {
-        $userId = 1;
-
-        $query = $this->push->query();
+        $query = $this->pushChannel->query();
 
         $query = $this->queryBuilder($query, $userId);
 
         return $query->count();
     }
 
-    /**
-     * create a push notification channel.
-     *
-     * @param array $data
-     * @return PushChannel
-     */
     public function create(array $data): PushChannel
     {
-        return $this->push->create($data);
+        return $this->pushChannel->create($data);
     }
 
-    /**
-     * return a push notification channel by channel_id.
-     *
-     * @param int $id
-     * @param bool $checkOnly
-     * @return PushChannel|null
-     */
-    public function getById(int $id, bool $checkOnly = false): PushChannel|null
+    public function getById(int $id, int $userId): PushChannel
     {
-        $userId = 1;
-
-        if ($checkOnly) {
-            return $this->push->where('user_id', $userId)
-                ->where('id', $id)
-                ->first();
-        }
-
-        return $this->push->where('user_id', $userId)
+        return $this->pushChannel->where('user_id', $userId)
             ->findOrFail($id);
     }
 
-    /**
-     * update the push notification channel by channel_id.
-     *
-     * @param int $id
-     * @param array $data
-     * @return void
-     */
     public function update(int $id, array $data): void
     {
-        $pushChannel = $this->getById($id);
+        $pushChannel = $this->pushChannel->where('id', $id)
+            ->first();
 
         $pushChannel->fill($data);
         $pushChannel->save();
@@ -107,5 +66,12 @@ class PushChannelRepository implements DBInterface
     public function delete(int $id)
     {
         // this function will implement later.
+    }
+
+    public function checkById(int $id, int $userId): PushChannel|null
+    {
+        return $this->pushChannel->where('user_id', $userId)
+            ->where('id', $id)
+            ->first();
     }
 }

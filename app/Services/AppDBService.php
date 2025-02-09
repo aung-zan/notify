@@ -10,12 +10,12 @@ use Illuminate\Support\Facades\DB;
 class AppDBService extends DBService
 {
     public function __construct(
-        AppRepository $database,
+        AppRepository $table,
         private PushChannelService $pushChannelService,
         private EmailChannelService $emailChannelService,
         private TokenService $tokenService
     ) {
-        $this->database = $database;
+        $this->table = $table;
     }
 
     /**
@@ -34,9 +34,11 @@ class AppDBService extends DBService
 
         $order = $this->getOrderRequest($request);
 
-        $totalRecords = $this->database->getAllCount();
+        $totalRecords = $this->table->getAllCount($this->userId);
 
-        $filteredRecords = $this->database->getAll($searchValue, $order);
+        $filteredRecords = $this->table->getAll([
+            $this->userId, $searchValue, $order
+        ]);
         $records = $filteredRecords->makeHidden($hiddenColumns)
             ->slice($request['start'], $request['length'])
             ->values()
@@ -76,10 +78,10 @@ class AppDBService extends DBService
     {
         DB::transaction(function () use ($request) {
             $data = $request;
-            $data['user_id'] = 1;
+            $data['user_id'] = $this->userId;
             $data['scopes'] = $this->createScopes($data);
 
-            $app = $this->database->create($data)
+            $app = $this->table->create($data)
                 ->toArray();
 
             $tokens = $this->tokenService->generateToken($app, $request);
@@ -98,7 +100,7 @@ class AppDBService extends DBService
     {
         $hideColumns = ['scopes'];
 
-        return $this->database->getById($id)
+        return $this->table->getById($id, $this->userId)
             ->makeHidden($hideColumns)
             ->toArray();
     }
@@ -119,7 +121,7 @@ class AppDBService extends DBService
 
         $hideColumns = ['scopes', 'service_display', 'channel_display', 'token', 'refresh_token'];
 
-        $app = $this->database->getById($id)
+        $app = $this->table->getById($id, $this->userId)
             ->makeHidden($hideColumns)
             ->toArray();
 
@@ -135,7 +137,7 @@ class AppDBService extends DBService
      */
     public function update(int $id, array $request): void
     {
-        $app = $this->database->getById($id);
+        $app = $this->table->getById($id, $this->userId);
 
         if ($app->notifications()->exists()) {
             throw new IsUsedException('This app is used and cannot be updated.');
@@ -145,7 +147,7 @@ class AppDBService extends DBService
             $request['scopes'] = $this->createScopes($request);
         }
 
-        $this->database->update($id, $request);
+        $this->table->update($id, $request);
     }
 
     /**
