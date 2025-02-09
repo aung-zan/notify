@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\PushProviders;
+
 class PushChannelService extends DBService
 {
     /**
@@ -37,6 +39,16 @@ class PushChannelService extends DBService
     }
 
     /**
+     * return the requried data for push create page.
+     *
+     * @return array
+     */
+    public function create(): array
+    {
+        return PushProviders::getAll();
+    }
+
+    /**
      * create a push channel.
      *
      * @param array $request
@@ -63,7 +75,7 @@ class PushChannelService extends DBService
     }
 
     /**
-     * return the push channel details by id for edit page.
+     * return an push channel details by id for edit page.
      *
      * @param int $id
      * @return array
@@ -116,7 +128,7 @@ class PushChannelService extends DBService
     }
 
     /**
-     * get all the channels and group by the provider.
+     * get all push channels and group by the provider.
      * used by AppDBService.
      *
      * @return array
@@ -130,7 +142,7 @@ class PushChannelService extends DBService
     }
 
     /**
-     * check the push channel.
+     * check a push channel.
      * used by AppRequest.
      *
      * @param int $id
@@ -138,6 +150,6 @@ class PushChannelService extends DBService
      */
     public function checkChannel(int $id): bool
     {
-        return $this->show($id) ? true : false;
+        return $this->database->getById($id, true) ? true : false;
     }
 }

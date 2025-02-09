@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Enums\PushProviders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DatatableRequest;
 use App\Http\Requests\PushNotiRequest;
@@ -49,7 +48,7 @@ class PushController extends Controller
      */
     public function create(): \Illuminate\View\View
     {
-        $pushProviders = PushProviders::getAll();
+        $pushProviders = $this->pushChannelService->create();
 
         return view('push.create', [
             'providers' => $pushProviders
