@@ -2,20 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\PushChannel;
-use App\Repositories\PushChannelRepository;
-
-class PushChannelService
+class PushChannelService extends DBService
 {
-    private $pushRepository;
-
-    public function __construct(PushChannelRepository $pushRepository)
-    {
-        $this->pushRepository = $pushRepository;
-    }
-
     /**
-     * get the channel list by the datatable request.
+     * get the push channel list.
      *
      * @param array $request
      * @return array
@@ -30,9 +20,9 @@ class PushChannelService
 
         $order = $this->getOrderRequest($request);
 
-        $totalRecords = $this->pushRepository->getAllCount();
+        $totalRecords = $this->database->getAllCount();
 
-        $filteredRecords = $this->pushRepository->getAll($searchValue, $order);
+        $filteredRecords = $this->database->getAll($searchValue, $order);
         $records = $filteredRecords->makeHidden($hiddenColumns)
             ->slice($request['start'], $request['length'])
             ->values()
@@ -47,34 +37,44 @@ class PushChannelService
     }
 
     /**
-     * create a channel.
+     * create a push channel.
      *
      * @param array $request
-     * @return PushChannel
+     * @return void
      */
-    public function create(array $request): PushChannel
+    public function store(array $request): void
     {
         $request['user_id'] = 1;
 
-        return $this->pushRepository->create($request);
+        $this->database->create($request);
     }
 
     /**
-     * get the channel details by id.
+     * return the push channel details by id for show page.
      *
      * @param int $id
-     * @param bool $type (false for show and true for edit)
      * @return array
      */
-    public function getById(int $id): array
+    public function show(int $id): array
     {
-        return $this->pushRepository->getById($id)
+        return $this->database->getById($id)
             ->setAppends(['provider_name', 'credentials_string'])
             ->toArray();
     }
 
     /**
-     * update a channel's information.
+     * return the push channel details by id for edit page.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function edit(int $id): array
+    {
+        return $this->show($id);
+    }
+
+    /**
+     * update a push channel.
      *
      * @param int $id
      * @param array $request
@@ -82,18 +82,18 @@ class PushChannelService
      */
     public function update(int $id, array $request): void
     {
-        $this->pushRepository->update($id, $request);
+        $this->database->update($id, $request);
     }
 
     /**
-     * get the channel's info by id for the testing.
+     * return the push channel details by id for test page.
      *
      * @param int $id
      * @return array
      */
-    public function getByIdForTest(int $id): array
+    public function testPage(int $id): array
     {
-        $channel = $this->getById($id);
+        $channel = $this->show($id);
 
         return [
             'id' => $channel['id'],
@@ -105,6 +105,17 @@ class PushChannelService
     }
 
     /**
+     * return the push channel details by id.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function testPush(int $id): array
+    {
+        return $this->show($id);
+    }
+
+    /**
      * get all the channels and group by the provider.
      * used by AppDBService.
      *
@@ -112,20 +123,21 @@ class PushChannelService
      */
     public function getGroupByProvider(): array
     {
-        return $this->pushRepository->getAll([], [])
+        return $this->database->getAll([], [])
             ->select(['id', 'name', 'provider_name'])
             ->groupBy('provider_name')
             ->toArray();
     }
 
     /**
-     * check the channel by id is valid or not.
+     * check the push channel.
+     * used by AppRequest.
      *
      * @param int $id
      * @return bool
      */
     public function checkChannel(int $id): bool
     {
-        return $this->pushRepository->getById($id, true) ? true : false;
+        return $this->show($id) ? true : false;
     }
 }
