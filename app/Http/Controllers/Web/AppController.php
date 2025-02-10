@@ -2,34 +2,17 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Enums\Service;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppRequest;
 use App\Http\Requests\DatatableRequest;
 use App\Services\AppDBService;
-use App\Services\EmailChannelService;
-use App\Services\PushChannelService;
-use App\Services\TokenService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class AppController extends Controller
 {
-    private $pushChannelService;
-    private $emailChannelService;
-    private $appDBService;
-    private $tokenService;
-
     public function __construct(
-        PushChannelService $pushChannelService,
-        EmailChannelService $emailChannelService,
-        AppDBService $appDBService,
-        TokenService $tokenService
+        private AppDBService $appDBService
     ) {
-        $this->pushChannelService = $pushChannelService;
-        $this->emailChannelService = $emailChannelService;
-        $this->appDBService = $appDBService;
-        $this->tokenService = $tokenService;
+        //
     }
 
     /**
@@ -62,11 +45,7 @@ class AppController extends Controller
      */
     public function create(): \Illuminate\View\View
     {
-        $services = array_column(Service::cases(), 'value');
-        $channels = [
-            'push' => $this->pushChannelService->getByGroupProvider(),
-            'email' => $this->emailChannelService->getByGroupProvider()
-        ];
+        list($services, $channels) = $this->appDBService->create();
 
         return view('app.create', [
             'services' => $services,
@@ -84,12 +63,7 @@ class AppController extends Controller
     {
         try {
             $data = $request->except('_token');
-
-            DB::transaction(function () use ($data) {
-                $app = $this->appDBService->create($data);
-                $tokens = $this->tokenService->generateToken($app, $data);
-                $this->appDBService->update($app['id'], $tokens);
-            });
+            $this->appDBService->store($data);
 
             $this->flashMessage['success']['message'] = 'Successfully created.';
         } catch (\Throwable $th) {
@@ -111,7 +85,7 @@ class AppController extends Controller
      */
     public function show(int $id): \Illuminate\View\View
     {
-        $app = $this->appDBService->getById($id);
+        $app = $this->appDBService->show($id);
 
         return view('app.show', [
             'app' => $app,
@@ -126,13 +100,7 @@ class AppController extends Controller
      */
     public function edit(int $id): \Illuminate\View\View
     {
-        $services = array_column(Service::cases(), 'value');
-        $channels = [
-            'push' => $this->pushChannelService->getByGroupProvider(),
-            'email' => $this->emailChannelService->getByGroupProvider()
-        ];
-
-        $app = $this->appDBService->getById($id, true);
+        list($services, $channels, $app) = $this->appDBService->edit($id);
 
         return view('app.edit', [
             'services' => $services,
@@ -151,8 +119,8 @@ class AppController extends Controller
     public function update(AppRequest $request, int $id): \Illuminate\Http\RedirectResponse
     {
         try {
-            $data = $request->except('_token', '_method');
-            $this->appDBService->update($id, $data, true);
+            $data = $request->only(['name', 'description', 'services', 'channels']);
+            $this->appDBService->update($id, $data);
 
             $this->flashMessage['success']['message'] = 'Successfully updated.';
         } catch (\Throwable $th) {

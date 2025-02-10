@@ -3,19 +3,23 @@
 namespace App\Services;
 
 use App\Enums\Service;
+use App\Exceptions\IsUsedException;
 use App\Repositories\AppRepository;
+use Illuminate\Support\Facades\DB;
 
 class AppDBService extends DBService
 {
-    private $appRepository;
-
-    public function __construct(AppRepository $appRepository)
-    {
-        $this->appRepository = $appRepository;
+    public function __construct(
+        AppRepository $table,
+        private PushChannelService $pushChannelService,
+        private EmailChannelService $emailChannelService,
+        private TokenService $tokenService
+    ) {
+        $this->table = $table;
     }
 
     /**
-     * get the app list by the datatable request.
+     * return the app list.
      *
      * @param array $request
      * @return array
@@ -30,9 +34,11 @@ class AppDBService extends DBService
 
         $order = $this->getOrderRequest($request);
 
-        $totalRecords = $this->appRepository->getAllCount();
+        $totalRecords = $this->table->getAllCount($this->userId);
 
-        $filteredRecords = $this->appRepository->getAll($searchValue, $order);
+        $filteredRecords = $this->table->getAll([
+            $this->userId, $searchValue, $order
+        ]);
         $records = $filteredRecords->makeHidden($hiddenColumns)
             ->slice($request['start'], $request['length'])
             ->values()
@@ -47,60 +53,106 @@ class AppDBService extends DBService
     }
 
     /**
-     * create an app.
+     * return the requried data for app create page.
      *
-     * @param array $request
      * @return array
      */
-    public function create(array $request): array
+    public function create(): array
     {
-        $request['user_id'] = 1;
-        $request['scopes'] = $this->createScopes($request);
+        $services = array_column(Service::cases(), 'value');
+        $channels = [
+            'push' => $this->pushChannelService->getGroupByProvider(),
+            'email' => $this->emailChannelService->getGroupByProvider()
+        ];
 
-        return $this->appRepository->create($request)
-            ->toArray();
+        return [$services, $channels];
     }
 
     /**
-     * get an app details by id.
+     * store an app.
+     *
+     * @param array $request
+     * @return void
+     */
+    public function store(array $request): void
+    {
+        DB::transaction(function () use ($request) {
+            $data = $request;
+            $data['user_id'] = $this->userId;
+            $data['scopes'] = $this->createScopes($data);
+
+            $app = $this->table->create($data)
+                ->toArray();
+
+            $tokens = $this->tokenService->generateToken($app, $request);
+
+            $this->update($app['id'], $tokens);
+        });
+    }
+
+    /**
+     * return an app details by id for show page.
      *
      * @param int $id
-     * @param bool $hideAppends
      * @return array
      */
-    public function getById(int $id, bool $hideAppends = false): array
+    public function show(int $id): array
     {
         $hideColumns = ['scopes'];
 
-        if ($hideAppends) {
-            $hideColumns = ['scopes', 'service_display', 'channel_display', 'token', 'refresh_token'];
-        }
-
-        return $this->appRepository->getById($id)
+        return $this->table->getById($id, $this->userId)
             ->makeHidden($hideColumns)
             ->toArray();
     }
 
     /**
-     * update an app's information by id.
+     * return an app details by id for edit page.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function edit(int $id): array
+    {
+        $services = array_column(Service::cases(), 'value');
+        $channels = [
+            'push' => $this->pushChannelService->getGroupByProvider(),
+            'email' => $this->emailChannelService->getGroupByProvider()
+        ];
+
+        $hideColumns = ['scopes', 'service_display', 'channel_display', 'token', 'refresh_token'];
+
+        $app = $this->table->getById($id, $this->userId)
+            ->makeHidden($hideColumns)
+            ->toArray();
+
+        return [$services, $channels, $app];
+    }
+
+    /**
+     * update an app.
      *
      * @param int $id
      * @param array $request
-     * @param bool $createScopes
      * @return void
      */
-    public function update(int $id, array $request, bool $createScopes = false): void
+    public function update(int $id, array $request): void
     {
-        if ($createScopes) {
+        $app = $this->table->getById($id, $this->userId);
+
+        if ($app->notifications()->exists()) {
+            throw new IsUsedException('This app is used and cannot be updated.');
+        }
+
+        if (array_key_exists('channels', $request)) {
             $request['scopes'] = $this->createScopes($request);
         }
 
-        $this->appRepository->update($id, $request);
+        $this->table->update($id, $request);
     }
 
     /**
      * create and format scopes.
-     * TODO: Think about new format for permissions.
+     * For Feature: Think about new format for permissions.
      *
      * @param array $request
      * @return string

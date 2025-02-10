@@ -2,21 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\EmailChannel;
-use App\Models\PushChannel;
-use App\Repositories\EmailChannelRepository;
+use App\Enums\EmailProviders;
 
 class EmailChannelService extends DBService
 {
-    private $emailChannelRepository;
-
-    public function __construct(EmailChannelRepository $emailChannelRepository)
-    {
-        $this->emailChannelRepository = $emailChannelRepository;
-    }
-
     /**
-     * get the email_channels list by the datatable request.
+     * get the email channel list.
      *
      * @param array $request
      * @return array
@@ -31,9 +22,11 @@ class EmailChannelService extends DBService
 
         $order = $this->getOrderRequest($request);
 
-        $totalRecords = $this->emailChannelRepository->getAllCount();
+        $totalRecords = $this->table->getAllCount($this->userId);
 
-        $filteredRecords = $this->emailChannelRepository->getAll($searchValue, $order);
+        $filteredRecords = $this->table->getAll([
+            $this->userId, $searchValue, $order
+        ]);
         $records = $filteredRecords->makeHidden($hiddenColumns)
             ->slice($request['start'], $request['length'])
             ->values()
@@ -47,34 +40,55 @@ class EmailChannelService extends DBService
         ];
     }
 
+    /**
+     * return the requried data for email create page.
+     *
+     * @return array
+     */
+    public function create(): array
+    {
+        return EmailProviders::getAll();
+    }
+
      /**
-     * create a channel.
+     * create an email channel.
      *
      * @param array $request
-     * @return EmailChannel
+     * @return void
      */
-    public function create(array $request): EmailChannel
+    public function store(array $request): void
     {
-        $request['user_id'] = 1;
+        $request['user_id'] = $this->userId;
 
-        return $this->emailChannelRepository->create($request);
+        $this->table->create($request);
     }
 
     /**
-     * get an email_channel details by id.
+     * return an email channel details by id for show page.
      *
      * @param int $id
      * @return array
      */
-    public function getById(int $id): array
+    public function show(int $id): array
     {
-        return $this->emailChannelRepository->getById($id)
+        return $this->table->getById($id, $this->userId)
             ->setAppends(['provider_name', 'credentials_string'])
             ->toArray();
     }
 
     /**
-     * update a channel's information.
+     * return an email channel details by id for edit page.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function edit(int $id): array
+    {
+        return $this->show($id);
+    }
+
+    /**
+     * update an email channel.
      *
      * @param int $id
      * @param array $request
@@ -82,32 +96,34 @@ class EmailChannelService extends DBService
      */
     public function update(int $id, array $request): void
     {
-        $request['user_id'] = 1;
+        $this->table->getById($id, $this->userId);
 
-        $this->emailChannelRepository->update($id, $request);
+        $this->table->update($id, $request);
     }
 
     /**
-     * get all the channels and group by the provider.
+     * get all email channels and group by the provider.
+     * used by AppDBService.
      *
      * @return array
      */
-    public function getByGroupProvider(): array
+    public function getGroupByProvider(): array
     {
-        return $this->emailChannelRepository->getAll([], [])
+        return $this->table->getAll([$this->userId, [], []])
             ->select(['id', 'name', 'provider_name'])
             ->groupBy('provider_name')
             ->toArray();
     }
 
     /**
-     * check the channel by id is valid or not.
+     * check an email channel.
+     * used by AppRequest.
      *
      * @param int $id
      * @return bool
      */
     public function checkChannel(int $id): bool
     {
-        return $this->emailChannelRepository->getById($id, true) ? true : false;
+        return $this->table->checkById($id, $this->userId) ? true : false;
     }
 }

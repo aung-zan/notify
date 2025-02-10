@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Enums\PushProviders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DatatableRequest;
 use App\Http\Requests\PushNotiRequest;
@@ -12,13 +11,11 @@ use App\Services\PushService;
 
 class PushController extends Controller
 {
-    private $pushChannelService;
-    private $pushService;
-
-    public function __construct(PushChannelService $pushChannelService, PushService $pushService)
-    {
-        $this->pushChannelService = $pushChannelService;
-        $this->pushService = $pushService;
+    public function __construct(
+        private PushChannelService $pushChannelService,
+        private PushService $pushService
+    ) {
+        //
     }
 
     /**
@@ -51,7 +48,7 @@ class PushController extends Controller
      */
     public function create(): \Illuminate\View\View
     {
-        $pushProviders = PushProviders::getAll();
+        $pushProviders = $this->pushChannelService->create();
 
         return view('push.create', [
             'providers' => $pushProviders
@@ -68,7 +65,7 @@ class PushController extends Controller
     {
         try {
             $data = $request->except('_token');
-            $this->pushChannelService->create($data);
+            $this->pushChannelService->store($data);
 
             $this->flashMessage['success']['message'] = 'Successfully created.';
         } catch (\Throwable $th) {
@@ -90,7 +87,7 @@ class PushController extends Controller
      */
     public function show(int $id): \Illuminate\View\View
     {
-        $channel = $this->pushChannelService->getById($id);
+        $channel = $this->pushChannelService->show($id);
 
         return view('push.show', [
             'channel' => $channel
@@ -105,7 +102,7 @@ class PushController extends Controller
      */
     public function edit(int $id): \Illuminate\View\View
     {
-        $channel = $this->pushChannelService->getById($id);
+        $channel = $this->pushChannelService->edit($id);
 
         return view('push.edit', [
             'channel' => $channel
@@ -145,7 +142,7 @@ class PushController extends Controller
      */
     public function testPage(int $id): \Illuminate\View\View
     {
-        $channel = $this->pushChannelService->getByIdForTest($id);
+        $channel = $this->pushChannelService->testPage($id);
 
         return view('push.providers.' . $channel['provider_name'], [
             'channel' => $channel
@@ -162,7 +159,7 @@ class PushController extends Controller
     public function test(PushNotiRequest $request, int $id): \Illuminate\Http\JsonResponse
     {
         try {
-            $channel = $this->pushChannelService->getById($id);
+            $channel = $this->pushChannelService->testPush($id);
             $this->pushService->sendPushNotification($request->toArray(), $channel);
         } catch (\Throwable $th) {
             $this->handleException($th);

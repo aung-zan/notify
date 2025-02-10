@@ -2,19 +2,65 @@
 
 namespace App\Interfaces;
 
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+
 interface DBInterface
 {
-    public function getAll(array $keywords, array $order);
+    /**
+     * return the records filtered by $filter
+     * [int $userId, array $keywords, array $order].
+     *
+     * @param array $filter
+     * @return Collection
+     */
+    public function getAll(array $filter): Collection;
 
-    public function getAllCount();
+    /**
+     * return count of the records with user_id.
+     *
+     * @param int $userId
+     * @return int
+     */
+    public function getAllCount(int $userId): int;
 
-    public function create(array $data);
+    /**
+     * create a record.
+     *
+     * @param array $data
+     * @return Model
+     */
+    public function create(array $data): Model;
 
-    public function getById(int $id, bool $checkOnly = false);
+    /**
+     * return a record or null by id.
+     *
+     * @param int $id
+     * @param int $userId
+     * @return Model|null
+     */
+    public function getById(int $id, int $userId): Model|null;
 
-    public function update(int $id, array $data);
+    /**
+     * update a record.
+     *
+     * @param int $id
+     * @param array $data
+     * @return void
+     */
+    public function update(int $id, array $data): void;
 
+    /**
+     * insert data in delete flag column.
+     *
+     * @param int $id
+     */
     public function softDelete(int $id);
 
+    /**
+     * permanently delete a record.
+     *
+     * @param int $id
+     */
     public function delete(int $id);
 }

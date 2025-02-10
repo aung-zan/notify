@@ -47,11 +47,10 @@ class TokenService
      */
     private function getTokenClaims(array $app, array $data): array
     {
-        // TODO: change the expiration time to 15 minutes.
         return [
             'sub'  => $app['id'],
             'iat'  => time(),
-            'exp'  => time() + 3600,
+            'exp'  => time() + 900,
             'appId'  => $app['id'],
             'channels' => $data['channels'],
             'scopes' => $app['scopes'],

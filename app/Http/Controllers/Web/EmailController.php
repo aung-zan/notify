@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Enums\EmailProviders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DatatableRequest;
 use App\Http\Requests\EmailRequest;
 use App\Services\EmailChannelService;
-use Illuminate\Http\Request;
 
 class EmailController extends Controller
 {
-    private $emailChannelService;
-
-    public function __construct(EmailChannelService $emailChannelService)
-    {
-        $this->emailChannelService = $emailChannelService;
+    public function __construct(
+        private EmailChannelService $emailChannelService
+    ) {
+        //
     }
 
     /**
@@ -48,7 +45,7 @@ class EmailController extends Controller
      */
     public function create(): \Illuminate\View\View
     {
-        $emailProviders = EmailProviders::getAll();
+        $emailProviders = $this->emailChannelService->create();
 
         return view('email.create', [
             'providers' => $emailProviders
@@ -65,7 +62,7 @@ class EmailController extends Controller
     {
         try {
             $data = $request->except('_token');
-            $this->emailChannelService->create($data);
+            $this->emailChannelService->store($data);
 
             $this->flashMessage['success']['message'] = 'Successfully created.';
         } catch (\Throwable $th) {
@@ -87,7 +84,7 @@ class EmailController extends Controller
      */
     public function show(int $id): \Illuminate\View\View
     {
-        $emailChannel = $this->emailChannelService->getById($id);
+        $emailChannel = $this->emailChannelService->show($id);
 
         return view('email.show', [
             'channel' => $emailChannel
@@ -102,7 +99,7 @@ class EmailController extends Controller
      */
     public function edit(int $id): \Illuminate\View\View
     {
-        $emailChannel = $this->emailChannelService->getById($id);
+        $emailChannel = $this->emailChannelService->edit($id);
 
         return view('email.edit', [
             'channel' => $emailChannel

@@ -65,9 +65,7 @@ class App extends Model
      */
     protected function getScopesAttribute($value): array
     {
-        $scopesArray = (array) json_decode($value);
-
-        return $scopesArray;
+        return (array) json_decode($value);
     }
 
     /**
@@ -140,12 +138,10 @@ class App extends Model
      */
     private function getServiceDisplay(string $service): string
     {
-        $serviceDisplay = [
+        return [
             'push' => 'Push',
             'email' => 'Email',
         ][$service];
-
-        return $serviceDisplay;
     }
 
     /**
