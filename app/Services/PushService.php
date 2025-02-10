@@ -35,7 +35,6 @@ class PushService
         if (env('APP_ENV') === 'testing') {
             $this->setLogChannel();
         } else {
-            // TODO: Implement different channels inside switch case.
             switch ($channel['provider']) {
                 case 1:
                     $this->setPusherChannel($channel['credentials']);
