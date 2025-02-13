@@ -128,7 +128,11 @@
                         <!--end::Menu separator-->
                         <!--begin::Menu item-->
                         <div class="menu-item px-5">
-                            <a href="authentication/layouts/corporate/sign-in.html" class="menu-link px-5">Sign Out</a>
+                            <form action="{{route('auth.logout')}}" method="post" id="logout">
+                                @csrf
+                                {{-- <button type="submit" class="menu-link px-5">Sign Out</button> --}}
+                            </form>
+                            <a href="#" id="logout_button" class="menu-link px-5">Sign Out</a>
                         </div>
                         <!--end::Menu item-->
                     </div>
