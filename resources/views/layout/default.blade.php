@@ -83,7 +83,6 @@
     <!--end::App-->
 
     <!--begin::Javascript-->
-        {{-- <script>var hostUrl = "/assets/";</script> --}}
         <!--begin::Global Javascript Bundle(mandatory for all pages)-->
         <script src="/assets/plugins/global/plugins.bundle.js"></script>
         <script src="/assets/plugins/custom/pusher/pusher.min.js"></script>

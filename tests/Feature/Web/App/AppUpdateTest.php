@@ -4,6 +4,7 @@ namespace Tests\Feature\Web\App;
 
 use App\Models\App;
 use App\Models\PushChannel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -26,11 +27,14 @@ class AppUpdateTest extends TestCase
      */
     public function testUpdateFunctionWithInvalidId(): void
     {
+        $user = User::first();
+
         $id = 1;
         $url = sprintf($this->updatePageURL, $id);
         $request = $this->request;
 
-        $response = $this->put($url, $request);
+        $response = $this->actingAs($user)
+            ->put($url, $request);
 
         // need to recheck why not 404.
         $response->assertStatus(302);
@@ -41,6 +45,8 @@ class AppUpdateTest extends TestCase
      */
     public function testUpdateFunctionWithEmptyRequest(): void
     {
+        $user = User::first();
+
         $pushChannel = PushChannel::factory(1)
             ->create()
             ->first();
@@ -48,13 +54,16 @@ class AppUpdateTest extends TestCase
         $request = $this->request;
         $request['channels'] = ['push' => $pushChannel->id];
 
-        $this->post($this->storePageURL, $request);
+        $this->actingAs($user)
+            ->post($this->storePageURL, $request);
+
         $app = App::first();
 
         $editURL = sprintf($this->editPageURL, $app->id);
         $updateURL = sprintf($this->updatePageURL, $app->id);
 
-        $response = $this->from($editURL)
+        $response = $this->actingAs($user)
+            ->from($editURL)
             ->put($updateURL, []);
 
         $response->assertStatus(302);
@@ -71,6 +80,8 @@ class AppUpdateTest extends TestCase
      */
     public function testUpdateFunctionWithInvalidRequest(): void
     {
+        $user = User::first();
+
         $pushChannel = PushChannel::factory(1)
             ->create()
             ->first();
@@ -78,7 +89,9 @@ class AppUpdateTest extends TestCase
         $request = $this->request;
         $request['channels'] = ['push' => $pushChannel->id];
 
-        $this->post($this->storePageURL, $request);
+        $this->actingAs($user)
+            ->post($this->storePageURL, $request);
+
         $app = App::first();
 
         $editURL = sprintf($this->editPageURL, $app->id);
@@ -88,7 +101,8 @@ class AppUpdateTest extends TestCase
         $request['services'] = ['test'];
         unset($request['channels']);
 
-        $response = $this->from($editURL)
+        $response = $this->actingAs($user)
+            ->from($editURL)
             ->put($updateURL, $request);
 
         $response->assertStatus(302);
@@ -105,6 +119,8 @@ class AppUpdateTest extends TestCase
      */
     public function testUpdateFunctionWithValidRequest(): void
     {
+        $user = User::first();
+
         $pushChannel = PushChannel::factory(1)
             ->create()
             ->first();
@@ -112,7 +128,9 @@ class AppUpdateTest extends TestCase
         $request = $this->request;
         $request['channels'] = ['push' => $pushChannel->id];
 
-        $this->post($this->storePageURL, $request);
+        $this->actingAs($user)
+            ->post($this->storePageURL, $request);
+
         $app = App::first();
 
         $editURL = sprintf($this->editPageURL, $app->id);
@@ -121,7 +139,8 @@ class AppUpdateTest extends TestCase
         $request['name'] .= ' Update';
         $request['description'] .= ' Update';
 
-        $response = $this->from($editURL)
+        $response = $this->actingAs($user)
+            ->from($editURL)
             ->put($updateURL, $request);
 
         $this->assertDatabaseHas('apps', [

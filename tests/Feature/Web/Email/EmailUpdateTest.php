@@ -3,6 +3,7 @@
 namespace Tests\Feature\Web\Email;
 
 use App\Models\EmailChannel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -23,11 +24,14 @@ class EmailUpdateTest extends TestCase
      */
     public function testUpdateFunctionWithInvalidId(): void
     {
+        $user = User::first();
+
         $id = 1;
         $url = sprintf($this->updatePageURL, $id);
         $request = $this->request;
 
-        $response = $this->put($url, $request);
+        $response = $this->actingAs($user)
+            ->put($url, $request);
 
         $response->assertStatus(302);
         $response->assertSessionHas('flashMessage.message', 'The requested resource does not exit.');
@@ -38,6 +42,8 @@ class EmailUpdateTest extends TestCase
      */
     public function testUpdateFunctionWithEmptyRequest(): void
     {
+        $user = User::first();
+
         $request = $this->request;
         $emailChannel = EmailChannel::factory(1)
             ->create($request)
@@ -46,7 +52,8 @@ class EmailUpdateTest extends TestCase
         $editURL = sprintf($this->editPageURL, $emailChannel->id);
         $updateURL = sprintf($this->updatePageURL, $emailChannel->id);
 
-        $response = $this->from($editURL)
+        $response = $this->actingAs($user)
+            ->from($editURL)
             ->put($updateURL, []);
 
         $response->assertStatus(302);
@@ -61,6 +68,8 @@ class EmailUpdateTest extends TestCase
      */
     public function testUpdateFunctionWithInvalidRequest(): void
     {
+        $user = User::first();
+
         $request = $this->request;
         $emailChannel = EmailChannel::factory(1)
             ->create($request)
@@ -72,7 +81,8 @@ class EmailUpdateTest extends TestCase
         $request['name'] = '';
         $request['credentials'] = '';
 
-        $response = $this->from($editURL)
+        $response = $this->actingAs($user)
+            ->from($editURL)
             ->put($updateURL, $request);
 
         $response->assertStatus(302);
@@ -88,6 +98,8 @@ class EmailUpdateTest extends TestCase
      */
     public function testUpdateFunctionWithValidRequest(): void
     {
+        $user = User::first();
+
         $request = $this->request;
         $emailChannel = EmailChannel::factory(1)
             ->create($request)
@@ -100,7 +112,8 @@ class EmailUpdateTest extends TestCase
         $request['user_id'] = 3;
         $request['provider'] = 3;
 
-        $response = $this->from($editURL)
+        $response = $this->actingAs($user)
+            ->from($editURL)
             ->put($updateURL, $request);
 
         $this->assertDatabaseHas('email_channels', [

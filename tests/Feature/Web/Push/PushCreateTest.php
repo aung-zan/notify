@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Web\Push;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -27,7 +28,10 @@ class PushCreateTest extends TestCase
      */
     public function testCreatePage(): void
     {
-        $response = $this->get($this->createPageURL);
+        $user = User::first();
+
+        $response = $this->actingAs($user)
+            ->get($this->createPageURL);
 
         $response->assertStatus(200);
         $response->assertSee('Create New Channel');
@@ -38,7 +42,10 @@ class PushCreateTest extends TestCase
      */
     public function testStoreFunctionWithEmptyRequest(): void
     {
-        $response = $this->from($this->createPageURL)
+        $user = User::first();
+
+        $response = $this->actingAs($user)
+            ->from($this->createPageURL)
             ->post($this->storePageURL, []);
 
         $response->assertStatus(302);
@@ -55,11 +62,14 @@ class PushCreateTest extends TestCase
      */
     public function testStoreFunctionWithInvalidRequest(): void
     {
+        $user = User::first();
+
         $request = $this->request;
         $request['name'] = '';
         $request['provider'] = 3;
 
-        $response = $this->from($this->createPageURL)
+        $response = $this->actingAs($user)
+            ->from($this->createPageURL)
             ->post($this->storePageURL, $request);
 
         $response->assertStatus(302);
@@ -75,9 +85,12 @@ class PushCreateTest extends TestCase
      */
     public function testStoreFunctionWithValidRequest(): void
     {
+        $user = User::first();
+
         $request = $this->request;
 
-        $response = $this->from($this->createPageURL)
+        $response = $this->actingAs($user)
+            ->from($this->createPageURL)
             ->post($this->storePageURL, $request);
 
         $this->assertDatabaseHas('push_channels', [

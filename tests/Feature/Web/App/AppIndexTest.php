@@ -3,6 +3,7 @@
 namespace Tests\Feature\Web\App;
 
 use App\Models\PushChannel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -48,7 +49,10 @@ class AppIndexTest extends TestCase
      */
     public function testIndexPage(): void
     {
-        $response = $this->get('/app');
+        $user = User::first();
+
+        $response = $this->actingAs($user)
+            ->get('/app');
 
         $response->assertStatus(200);
     }
@@ -58,7 +62,10 @@ class AppIndexTest extends TestCase
      */
     public function testGetDataFunctionWithEmptyRequest(): void
     {
-        $response = $this->postJson($this->getDatURL, []);
+        $user = User::first();
+
+        $response = $this->actingAs($user)
+            ->postJson($this->getDatURL, []);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors([
@@ -75,11 +82,14 @@ class AppIndexTest extends TestCase
      */
     public function testGetDataFunctionWithValidRequest(): void
     {
-        $this->createAppData(['']);
+        $user = User::first();
+
+        $this->createAppData([''], $user);
 
         $datatableRequest = $this->datatableRequest;
 
-        $response = $this->postJson($this->getDatURL, $datatableRequest);
+        $response = $this->actingAs($user)
+            ->postJson($this->getDatURL, $datatableRequest);
 
         $response->assertStatus(200);
         $response->assertHeader('Content-type', $this->contentType);
@@ -93,14 +103,17 @@ class AppIndexTest extends TestCase
      */
     public function testGetDataFunctionWithSearchRequest(): void
     {
+        $user = User::first();
+
         $appData = [' One', ' Two'];
 
-        $this->createAppData($appData);
+        $this->createAppData($appData, $user);
 
         $datatableRequest = $this->datatableRequest;
         $datatableRequest['search']['value'] = 'One';
 
-        $response = $this->postJson($this->getDatURL, $datatableRequest);
+        $response = $this->actingAs($user)
+            ->postJson($this->getDatURL, $datatableRequest);
 
         $response->assertStatus(200);
         $response->assertHeader('Content-type', $this->contentType);
@@ -114,15 +127,18 @@ class AppIndexTest extends TestCase
      */
     public function testGetDataFunctionWithOrderRequest(): void
     {
+        $user = User::first();
+
         $appData = [' One', ' Two'];
         $expectedResult = ['Unit Testing Two', 'Unit Testing One'];
 
-        $this->createAppData($appData);
+        $this->createAppData($appData, $user);
 
         $datatableRequest = $this->datatableRequest;
         $datatableRequest['order'][0]['dir'] = 'desc';
 
-        $response = $this->postJson($this->getDatURL, $datatableRequest);
+        $response = $this->actingAs($user)
+            ->postJson($this->getDatURL, $datatableRequest);
 
         $response->assertStatus(200);
         $response->assertHeader('Content-type', $this->contentType);
@@ -137,9 +153,10 @@ class AppIndexTest extends TestCase
      * preapre and create the app data.
      *
      * @param array $data
+     * @param User $user
      * @return void
      */
-    private function createAppData(array $data): void
+    private function createAppData(array $data, User $user): void
     {
         $pushChannel = PushChannel::factory(1)
             ->create()
@@ -148,7 +165,8 @@ class AppIndexTest extends TestCase
         foreach ($data as $text) {
             $request = $this->updateRequest($text, $pushChannel->id);
 
-            $this->post('/app', $request);
+            $this->actingAs($user)
+                ->post('/app', $request);
         }
     }
 

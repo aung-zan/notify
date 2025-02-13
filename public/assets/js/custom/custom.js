@@ -17,8 +17,6 @@ function showToast(id) {
  * @param {object} errors
  */
 function showErrorMessages(errors) {
-  // console.log(errors);
-
   const errorMessages = errors.errors;
 
   for (const key in errorMessages) {
@@ -42,3 +40,15 @@ function showErrorMessages(errors) {
     }
   }
 }
+
+/**
+ * for logout.
+ */
+const logoutButton = document.getElementById('logout_button');
+const logoutForm = document.getElementById('logout');
+
+logoutButton.addEventListener('click', function (event) {
+  event.preventDefault();
+
+  logoutForm.submit();
+});

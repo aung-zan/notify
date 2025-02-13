@@ -4,6 +4,7 @@ namespace Tests\Feature\Web\App;
 
 use App\Models\App;
 use App\Models\PushChannel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -24,11 +25,14 @@ class AppShowTest extends TestCase
      */
     public function testShowPageWithInvalidId(): void
     {
+        $user = User::first();
+
         $id = 1;
 
         $url = sprintf($this->showPageURL, $id);
 
-        $response = $this->get($url);
+        $response = $this->actingAs($user)
+            ->get($url);
 
         $response->assertStatus(404);
     }
@@ -38,6 +42,8 @@ class AppShowTest extends TestCase
      */
     public function testShowPageWithValidId(): void
     {
+        $user = User::first();
+
         $pushChannel = PushChannel::factory(1)
             ->create()
             ->first();
@@ -45,12 +51,15 @@ class AppShowTest extends TestCase
         $request = $this->request;
         $request['channels'] = ['push' => $pushChannel->id];
 
-        $this->post('/app', $request);
+        $this->actingAs($user)
+            ->post('/app', $request);
+
         $app = App::first();
 
         $url = sprintf($this->showPageURL, $app->id);
 
-        $response = $this->get($url);
+        $response = $this->actingAs($user)
+            ->get($url);
 
         $response->assertStatus(200);
         $response->assertSee($request['name']);
