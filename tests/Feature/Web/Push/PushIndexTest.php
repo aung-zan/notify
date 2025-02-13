@@ -4,6 +4,7 @@ namespace Tests\Feature\Web\Push;
 
 use App\Enums\PushProviders;
 use App\Models\PushChannel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -50,7 +51,10 @@ class PushIndexTest extends TestCase
      */
     public function testIndexPage(): void
     {
-        $response = $this->get($this->indexPageURL);
+        $user = User::first();
+
+        $response = $this->actingAs($user)
+            ->get($this->indexPageURL);
 
         $response->assertStatus(200);
         $response->assertSee('Push Channels');
@@ -62,7 +66,10 @@ class PushIndexTest extends TestCase
      */
     public function testGetDataFunctionWithEmptyRequest(): void
     {
-        $response = $this->postJson($this->getDataURL, []);
+        $user = User::first();
+
+        $response = $this->actingAs($user)
+            ->postJson($this->getDataURL, []);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors([
@@ -79,11 +86,14 @@ class PushIndexTest extends TestCase
      */
     public function testGetDataFunctionWithValidRequest(): void
     {
-        $this->createPushData();
+        $user = User::first();
+
+        $this->createPushData($user);
 
         $datatableRequest = $this->datatableRequest;
 
-        $response = $this->postJson($this->getDataURL, $datatableRequest);
+        $response = $this->actingAs($user)
+            ->postJson($this->getDataURL, $datatableRequest);
 
         $response->assertStatus(200);
         $response->assertHeader('Content-type', $this->contentType);
@@ -97,12 +107,15 @@ class PushIndexTest extends TestCase
      */
     public function testGetDataFunctionWithSearchRequest(): void
     {
-        $this->createPushData();
+        $user = User::first();
+
+        $this->createPushData($user);
 
         $datatableRequest = $this->datatableRequest;
         $datatableRequest['search']['value'] = 'pusher';
 
-        $response = $this->postJson($this->getDataURL, $datatableRequest);
+        $response = $this->actingAs($user)
+            ->postJson($this->getDataURL, $datatableRequest);
 
         $response->assertStatus(200);
         $response->assertHeader('Content-type', $this->contentType);
@@ -116,14 +129,17 @@ class PushIndexTest extends TestCase
      */
     public function testGetDataFunctionWithOrderRequest(): void
     {
+        $user = User::first();
+
         $expectedResult = ['pusher testing', 'firebase testing'];
 
-        $this->createPushData();
+        $this->createPushData($user);
 
         $datatableRequest = $this->datatableRequest;
         $datatableRequest['order'][0]['dir'] = 'desc';
 
-        $response = $this->postJson($this->getDataURL, $datatableRequest);
+        $response = $this->actingAs($user)
+            ->postJson($this->getDataURL, $datatableRequest);
 
         $response->assertStatus(200);
         $response->assertHeader('Content-type', $this->contentType);
@@ -135,16 +151,18 @@ class PushIndexTest extends TestCase
     }
 
     /**
-     * preapre and create the app data.
+     * preapre and create the push data.
      *
+     * @param User $user
      * @return void
      */
-    private function createPushData(): void
+    private function createPushData(User $user): void
     {
         $data = PushProviders::getAll();
 
         foreach ($data as $text => $value) {
-            $request = $this->updateRequestData($text, $value);
+            $request = $this->actingAs($user)
+                ->updateRequestData($text, $value);
 
             PushChannel::create($request);
         }

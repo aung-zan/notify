@@ -3,6 +3,7 @@
 namespace Tests\Feature\Web\Email;
 
 use App\Models\EmailChannel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -22,10 +23,13 @@ class EmailEditTest extends TestCase
      */
     public function testEditPageWithInvalidId(): void
     {
+        $user = User::first();
+
         $id = 1;
         $url = sprintf($this->editPageURL, $id);
 
-        $response = $this->get($url);
+        $response = $this->actingAs($user)
+            ->get($url);
 
         $response->assertStatus(404);
     }
@@ -35,6 +39,8 @@ class EmailEditTest extends TestCase
      */
     public function testEditPageWithValidId(): void
     {
+        $user = User::first();
+
         $request = $this->request;
         $emailChannel = EmailChannel::factory(1)
             ->create($request)
@@ -42,7 +48,8 @@ class EmailEditTest extends TestCase
 
         $url = sprintf($this->editPageURL, $emailChannel->id);
 
-        $response = $this->get($url);
+        $response = $this->actingAs($user)
+            ->get($url);
 
         $response->assertStatus(200);
         $response->assertSee('Edit a channel');

@@ -4,6 +4,7 @@ namespace Tests\Feature\Web\Email;
 
 use App\Enums\EmailProviders;
 use App\Models\EmailChannel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -51,7 +52,10 @@ class EmailIndexTest extends TestCase
      */
     public function testIndexPage(): void
     {
-        $response = $this->get($this->indexPageURL);
+        $user = User::first();
+
+        $response = $this->actingAs($user)
+            ->get($this->indexPageURL);
 
         $response->assertStatus(200);
         $response->assertSee('Push Channels');
@@ -63,7 +67,10 @@ class EmailIndexTest extends TestCase
      */
     public function testGetDataFunctionWithEmptyRequest(): void
     {
-        $response = $this->postJson($this->getDataURL, []);
+        $user = User::first();
+
+        $response = $this->actingAs($user)
+            ->postJson($this->getDataURL, []);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors([
@@ -80,11 +87,14 @@ class EmailIndexTest extends TestCase
      */
     public function testGetDataFunctionWithValidRequest(): void
     {
-        $this->createPushData();
+        $user = User::first();
+
+        $this->createEmailData($user);
 
         $datatableRequest = $this->datatableRequest;
 
-        $response = $this->postJson($this->getDataURL, $datatableRequest);
+        $response = $this->actingAs($user)
+            ->postJson($this->getDataURL, $datatableRequest);
 
         $response->assertStatus(200);
         $response->assertHeader('Content-type', $this->contentType);
@@ -98,12 +108,15 @@ class EmailIndexTest extends TestCase
      */
     public function testGetDataFunctionWithSearchRequest(): void
     {
-        $this->createPushData();
+        $user = User::first();
+
+        $this->createEmailData($user);
 
         $datatableRequest = $this->datatableRequest;
         $datatableRequest['search']['value'] = 'mail';
 
-        $response = $this->postJson($this->getDataURL, $datatableRequest);
+        $response = $this->actingAs($user)
+            ->postJson($this->getDataURL, $datatableRequest);
 
         $response->assertStatus(200);
         $response->assertHeader('Content-type', $this->contentType);
@@ -117,14 +130,17 @@ class EmailIndexTest extends TestCase
      */
     public function testGetDataFunctionWithOrderRequest(): void
     {
+        $user = User::first();
+
         $expectedResult = ['smtp testing', 'mailtrap testing', 'amazon_ses testing'];
 
-        $this->createPushData();
+        $this->createEmailData($user);
 
         $datatableRequest = $this->datatableRequest;
         $datatableRequest['order'][0]['dir'] = 'desc';
 
-        $response = $this->postJson($this->getDataURL, $datatableRequest);
+        $response = $this->actingAs($user)
+            ->postJson($this->getDataURL, $datatableRequest);
 
         $response->assertStatus(200);
         $response->assertHeader('Content-type', $this->contentType);
@@ -136,16 +152,18 @@ class EmailIndexTest extends TestCase
     }
 
     /**
-     * preapre and create the app data.
+     * preapre and create the email data.
      *
+     * @param User $user
      * @return void
      */
-    private function createPushData(): void
+    private function createEmailData(User $user): void
     {
         $data = EmailProviders::getAll();
 
         foreach ($data as $text => $value) {
-            $request = $this->updateRequestData($text, $value);
+            $request = $this->actingAs($user)
+                ->updateRequestData($text, $value);
 
             EmailChannel::create($request);
         }

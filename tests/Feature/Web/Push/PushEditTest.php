@@ -3,6 +3,7 @@
 namespace Tests\Feature\Web\Push;
 
 use App\Models\PushChannel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -22,10 +23,13 @@ class PushEditTest extends TestCase
      */
     public function testEditPageWithInvalidId(): void
     {
+        $user = User::first();
+
         $id = 1;
         $url = sprintf($this->editPageURL, $id);
 
-        $response = $this->get($url);
+        $response = $this->actingAs($user)
+            ->get($url);
 
         $response->assertStatus(404);
     }
@@ -35,6 +39,8 @@ class PushEditTest extends TestCase
      */
     public function testEditPageWithValidId(): void
     {
+        $user = User::first();
+
         $request = $this->request;
 
         $pushChannel = PushChannel::factory(1)
@@ -43,7 +49,8 @@ class PushEditTest extends TestCase
 
         $url = sprintf($this->editPageURL, $pushChannel->id);
 
-        $response = $this->get($url);
+        $response = $this->actingAs($user)
+            ->get($url);
 
         $response->assertStatus(200);
         $response->assertSee('Pusher');
