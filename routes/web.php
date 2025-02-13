@@ -16,7 +16,8 @@ Route::controller(LoginController::class)
         Route::get('/login', 'login')->name('auth.login');
         Route::post('/login', 'authenticate')->name('auth.authenticate');
         Route::post('/logout', 'logout')->name('auth.logout')
-            ->withoutMiddleware('guest');
+            ->withoutMiddleware('guest')
+            ->middleware('auth');
     });
 
 Route::controller(AppController::class)

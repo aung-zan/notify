@@ -4,6 +4,7 @@ namespace Tests\Feature\Web\App;
 
 use App\Models\EmailChannel;
 use App\Models\PushChannel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -24,7 +25,10 @@ class AppCreateTest extends TestCase
      */
     public function testCreatePage(): void
     {
-        $response = $this->get($this->createPageURL);
+        $user = User::first();
+
+        $response = $this->actingAs($user)
+            ->get($this->createPageURL);
 
         $response->assertStatus(200);
         $response->assertSee('Create New App');
@@ -35,7 +39,10 @@ class AppCreateTest extends TestCase
      */
     public function testStoreFunctionWithEmptyRequest(): void
     {
-        $response = $this->from($this->createPageURL)
+        $user = User::first();
+
+        $response = $this->actingAs($user)
+            ->from($this->createPageURL)
             ->post($this->storePageURL, []);
 
         $response->assertStatus(302);
@@ -47,11 +54,13 @@ class AppCreateTest extends TestCase
      */
     public function testStoreFunctionWithInvalidRequest(): void
     {
+        $user = User::first();
         $request = $this->request;
         $request['name'] = '';
         $request['services'] = ['test'];
 
-        $response = $this->from($this->createPageURL)
+        $response = $this->actingAs($user)
+            ->from($this->createPageURL)
             ->post($this->storePageURL, $request);
 
         $response->assertStatus(302);
@@ -68,6 +77,7 @@ class AppCreateTest extends TestCase
      */
     public function testStoreFunctionWithPushOnlyValidRequest(): void
     {
+        $user = User::first();
         $pushChannel = PushChannel::factory(1)
             ->create()
             ->first();
@@ -76,7 +86,8 @@ class AppCreateTest extends TestCase
         $request['services'] = ['push'];
         $request['channels'] = ['push' => $pushChannel->id];
 
-        $response = $this->from($this->createPageURL)
+        $response = $this->actingAs($user)
+            ->from($this->createPageURL)
             ->post($this->storePageURL, $request);
 
         $this->assertDatabaseHas('apps', [
@@ -95,6 +106,7 @@ class AppCreateTest extends TestCase
      */
     public function testStoreFunctionWithEmailOnlyValidRequest(): void
     {
+        $user = User::first();
         $emailChannel = EmailChannel::factory(1)
             ->create()
             ->first();
@@ -103,7 +115,8 @@ class AppCreateTest extends TestCase
         $request['services'] = ['email'];
         $request['channels'] = ['email' => $emailChannel->id];
 
-        $response = $this->from($this->createPageURL)
+        $response = $this->actingAs($user)
+            ->from($this->createPageURL)
             ->post($this->storePageURL, $request);
 
         $this->assertDatabaseHas('apps', [
@@ -122,6 +135,8 @@ class AppCreateTest extends TestCase
      */
     public function testStoreFunctionWithValidRequest(): void
     {
+        $user = User::first();
+
         $pushChannel = PushChannel::factory(1)
             ->create()
             ->first();
@@ -137,7 +152,8 @@ class AppCreateTest extends TestCase
             'email' => $emailChannel->id
         ];
 
-        $response = $this->from($this->createPageURL)
+        $response = $this->actingAs($user)
+            ->from($this->createPageURL)
             ->post($this->storePageURL, $request);
 
         $this->assertDatabaseHas('apps', [
